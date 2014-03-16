@@ -28,6 +28,10 @@
 
   ;; SMART-MODE-LINE
   (sml/setup)
+  (setq sml/mule-info nil)
+  (setq sml/numbers-separator "")
+  (setq sml/show-remote nil)
+  (setq sml/modified-char " x ")
 
   ;; use prepended directory instead of silly filename<2>
   (require 'uniquify)

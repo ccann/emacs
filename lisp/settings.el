@@ -39,8 +39,8 @@
   ;; turn off right fringe
   (set-fringe-mode '(1 . 0)) 
 
-  (setq-default fill-column 90) 
-  (setq-default column-number-mode 0)
+  (setq-default fill-column 90)
+  (column-number-mode -1)
   (blink-cursor-mode 1)
   (global-hl-line-mode 1)
 
