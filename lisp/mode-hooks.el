@@ -46,13 +46,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;     PYTHON     ;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  (when (eq system-type 'darwin)
+      (setq elpy-rpc-python-command "/usr/local/bin/python"))
+
   (autoload 'jedi:setup "jedi" nil t)
   (setq-default python-indent-guess-indent-offset nil)
   (setq-default python-indent-offset 4)
+  
   (add-hook 'python-mode-hook (lambda ()
-                                (jedi:setup)
+                                (elpy-enable)
+                                (delq 'flymake-mode elpy-default-minor-modes)
+                                (elpy-mode)
                                 (auto-complete-mode 1)
-                                (rainbow-delimiters-mode 1)))
+                                (rainbow-delimiters-mode 1)
+                                (elpy-clean-modeline)
+                                (elpy-use-ipython)
+                                (setq flymake-start-syntax-check-on-newline nil)
+                                (setq flymake-no-changes-timeout 60)))
   
   (setq jedi:complete-on-dot t)
 
