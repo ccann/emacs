@@ -10,7 +10,9 @@
 ;;;;;;;;;;;;;;;;;;;;;
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("elpy" . "http://jorgenschaefer.github.io/packages/")))
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -27,13 +29,18 @@
                       auto-complete
                       dired-details+
                       lua-mode
-                      clojure-mode
-                      cider
-                      multi-web-mode
+                      clojure-mode            ;; :clojure
+                      cider                   ;; :clojure
                       ess
+                      markdown-mode
+                      
+                      web-mode
                       auto-complete
-                      jedi
+                      jedi                    ;; :python
+                      flymake
+                      elpy                    ;; :python
                       align-cljlet
+                      pretty-mode
                       gnuplot)
   "List of packages to ensure are installed at startup.")
 
@@ -41,34 +48,19 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-(add-to-list 'load-path "~/dotfiles/lisp/")
-(add-to-list 'load-path "~/dev/badger-theme/")
+;; Keep emacs custom-settings in separate file, for fuck's sake.
+(setq custom-file (expand-file-name "lisp/custom.el" user-emacs-directory))
+(load custom-file)
 
-(load "badger-theme.el")
-(load "settings.el")
-(load "keybindings.el")
-(load "mode-hooks.el")
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
+(require 'settings)
+(require 'core-extensions)
+(require 'mode-hooks)
+(require 'keybindings)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;   Added by Emacs   ;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (badger)))
- '(custom-safe-themes (quote ("75f1b91fd136530b976c3ee12ce05a53e3167af06f84a70d400af015aa042bca" default)))
- '(org-agenda-files (quote ("~/docs/agendas/"))))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(add-to-list 'custom-theme-load-path "~/dev/badger-theme")
+(load-theme 'badger t)
 
 ;;; init.el ends here
 
