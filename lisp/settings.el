@@ -10,17 +10,14 @@
 (progn
 
   (setq ns-use-srgb-colorspace t) 
-
   (setq exec-path (append exec-path '("/usr/local/bin"))) ;; need this?
   
   ;; fonts and menu bar
   (if (eq system-type 'darwin)
-      (progn
-        (set-face-attribute 'default nil :font "Droid Sans Mono-11")
-        (menu-bar-mode 1))
-    (progn
-      (set-face-attribute 'default nil :font "Ubuntu Mono-10")
-      (menu-bar-mode 0)))
+      (menu-bar-mode 1)
+    (menu-bar-mode 0))
+
+  (set-face-attribute 'default nil :font "Source Code Pro-11")
 
   ;; turn off scroll bar and tool bar
   (when (fboundp 'scroll-bar-mode)
