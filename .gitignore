@@ -1,0 +1,8 @@
+.python-environments/
+.smex-items
+places
+eshell/
+elpa/
+backups/
+auto-save-list/
+ac-comphist.dat
