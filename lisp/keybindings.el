@@ -21,6 +21,7 @@
   (global-set-key (kbd "C-c d") 'jedi:show-doc)
   (global-set-key (kbd "M-x") 'smex)
   (global-set-key [(f12)] 'ibuffer)
+  (global-set-key [(f10)] 'magit-status)
 
 
   ;; Home and End Keys:
