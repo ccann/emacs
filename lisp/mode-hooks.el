@@ -53,7 +53,8 @@
   (autoload 'jedi:setup "jedi" nil t)
   (setq-default python-indent-guess-indent-offset nil)
   (setq-default python-indent-offset 4)
-  
+
+  ;;(setq ac-sources (delq 'ac-source-nropemacs-dot (delq 'ac-source-nropemacs ac-sources)))  
   (add-hook 'python-mode-hook (lambda ()
                                 (elpy-enable)
                                 (delq 'flymake-mode elpy-default-minor-modes)
