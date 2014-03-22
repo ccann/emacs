@@ -45,8 +45,6 @@
   ;; magit
   (when (eq system-type 'darwin)
     (set-variable 'magit-emacsclient-executable "/usr/local/bin/emacsclient"))
-
-
   
 )
 (provide 'core-extensions)
