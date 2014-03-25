@@ -17,7 +17,7 @@
       (menu-bar-mode 1)
     (menu-bar-mode 0))
 
-  (set-face-attribute 'default nil :font "Source Code Pro-11")
+  (set-face-attribute 'default nil :font "Source Code Pro-9")
 
   ;; turn off scroll bar and tool bar
   (when (fboundp 'scroll-bar-mode)
@@ -37,7 +37,7 @@
   (set-fringe-mode '(1 . 0)) 
 
   (setq-default fill-column 90)
-  (column-number-mode -1)
+  (column-number-mode 1)
   (blink-cursor-mode 1)
   (global-hl-line-mode 1)
 

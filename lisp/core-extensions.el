@@ -29,7 +29,7 @@
   ;; SMART-MODE-LINE
   (sml/setup)
   (setq sml/mule-info nil)
-  (setq sml/numbers-separator "")
+  (setq sml/numbers-separator ":")
   (setq sml/show-remote nil)
   (setq sml/modified-char " x ")
 
