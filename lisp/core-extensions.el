@@ -42,7 +42,9 @@
   (setq-default save-place t)
   (setq save-place-file (concat user-emacs-directory "places"))
 
-
+  ;; magit
+  (when (eq system-type 'darwin)
+    (set-variable 'magit-emacsclient-executable "/usr/local/bin/emacsclient"))
   
 )
 (provide 'core-extensions)
