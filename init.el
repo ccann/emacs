@@ -21,6 +21,7 @@
 
 (defvar my-packages '(idle-highlight-mode
                       find-file-in-project
+                      org
                       smex
                       ido-ubiquitous
                       paredit

@@ -9,7 +9,12 @@
 ;;;###autoload
 (progn
 
-  (setq ns-use-srgb-colorspace t) 
+  ;; Scratch buffer 
+  (setq initial-major-mode 'org-mode)
+  (setq initial-scratch-message "#+TITLE: Note\n#+options: toc:nil num:nil")
+
+  (setq ns-use-srgb-colorspace t)
+  
   (setq exec-path (append exec-path '("/usr/local/bin"))) ;; need this?
   
   ;; fonts and menu bar
