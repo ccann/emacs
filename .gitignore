@@ -6,3 +6,5 @@ elpa/
 backups/
 auto-save-list/
 ac-comphist.dat
+url/
+tramp

@@ -13,7 +13,6 @@
                          ("melpa" . "http://melpa.milkbox.net/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("elpy" . "http://jorgenschaefer.github.io/packages/")))
-
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -26,7 +25,6 @@
                       ido-ubiquitous
                       paredit
                       magit
-                      smart-mode-line
                       rainbow-mode
                       rainbow-delimiters
                       auto-complete
@@ -36,6 +34,7 @@
                       cider                   ;; :clojure
                       ess
                       markdown-mode
+                      
                       web-mode
                       auto-complete
                       jedi                    ;; :python
@@ -50,19 +49,18 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-
 ;; Keep emacs custom-settings in separate file, for fuck's sake.
 (setq custom-file (expand-file-name "lisp/custom.el" user-emacs-directory))
 (load custom-file)
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
-(add-to-list 'custom-theme-load-path "~/dev/badger-theme")
 
 (require 'settings)
 (require 'core-extensions)
 (require 'mode-hooks)
 (require 'keybindings)
 
+(add-to-list 'custom-theme-load-path "~/dev/badger-theme")
 (load-theme 'badger t)
 
 ;;; init.el ends here

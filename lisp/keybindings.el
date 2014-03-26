@@ -23,7 +23,6 @@
   (global-set-key [(f12)] 'ibuffer)
   (global-set-key [(f10)] 'magit-status)
 
-
   ;; Home and End Keys:
   (global-set-key (kbd "<home>") 'move-beginning-of-line)
   (global-set-key (kbd "<end>") 'move-end-of-line)
