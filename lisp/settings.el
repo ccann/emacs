@@ -11,7 +11,7 @@
 
   ;; Scratch buffer 
   (setq initial-major-mode 'org-mode)
-  (setq initial-scratch-message "#+TITLE: Note\n#+options: toc:nil num:nil")
+  (setq initial-scratch-message "#+TITLE: Note\n#+options: toc:nil num:nil\n\n")
 
   (setq ns-use-srgb-colorspace t)
   
@@ -22,7 +22,9 @@
       (menu-bar-mode 1)
     (menu-bar-mode 0))
 
-  (set-face-attribute 'default nil :font "Source Code Pro-9")
+  (if (eq system-type 'darwin)
+      (set-face-attribute 'default nil :font "Source Code Pro-11")
+    (set-face-attribute 'default nil :font "Source Code Pro-9"))
 
   ;; turn off scroll bar and tool bar
   (when (fboundp 'scroll-bar-mode)
@@ -62,8 +64,8 @@
         apropos-do-all t  ;; search for noninteractive functions, too (C-h a)
         mouse-yank-at-point t ;; Mouse-2 inserts text at point, not click location
         backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                                 "backups")))))
+                                                 "backups"))))
 
-(provide 'settings)
+  (provide 'settings))
 ;;; settings.el ends here
 
