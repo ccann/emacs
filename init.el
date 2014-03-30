@@ -54,11 +54,14 @@
 (load custom-file)
 
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path "~/dev/qichat-mode")
 
 (require 'settings)
 (require 'core-extensions)
 (require 'mode-hooks)
 (require 'keybindings)
+(require 'functions)
+(require 'qichat-mode)
 
 (add-to-list 'custom-theme-load-path "~/dev/badger-theme")
 (load-theme 'badger t)

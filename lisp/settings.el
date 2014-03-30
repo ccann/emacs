@@ -9,9 +9,12 @@
 ;;;###autoload
 (progn
 
+  
   ;; Scratch buffer 
   (setq initial-major-mode 'org-mode)
   (setq initial-scratch-message "#+TITLE: Note\n#+options: toc:nil num:nil\n\n")
+  ;; automatically reload changed buffers
+  (global-auto-revert-mode t)
 
   (setq ns-use-srgb-colorspace t)
   
