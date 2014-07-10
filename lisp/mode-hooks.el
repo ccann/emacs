@@ -69,7 +69,12 @@
                                 (highlight-indentation-mode -1)))
   
   (setq jedi:complete-on-dot t)
-
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;     QiChat     ;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (add-hook 'qichat-mode-hook (lambda ()
+                                (linum-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;      Org       ;;;;;;;
