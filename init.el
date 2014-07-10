@@ -66,9 +66,8 @@
 (require 'functions)
 (require 'qichat-mode)
 
-(setq my-themes '(flatui badger))
 (add-to-list 'custom-theme-load-path "~/.emacs.d/badger-theme")
-;(load-theme 'flatui t)
+(setq my-themes '(flatui badger))
 (cycle-my-theme)
 
 
