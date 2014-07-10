@@ -37,7 +37,6 @@
 ;;;;;;;;   Emacs Lisp  ;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (add-hook 'emacs-lisp-mode-hook (lambda ()
-                                    (rainbow-mode 1)
                                     (paredit-mode 1)
                                     (rainbow-delimiters-mode 1)))
 
@@ -50,7 +49,7 @@
   (when (eq system-type 'darwin)
       (setq elpy-rpc-python-command "/usr/local/bin/python"))
 
-  (autoload 'jedi:setup "jedi" nil t)
+ ;; (autoload 'jedi:setup "jedi" nil t)
   (setq-default python-indent-guess-indent-offset nil)
   (setq-default python-indent-offset 4)
 
@@ -59,12 +58,15 @@
                                 (elpy-enable)
                                 (delq 'flymake-mode elpy-default-minor-modes)
                                 (elpy-mode)
+                                (linum-mode)
                                 (auto-complete-mode 1)
                                 (rainbow-delimiters-mode 1)
                                 (elpy-clean-modeline)
                                 (elpy-use-ipython)
                                 (setq flymake-start-syntax-check-on-newline nil)
-                                (setq flymake-no-changes-timeout 60)))
+                                (setq flymake-no-changes-timeout 60)
+                                (fci-mode)
+                                (highlight-indentation-mode -1)))
   
   (setq jedi:complete-on-dot t)
 
@@ -76,7 +78,6 @@
 
   (add-hook 'org-mode-hook  (lambda ()
                               (flyspell-mode 1)    
-                              (auto-fill-mode 1)    
                               (visual-line-mode 1)
                               (org-indent-mode 1)))
 
@@ -130,8 +131,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;      LUA      ;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (add-hook 'lua-mode-hook (lambda ()
-                             (rainbow-mode 1)))
+  (add-hook 'lua-mode-hook (lambda ()))
+                             
 
 
   ;; impcore -> scheme binding

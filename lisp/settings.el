@@ -12,7 +12,8 @@
   
   ;; Scratch buffer 
   (setq initial-major-mode 'org-mode)
-  (setq initial-scratch-message "#+TITLE: Note\n#+options: toc:nil num:nil\n\n")
+  (setq initial-scratch-message "#+TITLE: Scratch\n\n")
+  ;;(setq initial-scratch-message "#+TITLE: Note\n#+options: toc:nil num:nil\n\n")
   ;; automatically reload changed buffers
   (global-auto-revert-mode t)
 
@@ -27,7 +28,7 @@
 
   (if (eq system-type 'darwin)
       (set-face-attribute 'default nil :font "Source Code Pro-11")
-    (set-face-attribute 'default nil :font "Source Code Pro-9"))
+    (set-face-attribute 'default nil :font "Source Code Pro-10"))
 
   ;; turn off scroll bar and tool bar
   (when (fboundp 'scroll-bar-mode)
@@ -46,18 +47,28 @@
   ;; turn off right fringe
   (set-fringe-mode '(1 . 0)) 
 
-  (setq-default fill-column 90)
+  (setq-default fill-column 79)
   (column-number-mode 1)
   (blink-cursor-mode 1)
   (global-hl-line-mode 1)
 
+  (setq create-lockfiles nil)
+  
   ;; if visible-bell nil, ring-bell-function is alarm
   (setq visible-bell nil)
   ;; empty alarm function. voila.
   (setq ring-bell-function `(lambda () ))
 
   (show-paren-mode 1)
+  (setq-default auto-fill-function 'do-auto-fill)
+  (setq default-major-mode 'text-mode)
+  (setq scroll-step 1)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+  ;;(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+  (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
 
+  
+  
   ;; prevent extraneous tabs
   (setq-default indent-tabs-mode nil)
 

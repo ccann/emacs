@@ -11,7 +11,6 @@
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("elpy" . "http://jorgenschaefer.github.io/packages/")))
 (package-initialize)
 
@@ -25,7 +24,6 @@
                       ido-ubiquitous
                       paredit
                       magit
-                      rainbow-mode
                       rainbow-delimiters
                       auto-complete
                       dired-details+
@@ -34,7 +32,7 @@
                       cider                   ;; :clojure
                       ess
                       markdown-mode
-                      
+                      smart-mode-line
                       web-mode
                       auto-complete
                       jedi                    ;; :python
@@ -53,6 +51,11 @@
 (setq custom-file (expand-file-name "lisp/custom.el" user-emacs-directory))
 (load custom-file)
 
+;; set the PYTHONPATH to be what the shell has
+(let ((path-from-shell (shell-command-to-string "echo $PYTHONPATH")))
+  (setenv "PYTHONPATH" (mapconcat 'identity (split-string path-from-shell) ":")
+    ))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (add-to-list 'load-path "~/dev/qichat-mode")
 
@@ -64,7 +67,8 @@
 (require 'qichat-mode)
 
 (add-to-list 'custom-theme-load-path "~/dev/badger-theme")
-(load-theme 'badger t)
+(add-to-list 'custom-theme-load-path "~/dev/flatui-theme")
+(load-theme 'flatui t)
 
 ;;; init.el ends here
 

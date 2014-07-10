@@ -8,6 +8,7 @@
 ;;;###autoload
 (progn
 
+  (require 'fill-column-indicator)
   (ido-mode t)
   (setq ido-enable-flex-matching t)
 
