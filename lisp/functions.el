@@ -22,7 +22,26 @@
   (defun find-user-init-file ()
     "Edit the `user-init-file', in another window."
     (interactive)
-    (find-file-other-window user-init-file)))
+    (find-file-other-window user-init-file))
+
+  (setq curr-theme nil)
+  
+  (defun enab-theme (theme)
+    "Disable theme then load it, clearing out state of previous theme"
+    (if curr-theme (disable-theme curr-theme))
+    (setq curr-theme theme) 
+    (load-theme theme t))
+
+  (defun cycle-my-theme ()
+    "Cycle through a list of themes, my-themes"
+    (interactive)
+    (when curr-theme
+      (disable-theme curr-theme)
+      (setq my-themes (append my-themes (list curr-theme))))
+    (setq curr-theme (pop my-themes))
+    (load-theme curr-theme t))
+    
+)
 
 (provide 'functions)
 ;;; functions.el ends here

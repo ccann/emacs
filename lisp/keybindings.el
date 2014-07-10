@@ -23,7 +23,10 @@
   (global-set-key (kbd "M-x") 'smex)
   (global-set-key [(f12)] 'ibuffer)
   (global-set-key [(f10)] 'magit-status)
-
+  (global-set-key [(f9)] 'cycle-my-theme)
+  (global-set-key [(f6)] (lambda () (interactive) (enab-theme 'flatui)))
+  (global-set-key [(f5)] (lambda () (interactive) (enab-theme 'badger)))
+  
   ;; Home and End Keys:
   (global-set-key (kbd "<home>") 'move-beginning-of-line)
   (global-set-key (kbd "<end>") 'move-end-of-line)

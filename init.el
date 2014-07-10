@@ -66,9 +66,11 @@
 (require 'functions)
 (require 'qichat-mode)
 
-(add-to-list 'custom-theme-load-path "~/dev/badger-theme")
-(add-to-list 'custom-theme-load-path "~/dev/flatui-theme")
-(load-theme 'flatui t)
+(setq my-themes '(flatui badger))
+(add-to-list 'custom-theme-load-path "~/.emacs.d/badger-theme")
+;(load-theme 'flatui t)
+(cycle-my-theme)
+
 
 ;;; init.el ends here
 
