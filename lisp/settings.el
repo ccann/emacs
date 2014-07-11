@@ -54,6 +54,10 @@
 
   (setq create-lockfiles nil)
   
+  ;; backspace no longer does reverse-search
+  (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
+
+  
   ;; if visible-bell nil, ring-bell-function is alarm
   (setq visible-bell nil)
   ;; empty alarm function. voila.
