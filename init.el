@@ -66,10 +66,11 @@
 (require 'functions)
 (require 'qichat-mode)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/badger-theme")
+;;(add-to-list 'custom-theme-load-path "~/.emacs.d/badger-theme")
 (setq my-themes '(flatui badger))
 (cycle-my-theme)
 
+(setq python-check-command "flake8")
 
 ;;; init.el ends here
 

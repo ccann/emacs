@@ -47,26 +47,30 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   (when (eq system-type 'darwin)
-      (setq elpy-rpc-python-command "/usr/local/bin/python"))
+    (setq elpy-rpc-python-command "/usr/local/bin/python"))
 
- ;; (autoload 'jedi:setup "jedi" nil t)
+  (require 'indent-guide)
+  (setq indent-guide-char "|")
+  (indent-guide-global-mode)
+
+  ;; don't guess the indent offset
   (setq-default python-indent-guess-indent-offset nil)
+  ;; just use 4 spaces
   (setq-default python-indent-offset 4)
 
-  ;;(setq ac-sources (delq 'ac-source-nropemacs-dot (delq 'ac-source-nropemacs ac-sources)))  
   (add-hook 'python-mode-hook (lambda ()
                                 (elpy-enable)
-                                (delq 'flymake-mode elpy-default-minor-modes)
-                                (elpy-mode)
-                                (linum-mode)
-                                (auto-complete-mode 1)
-                                (rainbow-delimiters-mode 1)
-                                (elpy-clean-modeline)
-                                (elpy-use-ipython)
-                                (setq flymake-start-syntax-check-on-newline nil)
-                                (setq flymake-no-changes-timeout 60)
-                                (fci-mode)
-                                (highlight-indentation-mode -1)))
+                                (elpy-mode 1)))
+  
+  (add-hook 'elpy-mode-hook (lambda ()
+                              (subword-mode 1) ;; camelCase words
+                              (linum-mode 1)   ;; line numbering
+                              (company-mode 1) ;; auto-completion
+                              (rainbow-delimiters-mode 1) ;; colored matching parens
+                              (elpy-use-ipython) 
+                              (fci-mode 1) ;; fill-column-indicator
+                              (highlight-indentation-mode -1) ;; so ugly
+                              (auto-fill-mode -1)))
   
   (setq jedi:complete-on-dot t)
   
@@ -74,7 +78,8 @@
 ;;;;;;;     QiChat     ;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (add-hook 'qichat-mode-hook (lambda ()
-                                (linum-mode)))
+                                (linum-mode)
+                                (auto-fill-mode -1)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;      Org       ;;;;;;;
@@ -129,18 +134,20 @@
   (add-to-list 'auto-mode-alist '("\\.r$" . R-mode))
 
   (setq-default inferior-R-program-name "R")
-  (setq ess-ask-for-ess-directory nil)
-  (setq ess-eval-visibly-p nil)
+  (setq ess-ask-for-ess-directory nil))
+(setq ess-eval-visibly-p nil)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;      LUA      ;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (add-hook 'lua-mode-hook (lambda ()))
+
+(add-hook 'lua-mode-hook (lambda ()))
                              
 
 
   ;; impcore -> scheme binding
-  (add-to-list 'auto-mode-alist '("\\.ic\\'" . scheme-mode)))
+
+(add-to-list 'auto-mode-alist '("\\.ic\\'" . scheme-mode))
 (provide 'mode-hooks)
 ;;; mode-hooks ends here

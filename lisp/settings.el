@@ -84,6 +84,9 @@
         backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                  "backups"))))
 
+  (require 'zone)
+  (zone-when-idle 300)
+
   (provide 'settings))
 ;;; settings.el ends here
 
