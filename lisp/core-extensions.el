@@ -8,12 +8,12 @@
 ;;;###autoload
 (progn
 
-  (require 'fill-column-indicator)
   (ido-mode t)
   (setq ido-enable-flex-matching t)
 
   ;; smart meta-x (use IDO in minibuffer)
   (smex-initialize)
+  
   ;; change to 'y' or 'n'
   (fset 'yes-or-no-p 'y-or-n-p) 
 
@@ -46,7 +46,16 @@
   ;; magit
   (when (eq system-type 'darwin)
     (set-variable 'magit-emacsclient-executable "/usr/local/bin/emacsclient"))
-  
+
+  (require 'indent-guide)
+  (setq indent-guide-char "|")
+  (indent-guide-global-mode)
+
+  (require 'fill-column-indicator)
+
+  (require 'zone)
+  (zone-when-idle 300)
+
 )
 (provide 'core-extensions)
 

@@ -9,7 +9,6 @@
 ;;;###autoload
 (progn
 
-  
   ;; Scratch buffer 
   (setq initial-major-mode 'org-mode)
   (setq initial-scratch-message "#+TITLE: Scratch\n\n")
@@ -57,7 +56,6 @@
   ;; backspace no longer does reverse-search
   (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
-  
   ;; if visible-bell nil, ring-bell-function is alarm
   (setq visible-bell nil)
   ;; empty alarm function. voila.
@@ -70,8 +68,6 @@
   (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
   ;;(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
   (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-
-  
   
   ;; prevent extraneous tabs
   (setq-default indent-tabs-mode nil)
@@ -83,9 +79,6 @@
         mouse-yank-at-point t ;; Mouse-2 inserts text at point, not click location
         backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                  "backups"))))
-
-  (require 'zone)
-  (zone-when-idle 300)
 
   (provide 'settings))
 ;;; settings.el ends here

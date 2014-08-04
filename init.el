@@ -19,6 +19,8 @@
 
 (defvar my-packages '(idle-highlight-mode
                       find-file-in-project
+                      elpy
+                      jedi                   
                       org
                       smex
                       ido-ubiquitous
@@ -26,21 +28,25 @@
                       magit
                       rainbow-delimiters
                       auto-complete
+                      company
                       dired-details+
                       lua-mode
-                      clojure-mode            ;; :clojure
-                      cider                   ;; :clojure
+                      clojure-mode           
+                      cider                  
                       ess
                       markdown-mode
                       smart-mode-line
                       web-mode
                       auto-complete
-                      jedi                    ;; :python
                       flymake
-                      elpy                    ;; :python
                       align-cljlet
                       pretty-mode
-                      gnuplot)
+                      gnuplot
+
+                      ;; themes
+                      flatui-theme
+                      badger-theme
+                      )
   "List of packages to ensure are installed at startup.")
 
 (dolist (p my-packages)
@@ -66,11 +72,8 @@
 (require 'functions)
 (require 'qichat-mode)
 
-;;(add-to-list 'custom-theme-load-path "~/.emacs.d/badger-theme")
 (setq my-themes '(flatui badger))
 (cycle-my-theme)
-
-(setq python-check-command "flake8")
 
 ;;; init.el ends here
 

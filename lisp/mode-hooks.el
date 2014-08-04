@@ -49,9 +49,7 @@
   (when (eq system-type 'darwin)
     (setq elpy-rpc-python-command "/usr/local/bin/python"))
 
-  (require 'indent-guide)
-  (setq indent-guide-char "|")
-  (indent-guide-global-mode)
+  (setq python-check-command "flake8")
 
   ;; don't guess the indent offset
   (setq-default python-indent-guess-indent-offset nil)
