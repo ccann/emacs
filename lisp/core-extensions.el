@@ -56,6 +56,11 @@
   (require 'zone)
   (zone-when-idle 300)
 
+  ;; Org Capture
+  (setq org-capture-templates
+        '(("n" "Note" plain (file (concat org-directory "/notes.org"))
+           "- %?\n  %i\n")))
+  
 )
 (provide 'core-extensions)
 
