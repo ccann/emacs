@@ -5,6 +5,7 @@
 
 ;;; Code:
 (global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key [(hyper q)] 'save-buffers-kill-emacs) 
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-x C-b") 'ibuffer)

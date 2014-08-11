@@ -5,9 +5,6 @@
 
 ;;; Code: 
 
-;;;;;;;;;;;;;;;;;;;;;
-;;;;   Startup   ;;;;
-;;;;;;;;;;;;;;;;;;;;;
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
@@ -57,11 +54,6 @@
 ;; Keep emacs custom-settings in separate file, for fuck's sake.
 (setq custom-file (expand-file-name "lisp/custom.el" user-emacs-directory))
 (load custom-file)
-
-;; set the PYTHONPATH to be what the shell has
-(let ((path-from-shell (shell-command-to-string "echo $PYTHONPATH")))
-  (setenv "PYTHONPATH" (mapconcat 'identity (split-string path-from-shell) ":")
-    ))
 
 (add-to-list 'load-path "~/dev/qichat-mode")
 (add-to-list 'load-path "~/.emacs.d/lisp/")

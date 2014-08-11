@@ -1,6 +1,11 @@
 (when (eq system-type 'darwin)
   (setq elpy-rpc-python-command "/usr/local/bin/python"))
 
+;; set the PYTHONPATH to be what the shell has
+(let ((path-from-shell (shell-command-to-string "echo $PYTHONPATH")))
+  (setenv "PYTHONPATH" (mapconcat 'identity (split-string path-from-shell) ":")
+    ))
+
 (setq python-check-command "flake8")
 
 ;; don't guess the indent offset
