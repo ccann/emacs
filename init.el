@@ -43,6 +43,8 @@
                       pretty-mode
                       gnuplot
                       fill-column-indicator
+                      ido-vertical-mode
+                      indent-guide
                       flatui-theme
                       badger-theme
                       )
@@ -61,14 +63,14 @@
   (setenv "PYTHONPATH" (mapconcat 'identity (split-string path-from-shell) ":")
     ))
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 (add-to-list 'load-path "~/dev/qichat-mode")
-
-(require 'settings)
-(require 'core-extensions)
-(require 'keybindings)
-(require 'functions)
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(add-to-list 'load-path "~/.emacs.d/modes/")
 (require 'qichat-mode)
+
+(load "config.el")
+(load "keybindings.el")
+(load "functions.el")
 
 (setq my-themes '(flatui badger))
 (cycle-my-theme)
