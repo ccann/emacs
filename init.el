@@ -19,6 +19,8 @@
 
 (defvar my-packages '(idle-highlight-mode
                       find-file-in-project
+                      elpy
+                      jedi                   
                       org
                       smex
                       ido-ubiquitous
@@ -26,24 +28,23 @@
                       magit
                       rainbow-delimiters
                       auto-complete
+                      company
                       dired-details+
                       lua-mode
-                      clojure-mode            ;; :clojure
-                      cider                   ;; :clojure
+                      clojure-mode           
+                      cider                  
                       ess
                       markdown-mode
                       smart-mode-line
                       web-mode
                       auto-complete
-                      jedi                    ;; :python
                       flymake
-                      elpy                    ;; :python
                       align-cljlet
                       pretty-mode
                       gnuplot
+                      fill-column-indicator
                       flatui-theme
                       badger-theme
-                      fill-column-indicator
                       )
   "List of packages to ensure are installed at startup.")
 
@@ -65,7 +66,6 @@
 
 (require 'settings)
 (require 'core-extensions)
-(require 'mode-hooks)
 (require 'keybindings)
 (require 'functions)
 (require 'qichat-mode)
@@ -80,4 +80,3 @@
 (ccc/configure-all-custom-modes)
 
 ;;; init.el ends here
-
