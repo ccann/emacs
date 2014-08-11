@@ -40,7 +40,11 @@
                       elpy                    ;; :python
                       align-cljlet
                       pretty-mode
-                      gnuplot)
+                      gnuplot
+                      flatui-theme
+                      badger-theme
+                      fill-column-indicator
+                      )
   "List of packages to ensure are installed at startup.")
 
 (dolist (p my-packages)
@@ -66,10 +70,14 @@
 (require 'functions)
 (require 'qichat-mode)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/badger-theme")
 (setq my-themes '(flatui badger))
 (cycle-my-theme)
 
+(defun ccc/configure-all-custom-modes ()
+  (mapcar (lambda (mode-file-name) (load mode-file-name))
+          (directory-files "~/.emacs.d/modes/" nil ".el")))
+
+(ccc/configure-all-custom-modes)
 
 ;;; init.el ends here
 
