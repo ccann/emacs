@@ -45,6 +45,7 @@
                       flx-ido
                       flatui-theme
                       badger-theme
+                      htmlize
                       )
   "List of packages to ensure are installed at startup.")
 
