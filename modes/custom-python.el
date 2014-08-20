@@ -23,7 +23,7 @@
                             (company-mode 1) ;; auto-completion
                             (rainbow-delimiters-mode 1) ;; colored matching parens
                             (elpy-use-ipython)  ;; use ipython as interpreter
-                            (fci-mode 1) ;; fill-column-indicator
+                            (fci-mode -1) ;; fill-column-indicator
                             (highlight-indentation-mode -1) ;; so ugly
                             (auto-fill-mode -1))) 
 

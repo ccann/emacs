@@ -27,6 +27,7 @@
 (global-set-key [(f6)] (lambda () (interactive) (enab-theme 'flatui)))
 (global-set-key [(f5)] (lambda () (interactive) (enab-theme 'badger)))
 
+
 ;; Home and End Keys:
 (global-set-key (kbd "<home>") 'move-beginning-of-line)
 (global-set-key (kbd "<end>") 'move-end-of-line)

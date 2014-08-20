@@ -42,6 +42,7 @@
                       fill-column-indicator
                       ido-vertical-mode
                       indent-guide
+                      flx-ido
                       flatui-theme
                       badger-theme
                       )

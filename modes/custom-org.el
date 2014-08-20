@@ -1,9 +1,19 @@
 (autoload 'org-mode "org.el" "Org Mode!" t)
 
+;; fontify source blocks
+(setq org-src-fontify-natively t)
+
+;; export to html5
+(setq org-html-doctype "html5")
+
+;; use new fancy element types if you want
+(setq org-html-html5-fancy t)
+
 (add-hook 'org-mode-hook  (lambda ()
                             (flyspell-mode 1)    
                             (visual-line-mode 1)
-                            (org-indent-mode 1)))
+                            (org-indent-mode 1)
+                            (fci-mode -1)))
 
 (setq org-tags-column 85)
 (setq org-latex-to-pdf-process (list "latexmk -f -pdf"))
