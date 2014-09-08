@@ -9,6 +9,8 @@
 ;; use new fancy element types if you want
 (setq org-html-html5-fancy t)
 
+(setq org-html-postamble nil)
+
 (add-hook 'org-mode-hook  (lambda ()
                             (flyspell-mode 1)    
                             (visual-line-mode 1)

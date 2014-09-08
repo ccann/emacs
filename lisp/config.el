@@ -118,4 +118,22 @@
 (require 'zone)
 (zone-when-idle 300) ;; zone out after 300 seconds
 
+;; configure popwin
+(require 'popwin)
+(popwin-mode 1)
+
+;; configure highlight-symbol
+(require 'highlight-symbol)
+(add-hook 'prog-mode-hook (lambda () (progn
+                                       (highlight-symbol-mode)
+                                       (highlight-symbol-nav-mode 1))))
+(add-hook 'org-mode-hook (lambda () (progn
+                                      (highlight-symbol-mode)
+                                      (highlight-symbol-nav-mode 1))))
+(setq highlight-symbol-on-navigation-p t)
+
+;; configure projectile
+(projectile-global-mode)
+
+
 ;;; config.el ends here

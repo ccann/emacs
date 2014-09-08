@@ -46,6 +46,9 @@
                       flatui-theme
                       badger-theme
                       htmlize
+                      popwin
+                      highlight-symbol
+                      projectile
                       )
   "List of packages to ensure are installed at startup.")
 
