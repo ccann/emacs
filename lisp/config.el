@@ -42,7 +42,9 @@
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                "backups"))))
 (global-auto-revert-mode t) ;; automatically reload changed buffers
-(setq exec-path (append exec-path '("/usr/local/bin"))) 
+(setq exec-path (append exec-path '("/usr/local/bin")))
+(setq exec-path (append exec-path '("/usr/texbin")))
+(setenv "PATH" (concat (getenv "PATH") ":/usr/texbin"))
 (setq create-lockfiles nil)
 (setq-default indent-tabs-mode nil) ;; prevent extraneous tabs
 
@@ -118,6 +120,9 @@
 (require 'zone)
 (zone-when-idle 300) ;; zone out after 300 seconds
 
+;; when non-nil cycle through faces in hi-lock-faces-defaults instead of prompting
+(setq hi-lock-auto-select-face t)
+
 ;; configure popwin
 (require 'popwin)
 (popwin-mode 1)
@@ -134,6 +139,5 @@
 
 ;; configure projectile
 (projectile-global-mode)
-
 
 ;;; config.el ends here
