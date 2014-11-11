@@ -10,3 +10,6 @@ url/
 tramp
 session*
 ido.last
+/bookmarks
+/games/
+/projectile-bookmarks.eld
