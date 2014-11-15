@@ -3,8 +3,7 @@
 ;;; Commentary: 
 ;;; author: ccann
 
-;;; Code: 
-
+;;; Code:
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
@@ -77,5 +76,7 @@
           (directory-files "~/.emacs.d/modes/" nil ".el")))
 
 (ccc/configure-all-custom-modes)
+
+
 
 ;;; init.el ends here
