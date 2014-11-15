@@ -109,9 +109,9 @@
   (set-variable 'magit-emacsclient-executable "/usr/local/bin/emacsclient"))
 
 ;; configure indent-guide
-(require 'indent-guide) ;; show vertical guide to indentation level
-(setq indent-guide-char "|")
-(indent-guide-global-mode)
+;; (require 'indent-guide) ;; show vertical guide to indentation level
+;; (setq indent-guide-char "|")
+;; (indent-guide-global-mode)
 
 ;; configure fci
 (require 'fill-column-indicator) ;; show vertical line at fill-column

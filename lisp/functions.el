@@ -36,6 +36,7 @@
     (disable-theme curr-theme)
     (setq my-themes (append my-themes (list curr-theme))))
   (setq curr-theme (pop my-themes))
-  (load-theme curr-theme t))
+  (load-theme curr-theme t)
+  (sml/apply-theme 'respectful))
 
 ;;; functions.el ends here

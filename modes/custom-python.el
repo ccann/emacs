@@ -6,7 +6,10 @@
   (setenv "PYTHONPATH" (mapconcat 'identity (split-string path-from-shell) ":")
     ))
 
-(setq python-check-command "flake8")
+(let ((path-from-shell (shell-command-to-string "echo $LD_LIBRARY_PATH")))
+  (setenv "LD_LIBRARY_PATH" (mapconcat 'identity (split-string path-from-shell) ":")
+    ))
+
 
 ;; don't guess the indent offset
 (setq-default python-indent-guess-indent-offset nil)
@@ -15,7 +18,15 @@
 
 (add-hook 'python-mode-hook (lambda ()
                               (elpy-enable)
-                              (elpy-mode 1)))
+                              (elpy-mode 1)
+                              (setq python-fill-docstring-style 'pep-257-nn)
+                              (setq python-check-command "flake8")))
+
+;; remove yasnippets, indentation mode, virtualenv from elpy
+(setq elpy-modules '(elpy-module-company
+                     elpy-module-eldoc
+                     elpy-module-flymake
+                     elpy-module-sane-defaults))
 
 (add-hook 'elpy-mode-hook (lambda ()
                             (subword-mode 1) ;; camelCase words
@@ -24,7 +35,7 @@
                             (rainbow-delimiters-mode 1) ;; colored matching parens
                             (elpy-use-ipython)  ;; use ipython as interpreter
                             (fci-mode -1) ;; fill-column-indicator
-                            (highlight-indentation-mode -1) ;; so ugly
-                            (auto-fill-mode -1))) 
+                            ;; (highlight-indentation-mode -1) ;; so ugly
+                            (auto-fill-mode -1)))
 
 (setq jedi:complete-on-dot t)

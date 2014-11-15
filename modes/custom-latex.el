@@ -1,11 +1,12 @@
-;;(autoload 'tex-mode "tex-site" "AucTeX" t)
+(autoload 'tex-mode "tex-site" "AucTeX" t)
 ;;(eval-after-load "pretty-mode" '(pretty-mode 1))
 
-(require 'auctex-latexmk)
-(auctex-latexmk-setup)
+;; this takes forever to require...
+;; (require 'auctex-latexmk)
 
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (progn
+                               (auctex-latexmk-setup)
                                (visual-line-mode 1)
                                (turn-on-reftex)
                                (TeX-source-correlate-mode 1)

@@ -35,6 +35,8 @@
                       web-mode
                       auto-complete
                       flymake
+                      auctex
+                      auctex-latexmk
                       align-cljlet
                       pretty-mode
                       gnuplot
@@ -42,12 +44,13 @@
                       ido-vertical-mode
                       indent-guide
                       flx-ido
-                      flatui-theme
-                      badger-theme
                       htmlize
                       popwin
                       highlight-symbol
                       projectile
+                      flatui-theme
+                      zenburn-theme
+                      badger-theme
                       )
   "List of packages to ensure are installed at startup.")
 
@@ -68,15 +71,13 @@
 (load "keybindings.el")
 (load "functions.el")
 
-(setq my-themes '(flatui badger))
-(cycle-my-theme)
-
 (defun ccc/configure-all-custom-modes ()
   (mapcar (lambda (mode-file-name) (load mode-file-name))
           (directory-files "~/.emacs.d/modes/" nil ".el")))
 
 (ccc/configure-all-custom-modes)
 
-
+(setq my-themes '(flatui zenburn badger warm-night))
+(cycle-my-theme)
 
 ;;; init.el ends here
