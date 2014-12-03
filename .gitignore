@@ -13,3 +13,5 @@ ido.last
 /bookmarks
 /games/
 /projectile-bookmarks.eld
+/tutorial/
+/lisp/custom.el

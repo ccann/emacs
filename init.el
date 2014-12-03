@@ -3,8 +3,7 @@
 ;;; Commentary: 
 ;;; author: ccann
 
-;;; Code: 
-
+;;; Code:
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
@@ -81,4 +80,7 @@
 (setq my-themes '(flatui zenburn badger warm-night))
 (cycle-my-theme)
 
+
+(add-to-list 'load-path "~/")
+(require 'kurecolor)
 ;;; init.el ends here
