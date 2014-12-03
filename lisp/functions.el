@@ -39,4 +39,15 @@
   (load-theme curr-theme t)
   (sml/apply-theme 'respectful))
 
+
+(defun fc/isearch-yank-symbol ()
+  "Yank the symbol at point into the isearch minibuffer."
+  (interactive)
+  (isearch-yank-string
+   (save-excursion
+     (when (and (not isearch-forward)
+                isearch-other-end)
+       (goto-char isearch-other-end))
+     (thing-at-point 'symbol))))
+
 ;;; functions.el ends here

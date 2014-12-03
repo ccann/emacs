@@ -35,4 +35,7 @@
 ;; backspace no longer does reverse-search
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
+(define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
+
+
 ;;; keybindings.el ends here
