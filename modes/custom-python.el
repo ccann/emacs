@@ -10,6 +10,10 @@
   (setenv "LD_LIBRARY_PATH" (mapconcat 'identity (split-string path-from-shell) ":")
     ))
 
+(add-to-list 'auto-mode-alist '("\\.xar\\'" . python-mode))
+(add-hook 'after-init-hook 'global-company-mode)
+(eval-after-load 'company (progn
+                            '(add-to-list 'company-backends 'company-anaconda)))
 
 ;; don't guess the indent offset
 (setq-default python-indent-guess-indent-offset nil)
