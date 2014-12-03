@@ -51,6 +51,7 @@
                       flatui-theme
                       zenburn-theme
                       badger-theme
+                      kurecolor
                       )
   "List of packages to ensure are installed at startup.")
 
@@ -80,7 +81,4 @@
 (setq my-themes '(flatui zenburn badger warm-night))
 (cycle-my-theme)
 
-
-(add-to-list 'load-path "~/")
-(require 'kurecolor)
 ;;; init.el ends here
