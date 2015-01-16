@@ -44,6 +44,7 @@
 (global-auto-revert-mode t) ;; automatically reload changed buffers
 (setq exec-path (append exec-path '("/usr/local/bin")))
 (setq exec-path (append exec-path '("/usr/texbin")))
+(setq exec-path (append exec-path '("~/.local/bin")))
 (setenv "PATH" (concat (getenv "PATH") ":/usr/texbin"))
 (setq create-lockfiles nil)
 (setq-default indent-tabs-mode nil) ;; prevent extraneous tabs
