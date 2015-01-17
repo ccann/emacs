@@ -7,11 +7,14 @@
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
+                         ("melpa-stable" . "http://stable.melpa.org/packages/")
                          ("elpy" . "http://jorgenschaefer.github.io/packages/")))
 (package-initialize)
 
 (when (not package-archive-contents)
   (package-refresh-contents))
+
+(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 
 (defvar my-packages '(idle-highlight-mode
                       find-file-in-project
@@ -51,6 +54,7 @@
                       flatui-theme
                       zenburn-theme
                       badger-theme
+                      kurecolor
                       )
   "List of packages to ensure are installed at startup.")
 
