@@ -80,7 +80,4 @@
 (setq my-themes '(flatui zenburn badger warm-night))
 (cycle-my-theme)
 
-
-(add-to-list 'load-path "~/")
-(require 'kurecolor)
 ;;; init.el ends here

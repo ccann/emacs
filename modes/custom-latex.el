@@ -1,8 +1,8 @@
-(autoload 'tex-mode "tex-site" "AucTeX" t)
+;; (autoload 'tex-mode "tex-site" "AucTeX" t)
 ;;(eval-after-load "pretty-mode" '(pretty-mode 1))
 
 ;; this takes forever to require...
-;; (require 'auctex-latexmk)
+ (require 'auctex-latexmk)
 
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (progn
@@ -18,8 +18,6 @@
                                (autoload 'pretty-mode "pretty-mode.el" "Pretty Mode" t)
                                (TeX-source-correlate-start-server 1))))
 
-;; (add-hook 'doc-view-mode-hook
-;;           'auto-revert-mode)
 
 ;; link auctex to Preview in OSX, Evince in linux
 (setq TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
