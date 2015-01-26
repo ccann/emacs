@@ -54,7 +54,8 @@
                       flatui-theme
                       zenburn-theme
                       badger-theme
-                      kurecolor
+                      gotham-theme
+                      dark-krystal-theme
                       )
   "List of packages to ensure are installed at startup.")
 
@@ -81,7 +82,7 @@
 
 (ccc/configure-all-custom-modes)
 
-(setq my-themes '(flatui zenburn badger warm-night))
+(setq my-themes '(flatui dark-krystal gotham zenburn badger))
 (cycle-my-theme)
 
 ;;; init.el ends here

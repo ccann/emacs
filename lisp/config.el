@@ -141,8 +141,5 @@
 ;; configure projectile
 (projectile-global-mode)
 
-;; customize hex color values in emacs
-(require 'kurecolor)
-
 
 ;;; config.el ends here
