@@ -24,9 +24,7 @@
 (global-set-key [(f12)] 'ibuffer)
 (global-set-key [(f10)] 'magit-status)
 (global-set-key [(f9)] 'cycle-my-theme)
-(global-set-key [(f6)] (lambda () (interactive) (enab-theme 'flatui)))
-(global-set-key [(f5)] (lambda () (interactive) (enab-theme 'badger)))
-
+(global-set-key (kbd "C-;") 'endless/comment-line)
 
 ;; Home and End Keys:
 (global-set-key (kbd "<home>") 'move-beginning-of-line)
@@ -35,6 +33,7 @@
 ;; backspace no longer does reverse-search
 (define-key isearch-mode-map [remap isearch-delete-char] 'isearch-del-char)
 
+;; C-s C-d to searh for symbol at point
 (define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
 
 

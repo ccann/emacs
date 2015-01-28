@@ -51,6 +51,7 @@
                       popwin
                       highlight-symbol
                       projectile
+                      company-anaconda
                       flatui-theme
                       zenburn-theme
                       badger-theme

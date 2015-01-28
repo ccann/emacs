@@ -2,7 +2,7 @@
 ;;(eval-after-load "pretty-mode" '(pretty-mode 1))
 
 ;; this takes forever to require...
- (require 'auctex-latexmk)
+;; (require 'auctex-latexmk)
 
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (progn
