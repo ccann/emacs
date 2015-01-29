@@ -141,5 +141,8 @@
 ;; configure projectile
 (projectile-global-mode)
 
+;; activate SHIFT + arrow keys for window moving
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
 
 ;;; config.el ends here
