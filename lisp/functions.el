@@ -17,9 +17,15 @@
     (fill-region start end)))
 
 (defun find-user-init-file ()
-  "Edit the `user-init-file', in another window."
+  "Edit the `user-init-file'"
   (interactive)
   (find-file user-init-file))
+
+(defun find-user-config-file ()
+  "Edit `user-config-file'"
+  (interactive)
+  (find-file user-config-file))
+
 
 (setq curr-theme nil)
 

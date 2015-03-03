@@ -26,6 +26,7 @@
                       paredit
                       magit
                       rainbow-delimiters
+                      rainbow-mode
                       auto-complete
                       company
                       dired-details+
@@ -71,6 +72,9 @@
 ;; Keep emacs custom-settings in separate file, for fuck's sake.
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(setq user-config-file "~/.emacs.d/lisp/config.el")
 (load "config.el")
 (load "keybindings.el")
 (load "functions.el")

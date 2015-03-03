@@ -19,6 +19,7 @@
 (global-set-key (kbd "C-x p") (lambda () (interactive) (other-window -1)))
 (global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
 (global-set-key (kbd "C-c I") 'find-user-init-file)
+(global-set-key (kbd "C-c C") 'find-user-config-file)
 (global-set-key (kbd "C-c d") 'jedi:show-doc)
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key [(f12)] 'ibuffer)
