@@ -87,10 +87,10 @@
           (directory-files emacs-d-modes nil ".el"))
 
 ;; Theme
-(setq my-themes '(flatui gotham zenburn badger))
 
-;; apply first theme in my-themes
+(setq my-themes '(flatui gotham zenburn badger))
 (load-theme (car my-themes) t)
 (sml/apply-theme 'respectful)
+(setq curr-theme (pop my-themes))
 
 ;;; init.el ends here
