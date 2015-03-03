@@ -27,11 +27,10 @@
 ;;         (tool-bar-lines . 0)))
 (column-number-mode 1) ;; show column number in modeline
 (blink-cursor-mode 1) 
-(setq default-major-mode 'text-mode)
 
-;; Scratch buffer 
-(setq initial-major-mode 'org-mode)
-(setq initial-scratch-message "#+TITLE: Scratch\n\n")
+;; Scratch buffer
+(setq initial-major-mode 'text-mode)
+(setq initial-scratch-message "")
 
 ;; killing emacs
 (setq confirm-kill-emacs 'y-or-n-p)

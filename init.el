@@ -67,10 +67,10 @@
 (setq custom-file (expand-file-name "lisp/custom.el" user-emacs-directory))
 (load custom-file)
 
-(add-to-list 'load-path "~/dev/qichat-mode")
+;; (add-to-list 'load-path "~/dev/qichat-mode")
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (add-to-list 'load-path "~/.emacs.d/modes/")
-(require 'qichat-mode)
+;; (require 'qichat-mode)
 
 (load "config.el")
 (load "keybindings.el")

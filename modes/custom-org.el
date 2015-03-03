@@ -1,5 +1,7 @@
 (autoload 'org-mode "org.el" "Org Mode!" t)
 
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
 ;; fontify source blocks
 (setq org-src-fontify-natively t)
 
