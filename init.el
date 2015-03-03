@@ -53,6 +53,7 @@
                       highlight-symbol
                       projectile
                       company-anaconda
+                      hydra
                       flatui-theme
                       zenburn-theme
                       badger-theme

@@ -37,5 +37,45 @@
 ;; C-s C-d to searh for symbol at point
 (define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
 
+(global-set-key
+ (kbd "C-M-o")
+ (defhydra hydra-window ()
+   "window"
+   ("b" windmove-left)
+   ("n" windmove-down)
+   ("p" windmove-up)
+   ("f" windmove-right)
+   ("a" (lambda ()
+          (interactive)
+          (ace-window 1)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body))
+        "ace")
+   ("v" (lambda ()
+          (interactive)
+          (split-window-right)
+          (windmove-right))
+        "vert")
+   ("h" (lambda ()
+          (interactive)
+          (split-window-below)
+          (windmove-down))
+        "horz")
+   ("s" (lambda ()
+          (interactive)
+          (ace-window 4)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body))
+        "swap")
+   ("d" (lambda ()
+          (interactive)
+          (ace-window 16)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body))
+        "del")
+   ("o" delete-other-windows "1" :color blue)
+   ("i" ace-maximize-window "a1" :color blue)
+   ("q" nil "cancel")))
 
 ;;; keybindings.el ends here
+
