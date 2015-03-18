@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Spark word count example using sparkling.</title>
+<!-- 2015-03-17 Tue 15:27 -->
+<meta  charset="utf-8">
+<meta  name="generator" content="Org-mode">
+<meta  name="author" content="Cody Canning">
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Spark word count example using sparkling.</h1>
+<p>
+Require the relevant libs and define a function to create the spark
+configuration object which contains information about your application and
+tells Spark how to access your cluster.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #99d1ce;">(</span><span style="color: #195466; font-weight: bold;">ns</span> <span style="color: #d26937;">tf-idf.core</span>
+  <span style="color: #c23127;">(</span><span style="color: #33859e; font-weight: bold;">:require</span> <span style="color: #33859e;">[</span><span style="color: #d26937;">clojure.string</span> <span style="color: #33859e; font-weight: bold;">:as</span> s<span style="color: #33859e;">]</span>
+            <span style="color: #33859e;">[</span><span style="color: #d26937;">sparkling.conf</span> <span style="color: #33859e; font-weight: bold;">:as</span> conf<span style="color: #33859e;">]</span>
+            <span style="color: #33859e;">[</span><span style="color: #d26937;">sparkling.core</span> <span style="color: #33859e; font-weight: bold;">:as</span> spark<span style="color: #33859e;">]</span>
+            <span style="color: #33859e;">[</span><span style="color: #d26937;">sparkling.destructuring</span> <span style="color: #33859e; font-weight: bold;">:as</span> s-de<span style="color: #33859e;">]</span>
+            <span style="color: #33859e;">[</span><span style="color: #d26937;">clojure.pprint</span> <span style="color: #33859e; font-weight: bold;">:as</span> pp<span style="color: #33859e;">]</span><span style="color: #c23127;">)</span><span style="color: #99d1ce;">)</span>
+
+<span style="color: #99d1ce;">(</span><span style="color: #195466; font-weight: bold;">defn</span> <span style="color: #599cab;">make-spark-context</span> <span style="color: #c23127;">[]</span>
+  <span style="color: #c23127;">(</span><span style="color: #195466; font-weight: bold;">let</span> <span style="color: #33859e;">[</span>c <span style="color: #d26937;">(</span><span style="color: #195466; font-weight: bold;">-&gt;</span> <span style="color: #2aa889;">(</span><span style="color: #d26937;">conf</span>/spark-conf<span style="color: #2aa889;">)</span>
+              <span style="color: #2aa889;">(</span><span style="color: #d26937;">conf</span>/master <span style="color: #2aa889;">"local[*]"</span><span style="color: #2aa889;">)</span>
+              <span style="color: #2aa889;">(</span><span style="color: #d26937;">conf</span>/app-name <span style="color: #2aa889;">"tfidf"</span><span style="color: #2aa889;">)</span><span style="color: #d26937;">)</span><span style="color: #33859e;">]</span>
+    <span style="color: #33859e;">(</span><span style="color: #d26937;">spark</span>/spark-context c<span style="color: #33859e;">)</span><span style="color: #c23127;">)</span><span style="color: #99d1ce;">)</span>
+
+<span style="color: #99d1ce;">(</span><span style="color: #195466; font-weight: bold;">def</span> <span style="color: #599cab;">sc</span> <span style="color: #c23127;">(</span>make-spark-context<span style="color: #c23127;">)</span><span style="color: #99d1ce;">)</span>
+
+<span style="color: #99d1ce;">(</span><span style="color: #195466; font-weight: bold;">def</span> <span style="color: #599cab;">id</span> <span style="color: #2aa889;">"AKIAIPYTAVVUOEQTK4OA"</span><span style="color: #99d1ce;">)</span>
+<span style="color: #99d1ce;">(</span><span style="color: #195466; font-weight: bold;">def</span> <span style="color: #599cab;">secret</span> <span style="color: #2aa889;">"iK5lXuPLAf7Bk8tERsSttRA1TYfVrmmPS/DVj3dB"</span><span style="color: #99d1ce;">)</span>
+</pre>
+</div>
+
+<p>
+Create a text-file RDD using <code>text-file</code> function. This function takes a URI
+for the file (either a local path on the machine, or a hdfs://&#x2026;, s3n://&#x2026;,
+etc URI) and reads it as a collection of lines. Note, text-file supports S3 and
+HDFS globs.
+</p>
+
+<p>
+e.g. S3: <code>s3n://ID:SECRET@BUCKET</code>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #99d1ce;">(</span><span style="color: #195466; font-weight: bold;">-&gt;&gt;</span> <span style="color: #c23127;">(</span><span style="color: #d26937;">spark</span>/text-file sc <span style="color: #33859e;">(</span>str <span style="color: #2aa889;">"s3n://"</span> id <span style="color: #2aa889;">":"</span> secret <span style="color: #2aa889;">"@DW/nmeas/20140402/06/nmea:3202.txt"</span><span style="color: #33859e;">)</span><span style="color: #c23127;">)</span><span style="color: #99d1ce;">)</span>
+</pre>
+</div>
+
+<p>
+e.g. HDFS: <code>hdfs://&lt;hostname&gt;:9000/user/hadoop/dir1/filename.tsv</code>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #99d1ce;">(</span><span style="color: #195466; font-weight: bold;">-&gt;&gt;</span> <span style="color: #c23127;">(</span><span style="color: #d26937;">spark</span>/text-file sc <span style="color: #33859e;">(</span>str <span style="color: #2aa889;">"hdfs://..."</span><span style="color: #33859e;">)</span><span style="color: #c23127;">)</span>
+</pre>
+</div>
+
+<p>
+Now map over the collection of lines and split each line into a collection of
+words, flattening those collections back into an RDD.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #99d1ce;">(</span><span style="color: #d26937;">spark</span>/flat-map <span style="color: #c23127;">(</span><span style="color: #195466; font-weight: bold;">fn</span> <span style="color: #33859e;">[</span>line<span style="color: #33859e;">]</span> <span style="color: #33859e;">(</span><span style="color: #d26937;">s</span>/split line #<span style="color: #2aa889;">" "</span><span style="color: #33859e;">)</span><span style="color: #c23127;">)</span><span style="color: #99d1ce;">)</span>
+</pre>
+</div>
+
+<p>
+Create a <code>JavaPairRDD</code> of (word, 1) pairs by mapping over the RDD.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #99d1ce;">(</span><span style="color: #d26937;">spark</span>/map-to-pair <span style="color: #c23127;">(</span><span style="color: #195466; font-weight: bold;">fn</span> <span style="color: #33859e;">[</span>word<span style="color: #33859e;">]</span> <span style="color: #33859e;">(</span><span style="color: #d26937;">spark</span>/tuple word 1<span style="color: #33859e;">)</span><span style="color: #c23127;">)</span><span style="color: #99d1ce;">)</span>
+</pre>
+</div>
+
+<p>
+Establish a count of each word by aggregating by key and summing the values.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #99d1ce;">(</span><span style="color: #d26937;">spark</span>/reduce-by-key +<span style="color: #99d1ce;">)</span>
+</pre>
+</div>
+
+<p>
+Return the <code>JavaPairRDD</code> sorted in ascending order by key.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #d26937;">spark</span>/sort-by-key
+</pre>
+</div>
+
+
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #99d1ce;">(</span><span style="color: #d26937;">spark</span>/map <span style="color: #c23127;">(</span><span style="color: #d26937;">s-de</span>/key-value-fn <span style="color: #33859e;">(</span><span style="color: #195466; font-weight: bold;">fn</span> <span style="color: #d26937;">[</span>k v<span style="color: #d26937;">]</span> <span style="color: #d26937;">[</span>k v<span style="color: #d26937;">]</span><span style="color: #33859e;">)</span><span style="color: #c23127;">)</span><span style="color: #99d1ce;">)</span>
+</pre>
+</div>
+
+<p>
+Return all the elements of the RDD as an array, and pretty print them.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-clojure"><span style="color: #d26937;">spark</span>/collect
+<span style="color: #d26937;">pp</span>/pprint<span style="color: #091f2e; background-color: #99d1ce;">)</span>
+</pre>
+</div>
+</div>
+</body>
+</html>

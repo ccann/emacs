@@ -1,0 +1,65 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/cody/.config/" . "fish/")
+ ("/Users/" . "cody/")
+ ("/Users/cody/.emacs.d/" . "modes/")
+ ("/Users/cody/onyx-starter/src/" . "onyx_starter/")
+ ("/Users/cody/onyx-starter/" . "src/")
+ ("/Users/cody/" . "Desktop/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/Users/cody/Desktop/"
+ "/Users/cody/.lein/"
+ "/Users/cody/"
+ "/Users/cody/.emacs.d/modes/"
+ "/Users/cody/onyx-starter/src/onyx_starter/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "notes.org"
+ "profiles.clj"
+ "clj-playground.clj"
+ "clojure-playground.cloj"
+ "custom-org.el"
+ "core.clj"
+ "custom-clojure.el"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/Users/cody/Desktop/" (21760 49975 0 0) "notes.org" "notes.html" ".localized" ".DS_Store" "../" "./")
+
+ ("/Users/cody/" (21761 43632 0 0) "Public/" "Pictures/" "onyx-starter/" "Music/" "Movies/" "Library/" "Downloads/" "dotfiles/" "Documents/" "Desktop/" "clj-playground.clj" "Applications/" "app/" ".zshrc" ".zlogin" ".Trash/" ".subversion/" ".ssh/" ".rvm/" ".profile" ".npm/" ".mkshrc" ".m2/" ".lein/" ".ispell_english" ".gitconfig" ".gem/" ".emacs.d/" ".DS_Store" ".config/" ".CFUserTextEncoding" ".bashrc" ".bash_profile" ".bash_history" "#clj-playground.clj#" "../" "./")
+
+ ("/Users/cody/.lein/" (21761 43444 0 0) "repl-port" "repl-history" "profiles.clj" "../" "./")
+
+ ("/Users/cody/.config/fish/" (21761 41185 0 0) "fishd.60f81dccaa72" "fish_history" "config.fish" "../" "./")
+
+ ("/Users/cody/.config/" (21757 48609 0 0) "fish/" "../" "./")
+
+ ("/Users/cody/.emacs.d/modes/" (21759 14761 0 0) "custom-web.el" "custom-r.el" "custom-qichat.el" "custom-python.el" "custom-org.el" "custom-latex.el" "custom-elisp.el" "custom-clojure.el" "../" "./")
+
+ ("/Users/cody/.emacs.d/" (21759 15736 0 0) "smex-items" "profile-emacs.sh" "profile-dotemacs.el" "places" "modes/" "lisp/" "init.el~" "init.el" "ido.last" "elpa/" "custom.el" "backups/" "auto-save-list/" "../" "./")
+
+ ("/Users/cody/onyx-starter/" (21759 15652 0 0) "WALKTHROUGH.md" "target/" "src/" "README.md" "project.clj" "onyx.log" "LICENSE" "hornetq/" "data/" ".nrepl-port" ".lein-repl-history" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/Shared/" (21759 2123 0 0) "SC Info/" ".localized" "../" "./")
+
+ ("/Users/" (21757 47077 0 0) "Shared/" "cody/" ".localized" "../" "./")
+
+ ("/Users/cody/Documents/" (21757 48308 0 0) ".localized" "../" "./")
+
+ ("/Users/cody/onyx-starter/src/onyx_starter/" (21759 14348 0 0) "core.clj" "../" "./")
+
+ ("/Users/cody/.emacs.d/lisp/" (21757 50665 0 0) "keybindings.el" "functions.el" "config.el" "../" "./")
+
+ ("/Users/cody/onyx-starter/src/" (21759 11546 0 0) "onyx_starter/" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

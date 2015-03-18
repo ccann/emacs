@@ -1,0 +1,95 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/cody/dev/sparkling-getting-started/src/" . "tf_idf/")
+ ("/Users/cody/dev/sparkling-getting-started/" . "src/")
+ ("/Users/cody/dev/mapreduce-proto/src/" . "mapreduce_proto/")
+ ("/Users/cody/dev/mapreduce-proto/" . "src/")
+ ("/Users/cody/dev/" . "mapreduce-proto/")
+ ("/Users/cody/.config/" . "fish/")
+ ("/Users/" . "cody/")
+ ("/Users/cody/.emacs.d/" . "modes/")
+ ("/Users/cody/onyx-starter/src/" . "onyx_starter/")
+ ("/Users/cody/onyx-starter/" . "src/")
+ ("/Users/cody/" . "dev/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/Users/cody/dev/mapreduce-proto/"
+ "/Users/cody/dev/sparkling-getting-started/src/tf_idf/"
+ "/Users/cody/dev/sparkling-getting-started/"
+ "/Users/cody/dev/weft-data-science/"
+ "/Users/cody/.lein/"
+ "/Users/cody/Desktop/"
+ "/Users/cody/dev/mapreduce-proto/src/mapreduce_proto/"
+ "/Users/cody/"
+ "/Users/cody/.emacs.d/modes/"
+ "/Users/cody/onyx-starter/src/onyx_starter/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "project.clj"
+ "core.clj"
+ "StatsJourneys.py"
+ "profiles.clj"
+ "notes.org"
+ "clj-playground.clj"
+ "clojure-playground.cloj"
+ "custom-org.el"
+ "custom-clojure.el"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/Users/cody/dev/sparkling-getting-started/" (21768 22067 0 0) "test/" "target/" "src/" "resources/" "README.md" "project.clj" ".nrepl-port" ".lein-repl-history" ".gitignore" ".git/" ".env" "../" "./")
+
+ ("/Users/cody/dev/mapreduce-proto/" (21768 22010 0 0) "test/" "target/" "src/" "resources/" "README.md" "project.clj" "LICENSE" "doc/" ".nrepl-port" ".lein-repl-history" ".hgignore" ".gitignore" "../" "./")
+
+ ("/Users/cody/dev/mapreduce-proto/src/mapreduce_proto/" (21768 17572 0 0) "core.clj" "../" "./")
+
+ ("/Users/cody/dev/sparkling-getting-started/src/tf_idf/" (21767 15630 0 0) "core.clj" "../" "./")
+
+ ("/Users/cody/dev/sparkling-getting-started/src/" (21767 15630 0 0) "tf_idf/" "../" "./")
+
+ ("/Users/cody/dev/" (21767 23743 0 0) "weft-data-science/" "sparkling-getting-started/" "mapreduce-proto/" ".DS_Store" "../" "./")
+
+ ("/Users/cody/dev/weft-data-science/" (21767 22970 0 0) "testdata/" "StatsJourneys.py" "StatsAIS.py" "requirements.txt" "README.md" "pipgen.py" "mapred/" "hadoop_tester/" "Data/" ".git/" "../" "./")
+
+ ("/Users/cody/" (21767 23040 0 0) "Public/" "poop/" "Pictures/" "onyx-starter/" "Music/" "Movies/" "Library/" "Downloads/" "dotfiles/" "Documents/" "dev/" "Desktop/" "clj-playground.clj" "Applications/" "app/" ".zshrc" ".zlogin" ".Trash/" ".subversion/" ".ssh/" ".rvm/" ".profile" ".npm/" ".mkshrc" ".matplotlib/" ".m2/" ".lein/" ".ispell_english" ".gitconfig" ".gem/" ".emacs.d/" ".DS_Store" ".config/" ".CFUserTextEncoding" ".bashrc" ".bash_profile" ".bash_history" "#clj-playground.clj#" "../" "./")
+
+ ("/Users/cody/dotfiles/" (21767 22890 0 0) "scripts/" "profiles.clj" "gtkrc.mine" "gtkrc-2.0" "gtkrc-1.2-gnome2" "gtk3.0-settings.ini" "config.fish" "awesome/" ".gitconfig" ".git/" "../" "./")
+
+ ("/Users/cody/.lein/" (21763 21148 0 0) "repl-history" "profiles.clj" "../" "./")
+
+ ("/Users/cody/Desktop/" (21767 17815 0 0) "Screen Shot 2015-03-16 at 5.04.23 PM.png" "Screen Shot 2015-03-16 at 5.04.23 PM (2).png" "notes.org" "notes.html" ".localized" ".DS_Store" "../" "./")
+
+ ("/Users/cody/dev/mapreduce-proto/src/" (21763 19935 0 0) "mapreduce_proto/" "../" "./")
+
+ ("/Users/cody/.config/fish/" (21761 41185 0 0) "fishd.60f81dccaa72" "fish_history" "config.fish" "../" "./")
+
+ ("/Users/cody/.config/" (21757 48609 0 0) "fish/" "../" "./")
+
+ ("/Users/cody/.emacs.d/modes/" (21759 14761 0 0) "custom-web.el" "custom-r.el" "custom-qichat.el" "custom-python.el" "custom-org.el" "custom-latex.el" "custom-elisp.el" "custom-clojure.el" "../" "./")
+
+ ("/Users/cody/.emacs.d/" (21759 15736 0 0) "smex-items" "profile-emacs.sh" "profile-dotemacs.el" "places" "modes/" "lisp/" "init.el~" "init.el" "ido.last" "elpa/" "custom.el" "backups/" "auto-save-list/" "../" "./")
+
+ ("/Users/cody/onyx-starter/" (21759 15652 0 0) "WALKTHROUGH.md" "target/" "src/" "README.md" "project.clj" "onyx.log" "LICENSE" "hornetq/" "data/" ".nrepl-port" ".lein-repl-history" ".gitignore" ".git/" "../" "./")
+
+ ("/Users/Shared/" (21759 2123 0 0) "SC Info/" ".localized" "../" "./")
+
+ ("/Users/" (21757 47077 0 0) "Shared/" "cody/" ".localized" "../" "./")
+
+ ("/Users/cody/Documents/" (21757 48308 0 0) ".localized" "../" "./")
+
+ ("/Users/cody/onyx-starter/src/onyx_starter/" (21759 14348 0 0) "core.clj" "../" "./")
+
+ ("/Users/cody/.emacs.d/lisp/" (21757 50665 0 0) "keybindings.el" "functions.el" "config.el" "../" "./")
+
+ ("/Users/cody/onyx-starter/src/" (21759 11546 0 0) "onyx_starter/" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
