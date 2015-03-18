@@ -31,7 +31,7 @@
                       company
                       dired-details+
                       lua-mode
-                      clojure-mode
+                      clojure-mode           
                       cider                  
                       ess
                       markdown-mode

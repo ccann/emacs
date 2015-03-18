@@ -1,0 +1,17 @@
+.python-environments/
+.smex-items
+places
+eshell/
+elpa/
+backups/
+auto-save-list/
+ac-comphist.dat
+url/
+tramp
+session*
+ido.last
+/bookmarks
+/games/
+/projectile-bookmarks.eld
+/tutorial/
+/lisp/custom.el
