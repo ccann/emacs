@@ -4,6 +4,8 @@
 ;;; author: ccann
 
 ;;; Code:
+
+;; Packages
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
@@ -13,8 +15,6 @@
 
 (when (not package-archive-contents)
   (package-refresh-contents))
-
-(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 
 (defvar my-packages '(idle-highlight-mode
                       find-file-in-project
@@ -26,6 +26,7 @@
                       paredit
                       magit
                       rainbow-delimiters
+                      rainbow-mode
                       auto-complete
                       company
                       dired-details+
@@ -52,37 +53,46 @@
                       highlight-symbol
                       projectile
                       company-anaconda
+                      hydra
                       flatui-theme
                       zenburn-theme
                       badger-theme
                       gotham-theme
+                      darktooth-theme
                       )
   "List of packages to ensure are installed at startup.")
+
+(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
 
+
+;; Load Paths
+
 ;; Keep emacs custom-settings in separate file, for fuck's sake.
-(setq custom-file (expand-file-name "lisp/custom.el" user-emacs-directory))
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
-;; (add-to-list 'load-path "~/dev/qichat-mode")
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(add-to-list 'load-path "~/.emacs.d/modes/")
-;; (require 'qichat-mode)
-
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(setq user-config-file "~/.emacs.d/lisp/config.el")
 (load "config.el")
 (load "keybindings.el")
 (load "functions.el")
 
-(defun ccc/configure-all-custom-modes ()
-  (mapcar (lambda (mode-file-name) (load mode-file-name))
-          (directory-files "~/.emacs.d/modes/" nil ".el")))
+(setq emacs-d-modes "~/.emacs.d/modes/")
+(add-to-list 'load-path emacs-d-modes)
 
-(ccc/configure-all-custom-modes)
+;; configure all custom modes in emacs.d/modes
+(mapcar (lambda (mode-file-name) (load mode-file-name))
+          (directory-files emacs-d-modes nil ".el"))
 
-(setq my-themes '(flatui gotham zenburn badger))
-(cycle-my-theme)
+;; Theme
+
+(setq my-themes '(flatui gotham darktooth zenburn badger))
+(load-theme (car my-themes) t)
+(sml/apply-theme 'respectful)
+(setq curr-theme (pop my-themes))
 
 ;;; init.el ends here

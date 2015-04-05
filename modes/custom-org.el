@@ -17,7 +17,8 @@
                             (flyspell-mode 1)    
                             (visual-line-mode 1)
                             (org-indent-mode 1)
-                            (fci-mode -1)))
+                            (fci-mode -1)
+                            (auto-fill-mode 1)))
 
 (setq org-tags-column 85)
 (setq org-latex-to-pdf-process (list "latexmk -f -pdf"))

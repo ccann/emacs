@@ -25,6 +25,7 @@
 ;; (setq initial-frame-alist ;; I dont think this does anything ... at least on OSX
 ;;       '((menu-bar-lines . 0)
 ;;         (tool-bar-lines . 0)))
+
 (column-number-mode 1) ;; show column number in modeline
 (blink-cursor-mode 1) 
 
@@ -138,7 +139,7 @@
 (setq highlight-symbol-on-navigation-p t)
 
 ;; configure projectile
-(projectile-global-mode)
+;; (projectile-global-mode)
 
 ;; activate SHIFT + arrow keys for window moving
 (when (fboundp 'windmove-default-keybindings)

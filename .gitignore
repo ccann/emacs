@@ -4,7 +4,7 @@ places
 eshell/
 elpa/
 backups/
-auto-save-list/
+/auto-save-list/
 ac-comphist.dat
 url/
 tramp
@@ -15,3 +15,7 @@ ido.last
 /projectile-bookmarks.eld
 /tutorial/
 /lisp/custom.el
+/auto-save-list/.saves-34273-mbp.local~
+init.el~
+/smex-items
+/.tutor/

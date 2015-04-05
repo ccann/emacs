@@ -17,4 +17,8 @@
 (setq cider-repl-display-in-current-window t)
 
 ;; Prevent the auto-display of the REPL buffer in a separate window after connection is established
-(setq cider-repl-pop-to-buffer-on-connect nil)
+
+;; (setq cider-repl-pop-to-buffer-on-connect t)
+
+(setq cider-prompt-save-file-on-load nil)
+
