@@ -59,6 +59,7 @@
                       badger-theme
                       gotham-theme
                       darktooth-theme
+                      material-theme
                       ;; evil-mode
                       ;; evil-leader
                       ;; evil-tutor
@@ -94,7 +95,7 @@
 
 ;; Theme
 
-(setq my-themes '(flatui gotham darktooth zenburn badger))
+(setq my-themes '(darktooth flatui material gotham badger))
 (load-theme (car my-themes) t)
 (sml/apply-theme 'respectful)
 (setq curr-theme (pop my-themes))
@@ -107,6 +108,3 @@
 
 
 ;;; init.el ends here
-
-(require 'ein)
-(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
