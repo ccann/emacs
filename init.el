@@ -59,6 +59,10 @@
                       badger-theme
                       gotham-theme
                       darktooth-theme
+                      ;; evil-mode
+                      ;; evil-leader
+                      ;; evil-tutor
+                      ;; key-chord-mode
                       )
   "List of packages to ensure are installed at startup.")
 
@@ -95,4 +99,14 @@
 (sml/apply-theme 'respectful)
 (setq curr-theme (pop my-themes))
 
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'meta))
+
+
+;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+
+
 ;;; init.el ends here
+
+(require 'ein)
+(add-hook 'ein:connect-mode-hook 'ein:jedi-setup)
