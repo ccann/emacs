@@ -13,20 +13,15 @@
 (setq ns-use-srgb-colorspace t)
 (if (eq system-type 'darwin)
     (progn
-      ;; (menu-bar-mode 1)
-      (set-face-attribute 'default nil :font "Source Code Pro-11"))
+      (menu-bar-mode 1)
+      (set-face-attribute 'default nil :font "DejaVu Sans Mono-12"))
   (progn
     (menu-bar-mode 0)
-    (set-face-attribute 'default nil :font "Source Code Pro-10")))
-
-;; (when (fboundp 'scroll-bar-mode) ;; turn off scroll bar and tool bar
-;; (scroll-bar-mode -1))
-(scroll-bar-mode -1)
-
-;; (when (fboundp 'tool-bar-mode)
-;; (tool-bar-mode -1))
-(tool-bar-mode -1)
-
+    (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
+(when (fboundp 'scroll-bar-mode) ;; turn off scroll bar and tool bar
+  (scroll-bar-mode -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
 ;; (setq initial-frame-alist ;; I dont think this does anything ... at least on OSX
 ;;       '((menu-bar-lines . 0)
 ;;         (tool-bar-lines . 0)))
