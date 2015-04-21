@@ -29,17 +29,16 @@
 ;; remove yasnippets, indentation mode, virtualenv from elpy
 (setq elpy-modules '(elpy-module-company
                      elpy-module-eldoc
-                     elpy-module-flymake
                      elpy-module-sane-defaults))
 
 (add-hook 'elpy-mode-hook (lambda ()
-                            (subword-mode 1) ;; camelCase words
-                            (linum-mode 1)   ;; line numbering
-                            (company-mode 1) ;; auto-completion
-                            (rainbow-delimiters-mode 1) ;; colored matching parens
-                            (elpy-use-ipython)  ;; use ipython as interpreter
-                            (fci-mode -1) ;; fill-column-indicator
-                            ;; (highlight-indentation-mode -1) ;; so ugly
+                            (subword-mode 1)              ;; camelCase words
+                            (linum-mode 1)                ;; line numbering
+                            (company-mode 1)              ;; auto-completion
+                            (rainbow-delimiters-mode 1)   ;; colored matching parens
+                            (elpy-use-ipython)            ;; use ipython as interpreter
+                            (fci-mode -1)                 ;; fill-column-indicator
+                            (flycheck-mode 1)
                             (auto-fill-mode -1)))
 
 (setq jedi:complete-on-dot t)

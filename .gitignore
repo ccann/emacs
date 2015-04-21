@@ -19,3 +19,4 @@ ido.last
 init.el~
 /smex-items
 /.tutor/
+/custom.el

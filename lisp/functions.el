@@ -43,7 +43,8 @@
     (setq my-themes (append my-themes (list curr-theme))))
   (setq curr-theme (pop my-themes))
   (load-theme curr-theme t)
-  (sml/apply-theme 'respectful))
+  (sml/apply-theme 'respectful)
+  (underline-straight))
 
 
 (defun fc/isearch-yank-symbol ()
@@ -67,5 +68,17 @@
    (goto-char (line-end-position n)))
   (forward-line 1)
   (back-to-indentation))
+
+
+(require 'list-utils)
+
+(defun underline-straight ()
+  (progn
+    (setq curr-underline-color (cdr (assoc :color (loop for (head . tail) on (face-attribute 'flycheck-warning :underline) by 'cddr collect (cons head (car tail))))))
+    (set-face-attribute 'flycheck-warning nil :underline `(:color ,curr-underline-color :style line))
+    (setq curr-underline-color (cdr (assoc :color (loop for (head . tail) on (face-attribute 'flycheck-error :underline) by 'cddr collect (cons head (car tail))))))
+    (set-face-attribute 'flycheck-error nil :underline `(:color ,curr-underline-color :style line))
+    (setq curr-underline-color (cdr (assoc :color (loop for (head . tail) on (face-attribute 'flycheck-info :underline) by 'cddr collect (cons head (car tail))))))
+    (set-face-attribute 'flycheck-info nil :underline `(:color ,curr-underline-color :style line))))
 
 ;;; functions.el ends here
