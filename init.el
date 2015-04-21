@@ -59,6 +59,11 @@
                       badger-theme
                       gotham-theme
                       darktooth-theme
+                      material-theme
+                      ;; evil-mode
+                      ;; evil-leader
+                      ;; evil-tutor
+                      ;; key-chord-mode
                       )
   "List of packages to ensure are installed at startup.")
 
@@ -89,10 +94,18 @@
         (directory-files emacs-d-modes nil ".el"))
 
 ;; Theme
-(defvar my-themes'(flatui gotham darktooth zenburn badger))
+
+(setq my-themes '(darktooth flatui material gotham badger))
 (load-theme (car my-themes) t)
 (sml/apply-theme 'respectful)
 (underline-straight)
 (defvar curr-theme (pop my-themes))
+
+(when (eq system-type 'darwin)
+  (setq mac-command-modifier 'meta))
+
+
+;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+
 
 ;;; init.el ends here
