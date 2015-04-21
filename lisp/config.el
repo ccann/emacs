@@ -145,4 +145,10 @@
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
+;; highlight the line number
+;; (require `hlinum)
+;; (hlinum-activate)
+
+(nyan-mode 1)
+
 ;;; config.el ends here

@@ -1,6 +1,7 @@
 (add-hook 'clojure-mode-hook (lambda ()
                                (paredit-mode 1)
-                               (rainbow-delimiters-mode 1)))
+                               (rainbow-delimiters-mode 1)
+                               (linum-mode 1)))
 
 (add-hook 'cider-mode-hook (lambda ()
                              #'eldoc-mode ;; Enable eldoc in Clojure buffers

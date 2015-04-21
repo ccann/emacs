@@ -60,6 +60,7 @@
                       gotham-theme
                       darktooth-theme
                       material-theme
+                      hlinum
                       ;; evil-mode
                       ;; evil-leader
                       ;; evil-tutor
@@ -103,6 +104,8 @@
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'meta))
 
+;; prevent linum-mode and text-scale-adjust from fucking each other
+(set-face-attribute 'linum nil :height 100)
 
 ;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
