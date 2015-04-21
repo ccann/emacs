@@ -96,6 +96,7 @@
 (setq sml/show-remote nil)
 (setq sml/modified-char " x ")
 
+
 ;; configure uniqify
 (require 'uniquify) ;; use prepended directory for unique files
 (setq uniquify-buffer-name-style 'forward) 
@@ -144,5 +145,51 @@
 ;; activate SHIFT + arrow keys for window moving
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
+
+;; important for golden-ratio to better work
+(setq window-combination-resize t)
+
+;; draw underline lower
+(setq x-underline-at-descent-line t)
+
+;; don't let the cursor go into minibuffer prompt
+(setq minibuffer-prompt-properties
+      '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
+
+;; Custom fringe indicator (circle)
+(when (fboundp 'define-fringe-bitmap)
+  (define-fringe-bitmap 'my-flycheck-fringe-indicator
+    (vector #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00011100
+            #b00111110
+            #b00111110
+            #b00111110
+            #b00011100
+            #b00000000
+            #b00000000
+            #b00000000
+            #b00000000
+            #b01111111)))
+
+(flycheck-define-error-level 'error
+  :overlay-category 'flycheck-error-overlay
+  :fringe-bitmap 'my-flycheck-fringe-indicator
+  :fringe-face 'flycheck-fringe-error)
+
+(flycheck-define-error-level 'warning
+  :overlay-category 'flycheck-warning-overlay
+  :fringe-bitmap 'my-flycheck-fringe-indicator
+  :fringe-face 'flycheck-fringe-warning)
+
+(flycheck-define-error-level 'info
+  :overlay-category 'flycheck-info-overlay
+  :fringe-bitmap 'my-flycheck-fringe-indicator
+  :fringe-face 'flycheck-fringe-info)
 
 ;;; config.el ends here

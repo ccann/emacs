@@ -1,6 +1,6 @@
 ;;; init.el --- My init file for emacs
 
-;;; Commentary: 
+;;; Commentary:
 ;;; author: ccann
 
 ;;; Code:
@@ -19,7 +19,7 @@
 (defvar my-packages '(idle-highlight-mode
                       find-file-in-project
                       elpy
-                      jedi                   
+                      jedi
                       org
                       smex
                       ido-ubiquitous
@@ -31,14 +31,14 @@
                       company
                       dired-details+
                       lua-mode
-                      clojure-mode           
-                      cider                  
+                      clojure-mode
+                      cider
                       ess
                       markdown-mode
                       smart-mode-line
                       web-mode
                       auto-complete
-                      flymake
+                      flycheck
                       auctex
                       auctex-latexmk
                       align-cljlet
@@ -76,23 +76,23 @@
 (load custom-file)
 
 (add-to-list 'load-path "~/.emacs.d/lisp")
-(setq user-config-file "~/.emacs.d/lisp/config.el")
+(defvar user-config-file "~/.emacs.d/lisp/config.el")
 (load "config.el")
 (load "keybindings.el")
 (load "functions.el")
 
-(setq emacs-d-modes "~/.emacs.d/modes/")
+(defvar emacs-d-modes "~/.emacs.d/modes/")
 (add-to-list 'load-path emacs-d-modes)
 
 ;; configure all custom modes in emacs.d/modes
 (mapcar (lambda (mode-file-name) (load mode-file-name))
-          (directory-files emacs-d-modes nil ".el"))
+        (directory-files emacs-d-modes nil ".el"))
 
 ;; Theme
-
-(setq my-themes '(flatui gotham darktooth zenburn badger))
+(defvar my-themes'(flatui gotham darktooth zenburn badger))
 (load-theme (car my-themes) t)
 (sml/apply-theme 'respectful)
-(setq curr-theme (pop my-themes))
+(underline-straight)
+(defvar curr-theme (pop my-themes))
 
 ;;; init.el ends here
