@@ -17,6 +17,7 @@
   (package-refresh-contents))
 
 (defvar my-packages '(idle-highlight-mode
+                      list-utils
                       find-file-in-project
                       elpy
                       jedi
@@ -95,7 +96,6 @@
         (directory-files emacs-d-modes nil ".el"))
 
 ;; Theme
-
 (setq my-themes '(darktooth flatui material gotham badger))
 (load-theme (car my-themes) t)
 (sml/apply-theme 'respectful)
@@ -104,9 +104,6 @@
 
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'meta))
-
-;; prevent linum-mode and text-scale-adjust from fucking each other
-(set-face-attribute 'linum nil :height 100)
 
 ;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 

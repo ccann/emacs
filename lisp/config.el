@@ -1,6 +1,6 @@
 ;;; config.el --- Colors, fonts, look and feel, and basic extensions
 
-;;; Commentary: 
+;;; Commentary:
 ;;; I pulled a lot of this from better-defaults.el
 
 ;;; Code:
@@ -27,11 +27,11 @@
 ;;         (tool-bar-lines . 0)))
 
 (column-number-mode 1) ;; show column number in modeline
-(blink-cursor-mode 1) 
+(blink-cursor-mode 1)
 
 ;; Scratch buffer
-(setq initial-major-mode 'text-mode)
-(setq initial-scratch-message "")
+(setq initial-major-mode 'text-mode
+      initial-scratch-message "")
 
 ;; killing emacs
 (setq confirm-kill-emacs 'y-or-n-p)
@@ -42,12 +42,12 @@
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                "backups"))))
 (global-auto-revert-mode t) ;; automatically reload changed buffers
-(setq exec-path (append exec-path '("/usr/local/bin")))
-(setq exec-path (append exec-path '("/usr/texbin")))
-(setq exec-path (append exec-path '("~/.local/bin")))
+(setq exec-path (append exec-path '("/usr/local/bin"
+                                    "/usr/texbin"
+                                    "~/.local/bin")))
 (setenv "PATH" (concat (getenv "PATH") ":/usr/texbin"))
 (setq create-lockfiles nil)
-(setq-default indent-tabs-mode nil) ;; prevent extraneous tabs
+(setq-default indent-tabs-mode nil) ;; disallow tab insertion
 
 ;; configure smooth scrolling
 (setq scroll-step 1)
@@ -65,16 +65,22 @@
 ;; configure ido
 (setq ido-enable-flex-matching t
       ido-everywhere t)
+
+(add-hook 'ido-mode-hook
+          (lambda ()
+            (ido-ubiquitous)
+            (flx-ido-mode 1)  ;; better/faster matching
+            (setq ido-create-new-buffer 'always)  ;; don't confirm to create new buffers
+            (ido-vertical-mode 1)
+            (smex-initialize)  ;; smart meta-x (use IDO in minibuffer)
+            ))
+
 (ido-mode 1)
-(ido-ubiquitous)
-(flx-ido-mode 1) ; better/faster matching
-(setq ido-create-new-buffer 'always) ; don't confirm to create new buffers
-(ido-vertical-mode 1)
-(smex-initialize) ;; smart meta-x (use IDO in minibuffer)
+
 
 ;; programming related settings
-(setq-default fill-column 79)
-(show-paren-mode 1)
+(setq-default fill-column 80)
+(show-paren-mode 1)  ;; visualize matching parens
 (global-hl-line-mode 1)
 
 ;; configure ibuffer
@@ -191,6 +197,11 @@
   :overlay-category 'flycheck-info-overlay
   :fringe-bitmap 'my-flycheck-fringe-indicator
   :fringe-face 'flycheck-fringe-info)
+
+;; prevent linum-mode and text-scale-adjust from fucking each other
+(add-hook 'linum-mode-hook
+          (lambda ()
+            (set-face-attribute 'linum nil :height 100)))
 
 (nyan-mode 1)
 
