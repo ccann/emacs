@@ -66,17 +66,12 @@
 (setq ido-enable-flex-matching t
       ido-everywhere t)
 
-(add-hook 'ido-mode-hook
-          (lambda ()
-            (ido-ubiquitous)
-            (flx-ido-mode 1)  ;; better/faster matching
-            (setq ido-create-new-buffer 'always)  ;; don't confirm to create new buffers
-            (ido-vertical-mode 1)
-            (smex-initialize)  ;; smart meta-x (use IDO in minibuffer)
-            ))
-
 (ido-mode 1)
-
+(ido-ubiquitous)
+(flx-ido-mode 1)  ;; better/faster matching
+(setq ido-create-new-buffer 'always)  ;; don't confirm to create new buffers
+(ido-vertical-mode 1)
+(smex-initialize)  ;; smart meta-x (use IDO in minibuffer)
 
 ;; programming related settings
 (setq-default fill-column 80)
