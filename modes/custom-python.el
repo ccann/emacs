@@ -25,6 +25,7 @@
                               (elpy-mode 1)
                               (setq python-fill-docstring-style 'pep-257-nn)
                               (setq python-check-command "flake8")
+                              (setq elpy-rpc-backend "rope")
 ;;                              (anaconda-mode 1)
                               ))
 
@@ -42,6 +43,7 @@
                             (fci-mode -1)                 ;; fill-column-indicator
                             (flycheck-mode 1)
                             (auto-fill-mode -1)))
+
 
 (setq jedi:complete-on-dot t)
 

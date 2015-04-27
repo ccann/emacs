@@ -22,6 +22,7 @@
                       elpy
                       jedi
                       org
+                      exec-path-from-shell
                       smex
                       ido-ubiquitous
                       paredit
@@ -100,7 +101,7 @@
 (load-theme (car my-themes) t)
 (sml/apply-theme 'respectful)
 (underline-straight)
-(defvar curr-theme (pop my-themes))
+(setq curr-theme (pop my-themes))
 
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'meta))

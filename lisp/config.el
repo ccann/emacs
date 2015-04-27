@@ -42,10 +42,12 @@
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory
                                                "backups"))))
 (global-auto-revert-mode t) ;; automatically reload changed buffers
-(setq exec-path (append exec-path '("/usr/local/bin"
-                                    "/usr/texbin"
-                                    "~/.local/bin")))
-(setenv "PATH" (concat (getenv "PATH") ":/usr/texbin"))
+
+;; on OSX GUI properly set env variables
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize)
+  (exec-path-from-shell-copy-env "PYTHONPATH"))
+
 (setq create-lockfiles nil)
 (setq-default indent-tabs-mode nil) ;; disallow tab insertion
 
