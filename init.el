@@ -97,7 +97,8 @@
         (directory-files emacs-d-modes nil ".el"))
 
 ;; Theme
-(setq my-themes '(darktooth flatui material gotham badger))
+;; (setq my-themes '(darktooth flatui material gotham badger))
+(setq my-themes '(darktooth flatui))
 (load-theme (car my-themes) t)
 (sml/apply-theme 'respectful)
 (underline-straight)
