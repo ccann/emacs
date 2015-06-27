@@ -38,6 +38,14 @@
 ;; C-s C-d to searh for symbol at point
 (define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
 
+(global-set-key (kbd "C-x C-1") 'delete-other-windows)
+(global-set-key (kbd "C-x C-2") 'split-window-below)
+(global-set-key (kbd "C-x C-3") 'split-window-right)
+(global-set-key (kbd "C-x C-0") 'delete-window)
+(define-key god-local-mode-map (kbd "i") 'god-local-mode)
+(define-key god-local-mode-map (kbd ".") 'repeat)
+
+
 (global-set-key
  (kbd "C-M-o")
  (defhydra hydra-window ()

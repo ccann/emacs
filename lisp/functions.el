@@ -81,4 +81,6 @@
     (setq curr-underline-color (cdr (assoc :color (loop for (head . tail) on (face-attribute 'flycheck-info :underline) by 'cddr collect (cons head (car tail))))))
     (set-face-attribute 'flycheck-info nil :underline `(:color ,curr-underline-color :style line))))
 
+(global-set-key (kbd "<escape>") 'god-local-mode)
+
 ;;; functions.el ends here
