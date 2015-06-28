@@ -9,7 +9,6 @@
 (global-set-key [(hyper q)] 'save-buffers-kill-emacs)
 (global-set-key (kbd "C-o") 'other-window)
 (global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "C-l") 'goto-line)
@@ -42,12 +41,15 @@
 (global-set-key (kbd "C-x C-2") 'split-window-below)
 (global-set-key (kbd "C-x C-3") 'split-window-right)
 (global-set-key (kbd "C-x C-0") 'delete-window)
+(global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+
+
 (define-key god-local-mode-map (kbd "i") 'god-local-mode)
 (define-key god-local-mode-map (kbd ".") 'repeat)
 
 
 (global-set-key
- (kbd "C-M-o")
+ (kbd "C-h C-w")
  (defhydra hydra-window ()
    "window"
    ("b" windmove-left)

@@ -192,4 +192,21 @@
   :fringe-bitmap 'my-flycheck-fringe-indicator
   :fringe-face 'flycheck-fringe-info)
 
+(require 'god-mode)
+(god-mode)
+
+(add-to-list 'god-exempt-major-modes 'magit-mode)
+(add-to-list 'god-exempt-major-modes 'debugger-mode)
+(add-to-list 'god-exempt-major-modes 'help-mode)
+(add-to-list 'god-exempt-major-modes 'package-menu-mode)
+(setq god-exempt-predicates nil)
+
+(defun my-update-cursor ()
+  (setq cursor-type (if (or god-local-mode buffer-read-only)
+                        'box
+                      'bar)))
+
+(add-hook 'god-mode-enabled-hook 'my-update-cursor)
+(add-hook 'god-mode-disabled-hook 'my-update-cursor)
+
 ;;; config.el ends here
