@@ -17,10 +17,12 @@
   (package-refresh-contents))
 
 (defvar my-packages '(idle-highlight-mode
+                      list-utils
                       find-file-in-project
                       elpy
                       jedi
                       org
+                      exec-path-from-shell
                       smex
                       ido-ubiquitous
                       paredit
@@ -60,6 +62,7 @@
                       gotham-theme
                       darktooth-theme
                       material-theme
+                      hlinum
                       ;; evil-mode
                       ;; evil-leader
                       ;; evil-tutor
@@ -93,18 +96,19 @@
         (directory-files emacs-d-modes nil ".el"))
 
 ;; Theme
-
-(setq my-themes '(darktooth flatui material gotham badger))
+;; (setq my-themes '(darktooth flatui material gotham badger))
+(setq my-themes '(darktooth flatui))
 (load-theme (car my-themes) t)
 (sml/apply-theme 'respectful)
 (underline-straight)
-(defvar curr-theme (pop my-themes))
+(setq curr-theme (pop my-themes))
 
 (when (eq system-type 'darwin)
   (setq mac-command-modifier 'control)
   (setq mac-right-command-modifier 'meta))
 
 
+;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
 
 
