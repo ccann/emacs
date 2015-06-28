@@ -207,7 +207,7 @@
 (add-to-list 'god-exempt-major-modes 'debugger-mode)
 (add-to-list 'god-exempt-major-modes 'help-mode)
 (add-to-list 'god-exempt-major-modes 'package-menu-mode)
-(setq god-exempt-predicates nil)
+;(setq god-exempt-predicates nil)
 
 (defun my-update-cursor ()
   (setq cursor-type (if (or god-local-mode buffer-read-only)
@@ -217,6 +217,8 @@
 (add-hook 'god-mode-enabled-hook 'my-update-cursor)
 (add-hook 'god-mode-disabled-hook 'my-update-cursor)
 
+(key-chord-mode 1)
+(key-chord-define-global "jj" 'god-local-mode)
 (nyan-mode 1)
 
 ;;; config.el ends here

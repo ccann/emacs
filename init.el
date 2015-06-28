@@ -63,6 +63,8 @@
                       darktooth-theme
                       material-theme
                       hlinum
+                      nyan-mode
+                      key-chord
                       ;; evil-mode
                       ;; evil-leader
                       ;; evil-tutor
@@ -107,13 +109,4 @@
   (setq mac-command-modifier 'control)
   (setq mac-right-command-modifier 'meta))
 
-
-;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
-
-
-
-
-
-
-;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 ;;; init.el ends here
