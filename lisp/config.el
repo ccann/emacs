@@ -200,22 +200,33 @@
           (lambda ()
             (set-face-attribute 'linum nil :height 100)))
 
-(require 'god-mode)
-(god-mode)
+;; (require 'god-mode)
+;; (god-mode)
 
 
-(defun my-update-cursor ()
-  (setq cursor-type (if (or god-local-mode buffer-read-only)
-                        'box
-                      'bar)))
+;; (defun my-update-cursor ()
+;;   (setq cursor-type (if (or god-local-mode buffer-read-only)
+;;                         'box
+;;                       'bar)))
 
-(add-hook 'god-mode-enabled-hook 'my-update-cursor)
-(add-hook 'god-mode-disabled-hook 'my-update-cursor)
+;; (add-hook 'god-mode-enabled-hook 'my-update-cursor)
+;; (add-hook 'god-mode-disabled-hook 'my-update-cursor)
 
-(key-chord-mode 1)
-(key-chord-define-global "hh" 'god-local-mode)
+;; (key-chord-mode 1)
+;; (key-chord-define-global "jj" 'god-local-mode)
 
+
+
+(cua-mode 1)
+(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+(setq cua-keep-region-after-copy nil) ;; Standard Windows behaviour
 
 (nyan-mode 1)
+
+
+(require 'company)
+(setq company-idle-delay 0.4)
+(setq company-minimum-prefix-length 3)
+
 
 ;;; config.el ends here

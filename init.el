@@ -65,10 +65,8 @@
                       hlinum
                       nyan-mode
                       key-chord
-                      ;; evil-mode
-                      ;; evil-leader
-                      ;; evil-tutor
-                      ;; key-chord-mode
+                      god-mode
+                      clj-refactor
                       )
   "List of packages to ensure are installed at startup.")
 
@@ -106,7 +104,8 @@
 (setq curr-theme (pop my-themes))
 
 (when (eq system-type 'darwin)
-  (setq mac-command-modifier 'control)
-  (setq mac-right-command-modifier 'meta))
+(setq mac-command-modifier 'control)
+  ;; (setq mac-control-modifier 'meta)
+  )
 
 ;;; init.el ends here

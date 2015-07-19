@@ -5,7 +5,9 @@
 
 ;;; Code:
 (global-set-key (kbd "C-w") 'backward-kill-word)
+(global-unset-key (kbd "C-x C-k"))
 (global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-x k") 'kill-buffer)
 (global-set-key [(hyper q)] 'save-buffers-kill-emacs)
 (global-set-key (kbd "C-o") 'other-window)
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -26,6 +28,9 @@
 (global-set-key [(f10)] 'magit-status)
 (global-set-key [(f9)] 'cycle-my-theme)
 (global-set-key (kbd "C-;") 'endless/comment-line)
+(global-unset-key (kbd "C-j"))
+(global-set-key (kbd "C-S-n") 'scroll-up)
+(global-set-key (kbd "C-S-p") 'scroll-down)
 
 ;; Home and End Keys:
 (global-set-key (kbd "<home>") 'move-beginning-of-line)
@@ -37,15 +42,20 @@
 ;; C-s C-d to searh for symbol at point
 (define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
 
-(global-set-key (kbd "C-x C-1") 'delete-other-windows)
-(global-set-key (kbd "C-x C-2") 'split-window-below)
-(global-set-key (kbd "C-x C-3") 'split-window-right)
-(global-set-key (kbd "C-x C-0") 'delete-window)
-(global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+;; special god-mode kbds
+;; (global-set-key (kbd "C-x C-1") 'delete-other-windows)
+;; (global-set-key (kbd "C-x C-2") 'split-window-below)
+;; (global-set-key (kbd "C-x C-3") 'split-window-right)
+;; (global-set-key (kbd "C-x C-0") 'delete-window)
+;; (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+;; (define-key god-local-mode-map (kbd "i") 'god-local-mode)
+;; (define-key god-local-mode-map (kbd ".") 'repeat)
 
-
-(define-key god-local-mode-map (kbd "i") 'god-local-mode)
-(define-key god-local-mode-map (kbd ".") 'repeat)
+(key-chord-mode 1)
+;; (key-chord-define-global "bb" 'ido-switch-buffer)
+(key-chord-define-global "xs" 'save-buffer)
+(key-chord-define-global "jf" 'ido-find-file)
+(key-chord-define-global "rs" 'replace-string)
 
 
 (global-set-key
