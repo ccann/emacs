@@ -3,9 +3,9 @@
 ;;; Commentary: 
 ;;; author: ccann
 
-;;; Code: 
+;;; Code:
 
-;; pulled these from someone... don't remember who!
+;;pulled these from someone... don't remember who!
 (defun unfill-paragraph ()
   (interactive)
   (let ((fill-column 90002000))
@@ -17,26 +17,13 @@
     (fill-region start end)))
 
 (defun find-user-init-file ()
-  "Edit the `user-init-file'"
+  "Edit the `user-init-file'."
   (interactive)
   (find-file user-init-file))
 
-(defun find-user-config-file ()
-  "Edit `user-config-file'"
-  (interactive)
-  (find-file user-config-file))
-
-
-(setq curr-theme nil)
-
-(defun enab-theme (theme)
-  "Disable theme then load it, clearing out state of previous theme"
-  (if curr-theme (disable-theme curr-theme))
-  (setq curr-theme theme) 
-  (load-theme theme t))
 
 (defun cycle-my-theme ()
-  "Cycle through a list of themes, my-themes"
+  "Cycle through a list of themes, my-themes."
   (interactive)
   (when curr-theme
     (disable-theme curr-theme)
@@ -59,9 +46,9 @@
 
 
 (defun endless/comment-line (n)
-  "Comment or uncomment current line and leave point after
-    it. With positive prefix, apply to N lines including current
-    one. With negative prefix, apply to -N lines above."
+  "Comment or uncomment current line and leave point after it.
+With positive prefix, apply to N lines including current one.
+With negative prefix, apply to -N lines above."
   (interactive "p")
   (comment-or-uncomment-region
    (line-beginning-position)
@@ -69,8 +56,6 @@
   (forward-line 1)
   (back-to-indentation))
 
-
-(require 'list-utils)
 
 (defun underline-straight ()
   (progn
@@ -80,7 +65,5 @@
     (set-face-attribute 'flycheck-error nil :underline `(:color ,curr-underline-color :style line))
     (setq curr-underline-color (cdr (assoc :color (loop for (head . tail) on (face-attribute 'flycheck-info :underline) by 'cddr collect (cons head (car tail))))))
     (set-face-attribute 'flycheck-info nil :underline `(:color ,curr-underline-color :style line))))
-
-(global-set-key (kbd "<escape>") 'god-local-mode)
 
 ;;; functions.el ends here
