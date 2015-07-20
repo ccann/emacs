@@ -272,6 +272,7 @@
 
 
 (use-package markdown-mode :defer t)
+
 (use-package auctex
   :bind  (("C-c k" . compile)))
 (use-package auctex-latexmk :defer t)
@@ -425,9 +426,6 @@
   (setq web-mode-code-indent-offset 4))
 
 
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Display Settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -472,11 +470,13 @@
 (setq initial-major-mode 'text-mode
       initial-scratch-message "")
 
-;; configure ibuffer
-(setq ibuffer-shrink-to-minimum-size t)
-(setq ibuffer-always-show-last-buffer nil)
-(setq ibuffer-sorting-mode 'recency)
-(setq ibuffer-use-header-line t)
+(use-package ibuffer
+  :defer t
+  :init
+  (setq ibuffer-shrink-to-minimum-size t)
+  (setq ibuffer-always-show-last-buffer nil)
+  (setq ibuffer-sorting-mode 'recency)
+  (setq ibuffer-use-header-line t))
 
 ;; activate SHIFT + arrow keys for window moving
 (when (fboundp 'windmove-default-keybindings)
@@ -524,7 +524,7 @@
 (use-package key-chord
   :init
   (key-chord-mode 1)
-  (key-chord-define-global "xs" 'save-buffer)
+  (key-chord-define-global "sf" 'save-buffer)
   (key-chord-define-global "jf" 'ido-find-file)
   (key-chord-define-global "sb" 'ido-switch-buffer))
 
