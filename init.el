@@ -40,6 +40,7 @@
 (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
 (setq cua-keep-region-after-copy nil) ;; Standard Windows behaviour
 (cua-mode 1)
+(setq cua-prefix-override-inhibit-delay 0.05)
 
 ;;;;;;;;;;
 ;; libs ;;
@@ -60,7 +61,9 @@
 ;;;;;;;;;;;;;;
 ;; Packages ;;
 ;;;;;;;;;;;;;;
-(use-package idle-highlight-mode)
+(use-package idle-highlight-mode
+  :defer t
+  :init (setq idle-highlight-idle-time 1.0))
 
 (use-package smart-tab
   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
@@ -93,6 +96,8 @@
   
 (use-package magit
   :diminish magit-auto-revert-mode
+  :init
+  (setq magit-status-buffer-switch-function 'switch-to-buffer)
   :bind (("<f10>" . magit-status))
   :config
   (when ccann/is-osx
@@ -178,8 +183,6 @@
 (use-package fill-column-indicator :disabled t)
 
 (use-package indent-guide :disabled t)
-
-(use-package projectile :disabled t)
 
 (use-package highlight-symbol
   :init
@@ -289,9 +292,9 @@
   :init
   (setq sp-override-key-bindings '(("C-<right>" . nil)
                                    ("C-<left>" . nil)
-                                   ("C-(" . sp-forward-slurp-sexp)
+                                   ("C-)" . sp-forward-slurp-sexp)
                                    ("M-<backspace>" . nil)
-                                   ("C-)" . sp-forward-barf-sexp)))
+                                   ("C-(" . sp-forward-barf-sexp)))
   :config
   (use-package smartparens-config)
   (sp-use-smartparens-bindings)
@@ -334,7 +337,7 @@
                                 (elpy-use-ipython)
                                 (fci-mode 0)
                                 (flycheck-mode 1)
-                                (anaconda-mode 1)
+                                (anaconda-mode 0) ;; broken?
                                 (auto-fill-mode 0))))
   
 
@@ -370,6 +373,7 @@
                                  (yas-minor-mode 1) ; for adding require/use/import
                                  (cljr-add-keybindings-with-prefix "C-c C-m")
                                  (eldoc-mode 1)
+                                 (idle-highlight-mode 1)
                                  (company-mode 1))))
 
 
@@ -392,6 +396,13 @@
   (setq web-mode-css-indent-offset 4)
   (setq web-mode-code-indent-offset 4))
 
+
+(use-package projectile
+  :init
+  (setq projectile-enable-caching t)
+  :diminish projectile-mode
+  :config
+  (projectile-global-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Display Settings ;;
@@ -478,6 +489,7 @@
 (global-set-key (kbd "C-o") 'other-window)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
 (global-set-key (kbd "C-S-n") 'scroll-up)
 (global-set-key (kbd "C-S-p") 'scroll-down)
 (global-set-key (kbd "C-l") 'goto-line)
@@ -494,7 +506,9 @@
   :init
   (key-chord-mode 1)
   (key-chord-define-global "sf" 'save-buffer)
-  (key-chord-define-global "jf" 'ido-find-file)
+  ;; (key-chord-define-global "jf" 'ido-find-file)
+  (key-chord-define-global "jf" 'projectile-find-file)
+  (key-chord-define-global "sp" 'projectile-switch-project)
   (key-chord-define-global "sb" 'ido-switch-buffer))
 
 
