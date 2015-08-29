@@ -22,3 +22,4 @@ init.el~
 /custom.el
 /request/
 /ido.last~
+/flycheck_init.el
