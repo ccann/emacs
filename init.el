@@ -202,7 +202,7 @@
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
-  :init
+  :config
   (setq org-default-notes-file (concat org-directory "/notes.org"))
   ;; fontify source blocks
   (setq org-src-fontify-natively t)
