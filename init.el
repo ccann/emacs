@@ -11,7 +11,7 @@
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
-                         ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
+                         ("melpa-stable" . "http://stable.melpa.org/packages/")
                          ("elpy" . "http://jorgenschaefer.github.io/packages/")))
 
 (setq package-enable-at-startup nil)
@@ -358,14 +358,18 @@
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
+  :ensure t
+  :pin melpa-stable
   :init
   (use-package cider
+    :ensure t
+    :pin melpa-stable
     :defer t
     :init
     (setq nrepl-log-messages t) ;; Log communication with the nREPL server
     (setq cider-repl-display-in-current-window t) ;; C-c C-z switch to the CIDER REPL buffer
     (setq cider-prompt-save-file-on-load nil))
-  (use-package clj-refactor :defer t :diminish clj-refactor-mode)
+  (use-package clj-refactor :ensure t :pin melpa-stable :defer t :diminish clj-refactor-mode)
   (add-hook 'clojure-mode-hook (lambda ()
                                  (cider-mode 1)
                                  (smartparens-mode 1)
