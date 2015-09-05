@@ -43,8 +43,17 @@
 (setq cua-prefix-override-inhibit-delay 0.05)
 
 (use-package god-mode
+  :ensure t
   :config
-  (god-mode 1))
+  (god-mode-all)
+  (defun my-update-cursor ()
+    (setq cursor-type (if (or god-local-mode buffer-read-only)
+                          'box
+                        'bar)))
+  (add-hook 'god-mode-enabled-hook 'my-update-cursor)
+  (add-hook 'god-mode-disabled-hook 'my-update-cursor)
+  (bind-key "i" 'god-local-mode god-local-mode-map))
+
 
 ;;;;;;;;;
 ; libs ;;
@@ -517,10 +526,10 @@
   :init
   (key-chord-mode 1)
   (key-chord-define-global "sf" 'save-buffer)
-  ; (key-chord-define-global "jf" 'ido-find-file)
   (key-chord-define-global "jf" 'projectile-find-file)
-  (key-chord-define-global "sp" 'projectile-switch-project)
-  (key-chord-define-global "sb" 'ido-switch-buffer))
+  (key-chord-define-global "jp" 'projectile-switch-project)
+  (key-chord-define-global "jb" 'ido-switch-buffer)
+  (key-chord-define-global "jj" 'god-local-mode))
 
 
 ;;;;;;;;;;;
