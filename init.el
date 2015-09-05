@@ -1,9 +1,9 @@
-;;; init.el --- My init file for emacs
+;; init.el --- My init file for emacs
 
-;;; Commentary:
-;;; author: ccann
+;; Commentary:
+;; author: ccann
 
-;;; Code:
+;; Code:
 
 (setq load-prefer-newer t)
 
@@ -11,7 +11,7 @@
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
-                         ;; ("melpa-stable" . "http://stable.melpa.org/packages/")
+                         ; ("melpa-stable" . "http://stable.melpa.org/packages/")
                          ("elpy" . "http://jorgenschaefer.github.io/packages/")))
 
 (setq package-enable-at-startup nil)
@@ -29,38 +29,42 @@
 
 (defconst ccann/is-osx (eq system-type 'darwin))
 
-;;;;;;;;;;;;;;;
-;; Modifiers ;;
-;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+; Modifiers ;;
+;;;;;;;;;;;;;;
 (when ccann/is-osx
   (setq mac-command-modifier 'control)
-  ;; (setq mac-control-modifier 'meta)
+  ; (setq mac-control-modifier 'meta)
   )
 
-(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
-(setq cua-keep-region-after-copy nil) ;; Standard Windows behaviour
+(setq cua-auto-tabify-rectangles nil) ; Don't tabify after rectangle commands
+(setq cua-keep-region-after-copy nil) ; Standard Windows behaviour
 (cua-mode 1)
 (setq cua-prefix-override-inhibit-delay 0.05)
 
-;;;;;;;;;;
-;; libs ;;
-;;;;;;;;;;
+(use-package god-mode
+  :config
+  (god-mode 1))
+
+;;;;;;;;;
+; libs ;;
+;;;;;;;;;
 (use-package list-utils)
 (use-package popwin
   :defer t
   :config
   (popwin-mode 1))
 
-;;;;;;;;;;;;;
-;; Loaders ;;
-;;;;;;;;;;;;;
+;;;;;;;;;;;;
+; Loaders ;;
+;;;;;;;;;;;;
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 (load (expand-file-name "functions.el" user-emacs-directory))
 
-;;;;;;;;;;;;;;
-;; Packages ;;
-;;;;;;;;;;;;;;
+;;;;;;;;;;;;;
+; Packages ;;
+;;;;;;;;;;;;;
 (use-package idle-highlight-mode
   :defer t
   :init (setq idle-highlight-idle-time 1.0))
@@ -68,7 +72,7 @@
 (use-package smart-tab
   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
 
-;; (use-package subword-mode :defer t :diminish subword-mode)
+; (use-package subword-mode :defer t :diminish subword-mode)
 
 (use-package exec-path-from-shell
   :config
@@ -78,16 +82,16 @@
 
 (use-package smex
   :bind (("M-x" . smex))
-  :config (smex-initialize))  ;; smart meta-x (use IDO in minibuffer)
+  :config (smex-initialize))  ; smart meta-x (use IDO in minibuffer)
 
 (use-package ido
   :demand t
   :bind (("C-x b" . ido-switch-buffer))
   :init
-  (setq ido-create-new-buffer 'always  ;; don't confirm when creating new buffers
-        ido-enable-flex-matching t  ;; fuzzy matching
-        ido-everywhere t  ;; tbd
-        ido-case-fold t)  ;; ignore case
+  (setq ido-create-new-buffer 'always  ; don't confirm when creating new buffers
+        ido-enable-flex-matching t  ; fuzzy matching
+        ido-everywhere t  ; tbd
+        ido-case-fold t)  ; ignore case
 
   (use-package ido-ubiquitous :config (ido-ubiquitous-mode 1))
   (use-package flx-ido :config (flx-ido-mode 1))
@@ -143,7 +147,7 @@
   :defer t
   :diminish flycheck-mode
   :init
-  ;; Custom fringe indicator (circle)
+  ; Custom fringe indicator (circle)
   (when (fboundp 'define-fringe-bitmap)
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
       (vector #b00000000
@@ -187,7 +191,7 @@
 (use-package highlight-symbol
   :init
   (setq highlight-symbol-on-navigation-p t)
-  (setq hi-lock-auto-select-face t) ;; when non-nil cycle through faces in hi-lock-faces-defaults instead of prompting
+  (setq hi-lock-auto-select-face t) ; when non-nil cycle through faces in hi-lock-faces-defaults instead of prompting
   :bind
   (("C-h s" . highlight-symbol))
   :config
@@ -196,19 +200,19 @@
 (use-package hlinum :defer t)
 (use-package nyan-mode :config (nyan-mode 1))
 
-;;;;;;;;;;;;;;;;;;
-;; markup modes ;;
-;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+; markup modes ;;
+;;;;;;;;;;;;;;;;;
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :config
   (setq org-default-notes-file (concat org-directory "/notes.org"))
-  ;; fontify source blocks
+  ; fontify source blocks
   (setq org-src-fontify-natively t)
-  ;; export to html5
+  ; export to html5
   (setq org-html-doctype "html5")
-  ;; use new fancy element types if you want
+  ; use new fancy element types if you want
   (setq org-html-html5-fancy t)
   (setq org-html-postamble nil)
   (setq org-hide-leading-stars t)
@@ -229,23 +233,23 @@
    ("C-c a" . org-agenda)
    ("<f8>" . org-capture)
    ))
-;; (add-hook 'org-mode-hook  (lambda ()
-;;                             (flyspell-mode 1)    
-;;                             (visual-line-mode 1)
-;;                             (org-indent-mode 1)
-;;                             (fci-mode -1)
-;;                             (auto-fill-mode 1)))
+; (add-hook 'org-mode-hook  (lambda ()
+;                             (flyspell-mode 1)    
+;                             (visual-line-mode 1)
+;                             (org-indent-mode 1)
+;                             (fci-mode -1)
+;                             (auto-fill-mode 1)))
 
-;; (setq org-tags-column 85)
-;; (setq org-latex-to-pdf-process (list "latexmk -f -pdf"))
-;; (setq org-fontify-done-headline nil)
+; (setq org-tags-column 85)
+; (setq org-latex-to-pdf-process (list "latexmk -f -pdf"))
+; (setq org-fontify-done-headline nil)
 
-;; ;; Make Org-mode use evince in linux to open PDFs
-;; (if (not (eq system-type 'darwin))
-;;     (add-hook 'org-mode-hook
-;;               (lambda ()
-;;                 (delete '("\\.pdf\\'" . default) org-file-apps)
-;;                 (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))))
+; ;; Make Org-mode use evince in linux to open PDFs
+; (if (not (eq system-type 'darwin))
+;     (add-hook 'org-mode-hook
+;               (lambda ()
+;                 (delete '("\\.pdf\\'" . default) org-file-apps)
+;                 (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))))
 
 
 (use-package markdown-mode :defer t)
@@ -253,40 +257,40 @@
 (use-package auctex
   :bind  (("C-c k" . compile)))
 (use-package auctex-latexmk :defer t)
-;; this takes forever to require...
-;; (require 'auctex-latexmk)
+; this takes forever to require...
+; (require 'auctex-latexmk)
 
-;; (add-hook 'LaTeX-mode-hook
-;;           (lambda ()
-;;             (progn
-;;               (auctex-latexmk-setup)
-;;               (visual-line-mode 1)
-;;               (turn-on-reftex)
-;;               (TeX-source-correlate-mode 1)
-;;               (TeX-PDF-mode 1)
-;;               (TeX-auto-save 1)
-;;               (TeX-parse-self 1)
-;;               (reftex-plug-into-AUCTeX 1)
-;;               (flyspell-mode 0)
-;;               (autoload 'pretty-mode "pretty-mode.el" "Pretty Mode" t)
-;;               (TeX-source-correlate-start-server 1))))
-
-
-;; ;; link auctex to Preview in OSX, Evince in linux
-;; (setq TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
-;;                                "Evince" "evince --page-index=%(outpage) %o")))
-;; (if (eq system-type 'darwin)
-;;     (setq TeX-view-program-selection '((output-pdf "Preview")))
-;;   (setq TeX-view-program-selection '((output-pdf "Evince"))))
+; (add-hook 'LaTeX-mode-hook
+;           (lambda ()
+;             (progn
+;               (auctex-latexmk-setup)
+;               (visual-line-mode 1)
+;               (turn-on-reftex)
+;               (TeX-source-correlate-mode 1)
+;               (TeX-PDF-mode 1)
+;               (TeX-auto-save 1)
+;               (TeX-parse-self 1)
+;               (reftex-plug-into-AUCTeX 1)
+;               (flyspell-mode 0)
+;               (autoload 'pretty-mode "pretty-mode.el" "Pretty Mode" t)
+;               (TeX-source-correlate-start-server 1))))
 
 
+; ;; link auctex to Preview in OSX, Evince in linux
+; (setq TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
+;                                "Evince" "evince --page-index=%(outpage) %o")))
+; (if (eq system-type 'darwin)
+;     (setq TeX-view-program-selection '((output-pdf "Preview")))
+;   (setq TeX-view-program-selection '((output-pdf "Evince"))))
 
-;;;;;;;;;;;;;;;;;;;;;;;
-;; Programming Modes ;;
-;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;
+; Programming Modes ;;
+;;;;;;;;;;;;;;;;;;;;;;
 
 (setq-default fill-column 80)
-(show-paren-mode 1)  ;; visualize matching parens
+(show-paren-mode 1)  ; visualize matching parens
 (global-hl-line-mode 1)
 
 (use-package smartparens
@@ -340,7 +344,7 @@
                                 (elpy-use-ipython)
                                 (fci-mode 0)
                                 (flycheck-mode 1)
-                                (anaconda-mode 0) ;; broken?
+                                (anaconda-mode 0) ; broken?
                                 (auto-fill-mode 0))))
   
 
@@ -362,18 +366,18 @@
   (use-package cider
     :defer t
     :init
-    (setq nrepl-log-messages t) ;; Log communication with the nREPL server
-    (setq cider-repl-display-in-current-window t) ;; C-c C-z switch to the CIDER REPL buffer
+    (setq nrepl-log-messages t) ; Log communication with the nREPL server
+    (setq cider-repl-display-in-current-window t) ; C-c C-z switch to the CIDER REPL buffer
     (setq cider-prompt-save-file-on-load nil))
   (use-package clj-refactor :defer t :diminish clj-refactor-mode)
   (add-hook 'clojure-mode-hook (lambda ()
                                  (cider-mode 1)
                                  (smartparens-mode 1)
                                  (rainbow-delimiters-mode 1)
-                                 ;; (paredit-mode 0)
+                                 ; (paredit-mode 0)
                                  (linum-mode 1)
                                  (clj-refactor-mode 1)
-                                 (yas-minor-mode 1) ; for adding require/use/import
+                                 (yas-minor-mode 1) for adding require/use/import
                                  (cljr-add-keybindings-with-prefix "C-c C-m")
                                  (eldoc-mode 1)
                                  (idle-highlight-mode 1)
@@ -407,15 +411,15 @@
   :config
   (projectile-global-mode 1))
 
-;;;;;;;;;;;;;;;;;;;;;;
-;; Display Settings ;;
-;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;
+; Display Settings ;;
+;;;;;;;;;;;;;;;;;;;;;
 (column-number-mode 1)
 (blink-cursor-mode 1)
-(set-fringe-mode '(1 . 0)) ;; turn off right fringe
-(setq visible-bell nil) ;; if visible-bell nil, ring-bell-function is alarm
-(setq ring-bell-function `(lambda () )) ;; empty alarm function. voila.
-(setq inhibit-startup-screen t) ;; turn off splash screen
+(set-fringe-mode '(1 . 0)) ; turn off right fringe
+(setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
+(setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
+(setq inhibit-startup-screen t) ; turn off splash screen
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
        (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
@@ -426,28 +430,28 @@
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
 
-(setq window-combination-resize t) ;; golden ration better
-(setq x-underline-at-descent-line t) ;; draw underline lower
+(setq window-combination-resize t) ; golden ration better
+(setq x-underline-at-descent-line t) ; draw underline lower
 
-;; (setq initial-frame-alist ;; I dont think this does anything ... at least on OSX
-;;       '((menu-bar-lines . 0)
-;;         (tool-bar-lines . 0)))
+; (setq initial-frame-alist ;; I dont think this does anything ... at least on OSX
+;       '((menu-bar-lines . 0)
+;         (tool-bar-lines . 0)))
 
-;; don't let the cursor go into minibuffer prompt
+; don't let the cursor go into minibuffer prompt
 (setq minibuffer-prompt-properties
       '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
 
 
-;; prevent linum-mode and text-scale-adjust from fucking each other
+; prevent linum-mode and text-scale-adjust from fucking each other
 (add-hook 'linum-mode-hook
           (lambda ()
             (set-face-attribute 'linum nil :height 100)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Buffers and Navigation ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;Buffers and Navigation ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq initial-major-mode 'text-mode
       initial-scratch-message "")
 
@@ -459,34 +463,34 @@
   (setq ibuffer-sorting-mode 'recency)
   (setq ibuffer-use-header-line t))
 
-;; activate SHIFT + arrow keys for window moving
+; activate SHIFT + arrow keys for window moving
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
 
-;;;;;;;;;;
-;; Misc ;;
-;;;;;;;;;;
+;;;;;;;;;
+; Misc ;;
+;;;;;;;;;
 (setq confirm-kill-emacs 'y-or-n-p)
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
-(global-auto-revert-mode t) ;; automatically reload changed buffers
+(global-auto-revert-mode t) ; automatically reload changed buffers
 (setq create-lockfiles nil)
-(setq-default indent-tabs-mode nil) ;; disallow tab insertion
+(setq-default indent-tabs-mode nil) ; disallow tab insertion
 
-;; configure smooth scrolling
+; configure smooth scrolling
 (setq scroll-step 1)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
-;;(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ; one line at a time
+;(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
 
-;; configure clipoard
+; configure clipoard
 (setq save-interprogram-paste-before-kill t
-      mouse-yank-at-point t) ;; Mouse-2 inserts text at point, not click location
+      mouse-yank-at-point t) ; Mouse-2 inserts text at point, not click location
 
-;;;;;;;;;;;;;;;;;
-;; Keybindings ;;
-;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;
+; Keybindings ;;
+;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-x k") 'kill-buffer)
 (global-set-key (kbd "C-o") 'other-window)
@@ -509,15 +513,15 @@
   :init
   (key-chord-mode 1)
   (key-chord-define-global "sf" 'save-buffer)
-  ;; (key-chord-define-global "jf" 'ido-find-file)
+  ; (key-chord-define-global "jf" 'ido-find-file)
   (key-chord-define-global "jf" 'projectile-find-file)
   (key-chord-define-global "sp" 'projectile-switch-project)
   (key-chord-define-global "sb" 'ido-switch-buffer))
 
 
-;;;;;;;;;;;;
-;; themes ;;
-;;;;;;;;;;;;
+;;;;;;;;;;;
+; themes ;;
+;;;;;;;;;;;
 (use-package flatui-theme :defer t)
 (use-package zenburn-theme :defer t)
 (use-package badger-theme :defer t)
@@ -529,4 +533,4 @@
 (cycle-my-theme)
 
 
-;;; init.el ends here
+;; init.el ends here
