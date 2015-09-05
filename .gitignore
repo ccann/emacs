@@ -23,3 +23,4 @@ init.el~
 /request/
 /ido.last~
 /flycheck_init.el
+/projectile.cache
