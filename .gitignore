@@ -20,5 +20,7 @@ init.el~
 /smex-items
 /.tutor/
 /custom.el
-/projectile.cache
+/request/
+/ido.last~
 /flycheck_init.el
+/projectile.cache
