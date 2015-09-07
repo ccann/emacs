@@ -1,9 +1,9 @@
-;; init.el --- My init file for emacs
+;;; init.el --- My init file for emacs
 
-;; Commentary:
+;;; Commentary:
 ;; author: ccann
 
-;; Code:
+;;; Code:
 
 (setq load-prefer-newer t)
 
@@ -225,15 +225,15 @@
   (setq org-html-html5-fancy t)
   (setq org-html-postamble nil)
   (setq org-hide-leading-stars t)
-  (setq org-capture-templates
-        '(("v" "Vessel Watcher" entry (file+headline (concat org-directory "/vessel-watcher.org") "Tasks")
-           "* TODO %?\n  %T\n  %i\n")
-          ("c" "Conflux" entry (file+headline (concat org-directory "/conflux.org") "Tasks")
-           "* TODO %?\n  %T\n  %i\n")
-          ("m" "Miscellaneous" entry (file+headline (concat org-directory "/misc.org") "Tasks")
-           "* TODO %?\n  %T\n  %i\n")
-          ("n" "Notes" entry (file+headline (concat org-directory "/notes.org") "Notes")
-           "* %?\n  %T\n")))
+  ;; (setq org-capture-templates
+  ;;       '(("v" "Vessel Watcher" entry (file+headline (concat org-directory "/vessel-watcher.org") "Tasks")
+  ;;          "* TODO %?\n  %T\n  %i\n")
+  ;;         ("c" "Conflux" entry (file+headline (concat org-directory "/conflux.org") "Tasks")
+  ;;          "* TODO %?\n  %T\n  %i\n")
+  ;;         ("m" "Miscellaneous" entry (file+headline (concat org-directory "/misc.org") "Tasks")
+  ;;          "* TODO %?\n  %T\n  %i\n")
+  ;;         ("n" "Notes" entry (file+headline (concat org-directory "/notes.org") "Notes")
+  ;;          "* %?\n  %T\n")))
 
 
   :bind
@@ -368,11 +368,14 @@
   :defer t
   :diminish eldoc-mode)
 
+(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
+(add-to-list 'package-pinned-packages '(clj-refactor . "melpa-stable") t)
+
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :ensure t
-  :pin melpa-stable
+  :pin melpa-stable  ; doesn't seem to work!
   :init
   (use-package cider
     :ensure t
@@ -390,7 +393,7 @@
                                  ; (paredit-mode 0)
                                  (linum-mode 1)
                                  (clj-refactor-mode 1)
-                                 (yas-minor-mode 1) for adding require/use/import
+                                 (yas-minor-mode 1) ; for adding require/use/import
                                  (cljr-add-keybindings-with-prefix "C-c C-m")
                                  (eldoc-mode 1)
                                  (idle-highlight-mode 1)
