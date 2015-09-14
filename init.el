@@ -32,10 +32,6 @@
 ;;;;;;;;;;;;;;
 ; Modifiers ;;
 ;;;;;;;;;;;;;;
-(when ccann/is-osx
-  (setq mac-command-modifier 'control)
-  ; (setq mac-control-modifier 'meta)
-  )
 
 (setq cua-auto-tabify-rectangles nil) ; Don't tabify after rectangle commands
 (setq cua-keep-region-after-copy nil) ; Standard Windows behaviour
