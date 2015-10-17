@@ -77,8 +77,6 @@
 (use-package smart-tab
   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
 
-; (use-package subword-mode :defer t :diminish subword-mode)
-
 (use-package exec-path-from-shell
   :config
   (when (memq window-system '(mac ns))
@@ -114,16 +112,23 @@
 
 (use-package rainbow-delimiters :defer t)
 (use-package rainbow-mode :defer t)
-(use-package company
-  :init
-  (use-package company-anaconda
-    :diminish anaconda-mode
-    :config (add-to-list 'company-backends 'company-anaconda))
+
+(use-package company-anaconda
+  :ensure t
   :defer t
+  :diminish anaconda-mode)
+
+(use-package company
+  :ensure t
+  :defer 2
+  :bind (("TAB" . company-indent-or-complete-common))
+  :init
+  (setq company-idle-delay 1
+        company-minimum-prefix-length 3)
   :diminish company-mode
-  :config
-  (setq company-idle-delay 0.4)
-  (setq company-minimum-prefix-length 3))
+  :config 
+  (add-to-list 'company-backends 'company-anaconda)
+  (global-company-mode))
 
 (use-package dired-details+ :defer t)
 
@@ -344,7 +349,6 @@
                                 (elpy-mode)
                                 (subword-mode 1)
                                 (linum-mode 1)
-                                (company-mode 1)
                                 (rainbow-delimiters-mode 1)
                                 (elpy-use-ipython)
                                 (fci-mode 0)
@@ -364,37 +368,41 @@
   :defer t
   :diminish eldoc-mode)
 
-(add-to-list 'package-pinned-packages '(cider . "melpa-stable") t)
-(add-to-list 'package-pinned-packages '(clj-refactor . "melpa-stable") t)
-
 (use-package clojure-mode
+  :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
-  :ensure t
-  :pin melpa-stable  ; doesn't seem to work!
   :init
+  (setq cljr-suppress-middleware-warnings t)
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)
+  (add-hook 'clojure-mode-hook #'linum-mode)
+  (add-hook 'clojure-mode-hook #'subword-mode)
+  (add-hook 'clojure-mode-hook #'smartparens-mode)
+  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'clojure-mode-hook #'eldoc-mode)
+  (add-hook 'clojure-mode-hook #'idle-highlight-mode)
+  (use-package slamhound :defer t :ensure t)
+  (use-package clj-refactor
+    :defer t
+    :ensure t
+    :diminish clj-refactor-mode
+    :config (cljr-add-keybindings-with-prefix "C-c C-m"))  
+  (use-package cider-eval-sexp-fu :defer t :ensure t)
   (use-package cider
     :ensure t
-    :pin melpa-stable
     :defer t
     :init
-    (setq nrepl-log-messages t) ; Log communication with the nREPL server
-    (setq cider-repl-display-in-current-window t) ; C-c C-z switch to the CIDER REPL buffer
-    (setq cider-prompt-save-file-on-load nil))
-  (use-package clj-refactor :ensure t :pin melpa-stable :defer t :diminish clj-refactor-mode)
-  (add-hook 'clojure-mode-hook (lambda ()
-                                 (cider-mode 1)
-                                 (smartparens-mode 1)
-                                 (rainbow-delimiters-mode 1)
-                                 ; (paredit-mode 0)
-                                 (linum-mode 1)
-                                 (clj-refactor-mode 1)
-                                 (yas-minor-mode 1) ; for adding require/use/import
-                                 (cljr-add-keybindings-with-prefix "C-c C-m")
-                                 (eldoc-mode 1)
-                                 (idle-highlight-mode 1)
-                                 (company-mode 1))))
-
+    (add-hook 'cider-mode-hook #'clj-refactor-mode)
+    :diminish subword-mode
+    :config
+    (setq nrepl-log-messages t                   ; log communication with the nREPL server
+          cider-repl-display-in-current-window t 
+          cider-repl-use-clojure-font-lock t
+          cider-prompt-save-file-on-load nil
+          cider-font-lock-dynamically '(macro core function var)
+          nrepl-hide-special-buffers t            ; hide *nrepl-connection* and *nrepl-server*
+          cider-ovelays-use-font-lock t)
+    (cider-repl-toggle-pretty-printing)))
 
 
 (use-package emacs-lisp
@@ -403,7 +411,6 @@
   (add-hook 'emacs-lisp-mode-hook (lambda ()
                                     (flycheck-mode 1)
                                     (linum-mode 1)
-                                    (company-mode 1)
                                     (smartparens-mode 1)
                                     (rainbow-delimiters-mode 1))))
 
