@@ -217,6 +217,23 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :config
+  (setq org-publish-project-alist
+        '(("org-ccann"
+           :base-directory "~/blog"  ;; Path to your org files.
+           :base-extension "org" 
+           :publishing-directory "~/dev/ccann.github.io/_posts" ;; Path to your Jekyll project.
+           :recursive t
+           :publishing-function org-html-publish-to-html
+           :headline-levels 4
+           :html-extension "html"
+           :body-only t)
+          ("org-static-ccann"
+           :base-directory "~/blog/images"
+           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|php"
+           :publishing-directory "~/dev/ccann.github.io/assets"
+           :recursive t
+           :publishing-function org-publish-attachment)
+          ("blog" :components ("org-ccann" "org-static-ccann"))))
   (setq org-default-notes-file (concat org-directory "/notes.org"))
   ; fontify source blocks
   (setq org-src-fontify-natively t)
