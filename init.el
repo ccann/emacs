@@ -33,11 +33,6 @@
 ; Modifiers ;;
 ;;;;;;;;;;;;;;
 
-(setq cua-auto-tabify-rectangles nil) ; Don't tabify after rectangle commands
-(setq cua-keep-region-after-copy nil) ; Standard Windows behaviour
-(cua-mode 1)
-(setq cua-prefix-override-inhibit-delay 0.05)
-
 (use-package god-mode
   :ensure t
   :config
