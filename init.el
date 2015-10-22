@@ -392,15 +392,15 @@
   (add-hook 'clojure-mode-hook #'smartparens-mode)
   (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'idle-highlight-mode)
-  (use-package slamhound :defer t :ensure t)
-  (use-package clj-refactor
-    :defer t
-    :ensure t
-    :diminish clj-refactor-mode
-    :config (cljr-add-keybindings-with-prefix "C-c C-m"))  
-  (use-package cider-eval-sexp-fu :defer t :ensure t)
-  (use-package cider
+  (add-hook 'clojure-mode-hook #'idle-highlight-mode))
+(use-package slamhound :defer t :ensure t)
+(use-package clj-refactor
+  :defer t
+  :ensure t
+  :diminish clj-refactor-mode
+  :config (cljr-add-keybindings-with-prefix "C-c C-m"))  
+(use-package cider-eval-sexp-fu :defer t :ensure t)
+(use-package cider
     :ensure t
     :defer t
     :init
@@ -414,8 +414,7 @@
           cider-font-lock-dynamically '(macro core function var)
           nrepl-hide-special-buffers t            ; hide *nrepl-connection* and *nrepl-server*
           cider-ovelays-use-font-lock t)
-    (cider-repl-toggle-pretty-printing)))
-
+    (cider-repl-toggle-pretty-printing))
 
 (use-package emacs-lisp
   :mode ("\\.el\\'" . emacs-lisp-mode)
