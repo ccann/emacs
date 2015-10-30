@@ -144,9 +144,7 @@
   :config
   (sml/setup))
 
-(use-package zone
-  :defer t
-  :config (zone-when-idle 300))
+(use-package zone :config (zone-when-idle 300))
 
 (use-package flycheck
   :defer t
