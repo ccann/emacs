@@ -282,28 +282,32 @@
 (use-package auctex
   :mode ("\\.tex\\'" . latex-mode)
   :commands (latex-mode LaTeX-mode plain-tex-mode)
+  :config
+  (if ccann/is-osx
+      (setq TeX-view-program-selection '((output-pdf "Preview")))
+    (setq TeX-view-program-selection '((output-pdf "Evince"))))
   :init
   (add-hook 'LaTeX-mode-hook #'flyspell-mode)
   (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook #'visual-line-mode)
   (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
-  (add-hook 'LaTeX-mode-hook (lambda ()
-                               (setq compile-command "latexmk -pdf")))
+  (add-hook 'LaTeX-mode-hook #'auctex-latexmk-setup)
   (setq TeX-auto-save t
         TeX-parse-self t
         TeX-save-query nil
         TeX-PDF-mode t
         TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
                                  "Evince" "evince --page-index=%(outpage) %o")))
-  (if ccann/is-osx
-      (setq TeX-view-program-selection '((output-pdf "Preview")))
-    (setq TeX-view-program-selection '((output-pdf "Evince"))))
     (setq-default TeX-master nil))
 
+(use-package auctex-latexmk
+  :defer t
+  :init (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+  :commands auctex-latexmk-setup)
+
 (use-package reftex
+  :defer t
   :commands turn-on-reftex
   :init (setq reftex-plug-into-AUCTeX t))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ; Programming Modes ;;
