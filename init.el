@@ -209,7 +209,15 @@
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
+  :init
+  (add-hook 'org-mode-hook #'flyspell-mode)
+  (add-hook 'org-mode-hook #'visual-line-mode)
+  (add-hook 'org-mode-hook #'org-indent-mode)
+  (add-hook 'org-mode-hook #'auto-fill-mode)
+
   :config
+  ;; the following jekyll-boostrap integration depends on ~/dev/ccann.github.io
+  ;; and ~/blog existing, see below.
   (setq org-publish-project-alist
         '(("org-ccann"
            :base-directory "~/blog"  ;; Path to your org files.
@@ -227,15 +235,17 @@
            :recursive t
            :publishing-function org-publish-attachment)
           ("blog" :components ("org-ccann" "org-static-ccann"))))
-  (setq org-default-notes-file (concat org-directory "/notes.org"))
-  ; fontify source blocks
-  (setq org-src-fontify-natively t)
-  ; export to html5
-  (setq org-html-doctype "html5")
-  ; use new fancy element types if you want
-  (setq org-html-html5-fancy t)
-  (setq org-html-postamble nil)
-  (setq org-hide-leading-stars t)
+
+  (setq org-default-notes-file (concat org-directory "/notes.org")
+        org-src-fontify-natively t ; fontify source blocks
+        org-html-doctype "html5"
+        org-html-html5-fancy t
+        org-html-postamble nil
+        org-hide-leading-stars t
+        org-tags-column 85
+        org-latex-to-pdf-process (list "latexmk -f -pdf")
+        org-fontify-done-headline nil)
+
   ;; (setq org-capture-templates
   ;;       '(("v" "Vessel Watcher" entry (file+headline (concat org-directory "/vessel-watcher.org") "Tasks")
   ;;          "* TODO %?\n  %T\n  %i\n")
@@ -246,71 +256,61 @@
   ;;         ("n" "Notes" entry (file+headline (concat org-directory "/notes.org") "Notes")
   ;;          "* %?\n  %T\n")))
 
+  ;; Make Org-mode use evince in linux to open PDFs
+  (if (not ccann/is-osx)
+      (add-hook 'org-mode-hook
+                (lambda ()
+                  (delete '("\\.pdf\\'" . default) org-file-apps)
+                  (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))))
 
   :bind
-  (("C-c C-r C-b" . org-bibtex-read-buffer)
-   ("C-c C-w" . org-bibtex-write)
-   ("C-c a" . org-agenda)
-   ("<f8>" . org-capture)
-   ))
-; (add-hook 'org-mode-hook  (lambda ()
-;                             (flyspell-mode 1)    
-;                             (visual-line-mode 1)
-;                             (org-indent-mode 1)
-;                             (fci-mode -1)
-;                             (auto-fill-mode 1)))
+  (("C-c a" . org-agenda)
+   ("<f8>" . org-capture)))
 
-; (setq org-tags-column 85)
-; (setq org-latex-to-pdf-process (list "latexmk -f -pdf"))
-; (setq org-fontify-done-headline nil)
-
-; ;; Make Org-mode use evince in linux to open PDFs
-; (if (not (eq system-type 'darwin))
-;     (add-hook 'org-mode-hook
-;               (lambda ()
-;                 (delete '("\\.pdf\\'" . default) org-file-apps)
-;                 (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))))
+(use-package markdown-mode
+  :mode ("\\.md\\'" . markdown-mode))
 
 
-(use-package markdown-mode :defer t)
+;; LaTeX installation on OSX 10.11.1
+;;  $ brew up
+;;  $ brew install caskroom/cask/brew-cask
+;;  $ brew cask install mactex
+;; # add /usr/texbin to PATH
+;;  $ brew install latex-mk
+;;  $ brew install auctex
 
 (use-package auctex
-  :bind  (("C-c k" . compile)))
-(use-package auctex-latexmk :defer t)
-; this takes forever to require...
-; (require 'auctex-latexmk)
+  :mode ("\\.tex\\'" . latex-mode)
+  :commands (latex-mode LaTeX-mode plain-tex-mode)
+  :init
+  (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook #'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
+  (add-hook 'LaTeX-mode-hook (lambda ()
+                               (setq compile-command "latexmk -pdf")))
+  (setq TeX-auto-save t
+        TeX-parse-self t
+        TeX-save-query nil
+        TeX-PDF-mode t
+        TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
+                                 "Evince" "evince --page-index=%(outpage) %o")))
+  (if ccann/is-osx
+      (setq TeX-view-program-selection '((output-pdf "Preview")))
+    (setq TeX-view-program-selection '((output-pdf "Evince"))))
+    (setq-default TeX-master nil))
 
-; (add-hook 'LaTeX-mode-hook
-;           (lambda ()
-;             (progn
-;               (auctex-latexmk-setup)
-;               (visual-line-mode 1)
-;               (turn-on-reftex)
-;               (TeX-source-correlate-mode 1)
-;               (TeX-PDF-mode 1)
-;               (TeX-auto-save 1)
-;               (TeX-parse-self 1)
-;               (reftex-plug-into-AUCTeX 1)
-;               (flyspell-mode 0)
-;               (autoload 'pretty-mode "pretty-mode.el" "Pretty Mode" t)
-;               (TeX-source-correlate-start-server 1))))
-
-
-; ;; link auctex to Preview in OSX, Evince in linux
-; (setq TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
-;                                "Evince" "evince --page-index=%(outpage) %o")))
-; (if (eq system-type 'darwin)
-;     (setq TeX-view-program-selection '((output-pdf "Preview")))
-;   (setq TeX-view-program-selection '((output-pdf "Evince"))))
-
+(use-package reftex
+  :commands turn-on-reftex
+  :init (setq reftex-plug-into-AUCTeX t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ; Programming Modes ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(setq-default fill-column 80)
-(show-paren-mode 1)  ; visualize matching parens
+(setq-default fill-column 99)
+(show-paren-mode 1)
 (global-hl-line-mode 1)
 
 (use-package smartparens
