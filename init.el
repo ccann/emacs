@@ -21,8 +21,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(eval-when-compile
-   (require 'use-package))
+(eval-when-compile (require 'use-package))
 (defvar use-package-verbose t)
 (require 'bind-key)
 (require 'diminish)
@@ -74,8 +73,7 @@
 (use-package list-utils)
 (use-package popwin
   :defer t
-  :config
-  (popwin-mode 1))
+  :config (popwin-mode 1))
 
 ;;;;;;;;;;;;
 ; Loaders ;;
@@ -91,6 +89,7 @@
   :defer t
   :init (setq idle-highlight-idle-time 1.0))
 
+;; indent unless point is at the end of a symbol
 (use-package smart-tab
   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
 
@@ -105,19 +104,20 @@
   :config (smex-initialize))  ; smart meta-x (use IDO in minibuffer)
 
 (use-package ido
+  :ensure t
   :demand t
   :bind (("C-x b" . ido-switch-buffer))
   :init
   (setq ido-create-new-buffer 'always  ; don't confirm when creating new buffers
-        ido-enable-flex-matching t  ; fuzzy matching
+        ido-enable-flex-matching t     ; fuzzy matching
         ido-everywhere t  ; tbd
         ido-case-fold t)  ; ignore case
-
-  (use-package ido-ubiquitous :config (ido-ubiquitous-mode 1))
-  (use-package flx-ido :config (flx-ido-mode 1))
-  (use-package ido-vertical-mode :config (ido-vertical-mode 1))
   :config (ido-mode 1))
-  
+
+(use-package ido-ubiquitous :ensure t :config (ido-ubiquitous-mode 1))
+(use-package flx-ido :ensure t :config (flx-ido-mode 1))
+(use-package ido-vertical-mode :ensure t :config (ido-vertical-mode 1))
+
 (use-package magit
   :diminish magit-auto-revert-mode
   :init
@@ -476,7 +476,7 @@
 (setq inhibit-startup-screen t) ; turn off splash screen
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
-       (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
+    (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
   (progn
     (menu-bar-mode 0)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
@@ -487,17 +487,15 @@
 (setq window-combination-resize t) ; golden ration better
 (setq x-underline-at-descent-line t) ; draw underline lower
 
-; (setq initial-frame-alist ;; I dont think this does anything ... at least on OSX
-;       '((menu-bar-lines . 0)
-;         (tool-bar-lines . 0)))
+(setq initial-frame-alist
+      '((menu-bar-lines . 0)   ; not using menu-bar, default is 1 line
+        (tool-bar-lines . 0))) ; not using tool-bar, default is 1 line
 
 ; don't let the cursor go into minibuffer prompt
 (setq minibuffer-prompt-properties
       '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
-
-
-; prevent linum-mode and text-scale-adjust from fucking each other
+; prevent linum-mode and text-scale-adjust from fucking each other, not a perfect solution
 (add-hook 'linum-mode-hook
           (lambda ()
             (set-face-attribute 'linum nil :height 100)))
@@ -506,8 +504,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Buffers and Navigation ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq initial-major-mode 'text-mode
-      initial-scratch-message "")
+(setq initial-major-mode 'text-mode initial-scratch-message "")
 
 (use-package ibuffer
   :defer t
@@ -576,11 +573,11 @@
 ;;;;;;;;;;;
 ; themes ;;
 ;;;;;;;;;;;
-(use-package flatui-theme :defer t)
+(use-package flatui-theme :defer t :ensure t)
 (use-package zenburn-theme :defer t)
 (use-package badger-theme :defer t)
 (use-package gotham-theme :defer t)
-(use-package darktooth-theme :defer t)
+(use-package darktooth-theme :defer t :ensure t)
 (use-package material-theme :defer t)
 (defvar curr-theme nil)
 (defvar my-themes '(flatui darktooth))
