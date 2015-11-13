@@ -9,10 +9,10 @@
 
 (require 'package)
 
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.org/packages/")
-                         ("melpa-stable" . "http://stable.melpa.org/packages/")
-                         ("elpy" . "http://jorgenschaefer.github.io/packages/")))
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 
 (setq package-enable-at-startup nil)
 (package-initialize)
@@ -28,6 +28,28 @@
 (require 'diminish)
 
 (defconst ccann/is-osx (eq system-type 'darwin))
+
+;;;;;;;;;;;;;;
+;; Security ;;
+;;;;;;;;;;;;;;
+
+;; https://glyph.twistedmatrix.com/2015/11/editor-malware.html
+
+;; (setq tls-checktrust t) ;; always
+
+;; (let ((trustfile
+;;        (replace-regexp-in-string
+;;         "\\\\" "/"
+;;         (replace-regexp-in-string
+;;          "\n" ""
+;;          (shell-command-to-string "python -m certifi")))))
+;;   (setq tls-program
+;;         (list
+;;          (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
+;;                  (if (eq window-system 'w32) ".exe" "") trustfile)))
+;;   (setq gnutls-verify-error t)
+;;   (setq gnutls-trustfiles (list trustfile)))
+
 
 ;;;;;;;;;;;;;;
 ; Modifiers ;;
