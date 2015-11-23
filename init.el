@@ -1,6 +1,14 @@
 ;;; init.el --- My init file for emacs
 
 ;;; Commentary:
+;;; LaTeX installation on OSX 10.11.1
+;;;  $ brew up
+;;;  $ brew install caskroom/cask/brew-cask
+;;;  $ brew cask install mactex
+;;; # add /usr/texbin to PATH
+;;;  $ brew install latex-mk
+;;;  $ brew install auctex
+
 ;; author: ccann
 
 ;;; Code:
@@ -314,15 +322,6 @@
 
 (use-package markdown-mode
   :mode ("\\.md\\'" . markdown-mode))
-
-
-;; LaTeX installation on OSX 10.11.1
-;;  $ brew up
-;;  $ brew install caskroom/cask/brew-cask
-;;  $ brew cask install mactex
-;; # add /usr/texbin to PATH
-;;  $ brew install latex-mk
-;;  $ brew install auctex
 
 (use-package auctex
   :mode ("\\.tex\\'" . latex-mode)
