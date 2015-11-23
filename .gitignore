@@ -24,3 +24,4 @@ init.el~
 /ido.last~
 /flycheck_init.el
 /projectile.cache
+/.mc-lists.el
