@@ -363,6 +363,7 @@
 
 (use-package smartparens
   :defer t
+  :commands (smartparens-mode show-smartparens-mode)
   :diminish smartparens-mode
   :init
   (setq sp-override-key-bindings '(("C-<right>" . nil)
@@ -371,10 +372,12 @@
                                    ("M-<backspace>" . nil)
                                    ("C-(" . sp-forward-barf-sexp)))
   :config
-  (use-package smartparens-config)
   (sp-use-smartparens-bindings)
   (sp--update-override-key-bindings)
-  :commands (smartparens-mode show-smartparens-mode))
+  (smartparens-strict-mode))
+
+
+(use-package smartparens-config :defer t)
   
 (use-package ess :defer t)
 
