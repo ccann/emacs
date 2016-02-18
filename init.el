@@ -149,8 +149,8 @@
   :ensure t
   :defer 2
   :init
-  (setq company-idle-delay .2
-        company-minimum-prefix-length 2)
+  ;; (setq company-idle-delay .2
+  ;;       company-minimum-prefix-length 2)
   (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
   :diminish company-mode
   :config 
@@ -232,7 +232,7 @@
   :config
   (highlight-symbol-mode 1))
   
-(use-package hlinum :defer t)
+(use-package hlinum :config (hlinum-activate))
 (use-package nyan-mode :config (nyan-mode 1))
 
 (use-package multiple-cursors
@@ -361,7 +361,7 @@
 ; Programming Modes ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(setq-default fill-column 99)
+(setq-default fill-column 89)
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
@@ -377,8 +377,7 @@
   :config
   (use-package smartparens-config)
   (sp-use-smartparens-bindings)
-  (sp--update-override-key-bindings)
-  (smartparens-strict-mode))
+  (sp--update-override-key-bindings))
 
 (use-package ess :defer t)
 
@@ -389,7 +388,7 @@
   (add-hook 'python-mode-hook #'elpy-enable)
   (add-hook 'python-mode-hook #'subword-mode)
   (add-hook 'python-mode-hook #'linum-mode)
-  (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
+  ;; (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
   
   (add-hook 'python-mode-hook #'flycheck-mode)
   (add-hook 'python-mode-hook #'idle-highlight-mode)
@@ -438,9 +437,10 @@
   (add-hook 'clojure-mode-hook #'linum-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'smartparens-mode)
-  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  ;; (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'idle-highlight-mode))
+  (add-hook 'clojure-mode-hook #'idle-highlight-mode)
+  (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
     
 
 (use-package slamhound :defer t :ensure t)
@@ -474,11 +474,11 @@
 (use-package emacs-lisp
   :mode ("\\.el\\'" . emacs-lisp-mode)
   :init
-  (add-hook 'emacs-lisp-mode-hook (lambda ()
-                                    (flycheck-mode 1)
-                                    (linum-mode 1)
-                                    (smartparens-mode 1)
-                                    (rainbow-delimiters-mode 1))))
+  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+  (add-hook 'emacs-lisp-mode-hook #'linum-mode)
+  (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
+  ;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode))
 
 
 (use-package web-mode
@@ -501,13 +501,14 @@
 ;;;;;;;;;;;;;;;;;;;;;
 (column-number-mode 1)
 (blink-cursor-mode 1)
-(set-fringe-mode '(1 . 0)) ; turn off right fringe
+(set-fringe-mode '(0 . 0)) ; turn off right fringe
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
-    (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
+    ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
+    (set-face-attribute 'default nil :font "Source Code Pro-13")
   (progn
     (menu-bar-mode 0)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
@@ -570,6 +571,8 @@
 (setq save-interprogram-paste-before-kill t
       mouse-yank-at-point t) ; Mouse-2 inserts text at point, not click location
 
+(delete-selection-mode 1)
+
 ;;;;;;;;;;;;;;;;
 ; Keybindings ;;
 ;;;;;;;;;;;;;;;;
@@ -616,3 +619,4 @@
 
 
 ;; init.el ends here
+(put 'downcase-region 'disabled nil)
