@@ -30,7 +30,7 @@
   (package-install 'use-package))
 
 (eval-when-compile (require 'use-package))
-(defvar use-package-verbose t)
+(setq use-package-verbose t)
 (require 'bind-key)
 (require 'diminish)
 
@@ -104,6 +104,7 @@
   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
 
 (use-package exec-path-from-shell
+  :defer 2
   :config
   (when (memq window-system '(mac ns))
     (exec-path-from-shell-initialize)
@@ -186,22 +187,22 @@
   (when (fboundp 'define-fringe-bitmap)
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
       (vector #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00011100
-	      #b00111110
-	      #b00111110
-	      #b00111110
-	      #b00011100
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b00000000
-	      #b01111111)))
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00011100
+              #b00111110
+              #b00111110
+              #b00111110
+              #b00011100
+              #b00000000
+              #b00000000
+              #b00000000
+              #b00000000
+              #b01111111)))
 
     (flycheck-define-error-level 'error
       :overlay-category 'flycheck-error-overlay
@@ -454,22 +455,23 @@
 (use-package cider-eval-sexp-fu :defer t :ensure t)
 
 (use-package cider
-    :ensure t
-    :defer t
-    :init
-    (add-hook 'cider-mode-hook #'clj-refactor-mode)
-    :diminish subword-mode
-    :config
-    (setq nrepl-log-messages t                    ; log communication with the nREPL server
-          cider-repl-display-in-current-window t 
-          cider-repl-use-clojure-font-lock t
-          cider-prompt-save-file-on-load nil
-          cider-prompt-for-symbol nil
-          cider-font-lock-dynamically '(macro core function var)
-          nrepl-hide-special-buffers t            ; hide *nrepl-connection* and *nrepl-server*
-          cider-overlays-use-font-lock nil)
-    (cider-repl-toggle-pretty-printing)
-    (define-key cider-repl-mode-map (kbd "TAB") 'company-indent-or-complete-common)) ; wtf
+  :ensure t
+  :pin melpa-stable
+  :defer t
+  :init
+  (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  :diminish subword-mode
+  :config
+  (setq nrepl-log-messages t                    ; log communication with the nREPL server
+        cider-repl-display-in-current-window t 
+        cider-repl-use-clojure-font-lock t
+        cider-prompt-save-file-on-load nil
+        cider-prompt-for-symbol nil
+        cider-font-lock-dynamically '(macro core function var)
+        nrepl-hide-special-buffers t            ; hide *nrepl-connection* and *nrepl-server*
+        cider-overlays-use-font-lock nil)
+  (cider-repl-toggle-pretty-printing)
+  (define-key cider-repl-mode-map (kbd "TAB") 'company-indent-or-complete-common)) ; wtf
 
 (use-package emacs-lisp
   :mode ("\\.el\\'" . emacs-lisp-mode)
@@ -508,7 +510,7 @@
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
     ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
-    (set-face-attribute 'default nil :font "Source Code Pro-13")
+    (set-face-attribute 'default nil :weight 'normal :font "Source Code Pro-13")
   (progn
     (menu-bar-mode 0)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
