@@ -431,7 +431,8 @@
 
 (use-package clojure-mode
   :ensure t
-  :mode (("\\.clj\\'" . clojure-mode)
+  :mode (("\\.cljs\\''" . clojure-mode)
+         ("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :init
   (setq cljr-suppress-middleware-warnings t)
