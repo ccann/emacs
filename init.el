@@ -426,7 +426,6 @@
   :defer t
   :diminish eldoc-mode)
 
-
 (use-package clojure-mode
   :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
