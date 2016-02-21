@@ -90,6 +90,8 @@
 (load custom-file)
 (load (expand-file-name "functions.el" user-emacs-directory))
 
+(add-to-list 'auto-mode-alist '("\\.cql\\'" . sql-mode))
+
 ;;;;;;;;;;;;;
 ; Packages ;;
 ;;;;;;;;;;;;;
@@ -146,10 +148,10 @@
 (use-package company
   :ensure t
   :defer 2
-  :bind (("TAB" . company-indent-or-complete-common))
   :init
-  (setq company-idle-delay 1
-        company-minimum-prefix-length 3)
+  ;; (setq company-idle-delay .2
+  ;;       company-minimum-prefix-length 2)
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
   :diminish company-mode
   :config 
   (add-to-list 'company-backends 'company-anaconda)
@@ -174,7 +176,7 @@
   :config
   (sml/setup))
 
-(use-package zone :config (zone-when-idle 300))
+;; (use-package zone :config (zone-when-idle 300))
 
 (use-package flycheck
   :defer t
@@ -230,7 +232,7 @@
   :config
   (highlight-symbol-mode 1))
   
-(use-package hlinum :defer t)
+(use-package hlinum :config (hlinum-activate))
 (use-package nyan-mode :config (nyan-mode 1))
 
 (use-package multiple-cursors
@@ -242,6 +244,7 @@
 [_p_]   Next    [_n_]   Next    [_l_] Edit lines
 [_P_]   Skip    [_N_]   Skip    [_a_] Mark all
 [_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp
+                            [_d_] Mark all DWIM
 ^ ^             ^ ^             [_q_] Quit
 "
   ("l" mc/edit-lines)
@@ -253,6 +256,7 @@
   ("P" mc/skip-to-previous-like-this)
   ("M-p" mc/unmark-previous-like-this)
   ("r" mc/mark-all-in-region-regexp)
+  ("d" mc/mark-all-dwim)
   ("q" nil))
   :config (key-chord-define-global "mk" 'multiple-cursors-hydra/body))
 
@@ -357,12 +361,11 @@
 ; Programming Modes ;;
 ;;;;;;;;;;;;;;;;;;;;;;
 
-(setq-default fill-column 99)
+(setq-default fill-column 89)
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
 (use-package smartparens
-  :defer t
   :commands (smartparens-mode show-smartparens-mode)
   :diminish smartparens-mode
   :init
@@ -372,52 +375,45 @@
                                    ("M-<backspace>" . nil)
                                    ("C-(" . sp-forward-barf-sexp)))
   :config
+  (use-package smartparens-config)
   (sp-use-smartparens-bindings)
-  (sp--update-override-key-bindings)
-  (smartparens-strict-mode))
+  (sp--update-override-key-bindings))
 
-
-(use-package smartparens-config :defer t)
-  
 (use-package ess :defer t)
 
 (use-package python-mode
   :mode ("\\.py\\'" . python-mode)
   :init
-  (setq-default python-indent-guess-indent-offset nil)
-  (setq-default python-indent-offset 4)
-  (setq python-fill-docstring-style 'pep-257-nn)
-  (setq python-check-command "flake8")
+  (add-hook 'python-mode-hook #'elpy-mode)
+  (add-hook 'python-mode-hook #'elpy-enable)
+  (add-hook 'python-mode-hook #'subword-mode)
+  (add-hook 'python-mode-hook #'linum-mode)
+  ;; (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
   
-  (use-package elpy
-    :defer t
-    :diminish elpy-mode
-    :init
-    (setq elpy-rpc-backend "jedi")
-    (setq elpy-modules '(elpy-module-company
-                         elpy-module-eldoc
-                         elpy-module-sane-defaults))
-    (when ccann/is-osx
-      (setq elpy-rpc-python-command "/usr/local/bin/python")))
+  (add-hook 'python-mode-hook #'flycheck-mode)
+  (add-hook 'python-mode-hook #'idle-highlight-mode)
+  (add-hook 'python-mode-hook #'eldoc-mode)
+  
+  (setq-default python-indent-guess-indent-offset nil
+                python-indent-offset 4)
+  (setq python-fill-docstring-style 'pep-257-nn
+        python-check-command "flake8"))
 
-  (use-package jedi
-    :defer t
-    :init (setq jedi:complete-on-dot t)
-    :bind (("C-c d" . jedi:show-doc)))
-  
-  (add-hook 'python-mode-hook (lambda ()
-                                (elpy-enable)
-                                (elpy-mode)
-                                (subword-mode 1)
-                                (linum-mode 1)
-                                (rainbow-delimiters-mode 1)
-                                (elpy-use-ipython)
-                                (fci-mode 0)
-                                (flycheck-mode 1)
-                                (anaconda-mode 0) ; broken?
-                                (auto-fill-mode 0))))
-  
+(use-package elpy
+  ;; :diminish elpy-mode
+  :init
+  (setq elpy-rpc-backend "jedi")
+  (setq elpy-modules '(elpy-module-company
+                       elpy-module-eldoc
+                       elpy-module-sane-defaults
+                       elpy-module-pyvenv))
+  (when ccann/is-osx
+    (setq elpy-rpc-python-command "/usr/local/bin/python")))
 
+(use-package jedi
+  :defer t
+  :init (setq jedi:complete-on-dot t)
+  :bind (("C-c d" . jedi:show-doc)))
 
 (use-package lua-mode :defer t)
 
@@ -431,25 +427,31 @@
 
 (use-package clojure-mode
   :ensure t
-  :mode (("\\.cljs\\''" . clojure-mode)
-         ("\\.clj\\'" . clojure-mode)
-         ("\\.edn\\'" . clojure-mode))
+  :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.edn\\'" . clojure-mode)
+         ("\\.cljs\\'" . clojure-mode))
   :init
   (setq cljr-suppress-middleware-warnings t)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
   (add-hook 'clojure-mode-hook #'linum-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'smartparens-mode)
-  (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  ;; (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'idle-highlight-mode))
+  (add-hook 'clojure-mode-hook #'idle-highlight-mode)
+  (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
+    
+
 (use-package slamhound :defer t :ensure t)
+
 (use-package clj-refactor
   :defer t
   :ensure t
   :diminish clj-refactor-mode
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))  
+
 (use-package cider-eval-sexp-fu :defer t :ensure t)
+
 (use-package cider
     :ensure t
     :defer t
@@ -457,23 +459,25 @@
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     :diminish subword-mode
     :config
-    (setq nrepl-log-messages t                   ; log communication with the nREPL server
+    (setq nrepl-log-messages t                    ; log communication with the nREPL server
           cider-repl-display-in-current-window t 
           cider-repl-use-clojure-font-lock t
           cider-prompt-save-file-on-load nil
+          cider-prompt-for-symbol nil
           cider-font-lock-dynamically '(macro core function var)
           nrepl-hide-special-buffers t            ; hide *nrepl-connection* and *nrepl-server*
-          cider-ovelays-use-font-lock t)
-    (cider-repl-toggle-pretty-printing))
+          cider-overlays-use-font-lock nil)
+    (cider-repl-toggle-pretty-printing)
+    (define-key cider-repl-mode-map (kbd "TAB") 'company-indent-or-complete-common)) ; wtf
 
 (use-package emacs-lisp
   :mode ("\\.el\\'" . emacs-lisp-mode)
   :init
-  (add-hook 'emacs-lisp-mode-hook (lambda ()
-                                    (flycheck-mode 1)
-                                    (linum-mode 1)
-                                    (smartparens-mode 1)
-                                    (rainbow-delimiters-mode 1))))
+  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+  (add-hook 'emacs-lisp-mode-hook #'linum-mode)
+  (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
+  ;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode))
 
 
 (use-package web-mode
@@ -496,13 +500,14 @@
 ;;;;;;;;;;;;;;;;;;;;;
 (column-number-mode 1)
 (blink-cursor-mode 1)
-(set-fringe-mode '(1 . 0)) ; turn off right fringe
+(set-fringe-mode '(0 . 0)) ; turn off right fringe
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
-    (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
+    ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
+    (set-face-attribute 'default nil :font "Source Code Pro-13")
   (progn
     (menu-bar-mode 0)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
@@ -565,6 +570,8 @@
 (setq save-interprogram-paste-before-kill t
       mouse-yank-at-point t) ; Mouse-2 inserts text at point, not click location
 
+(delete-selection-mode 1)
+
 ;;;;;;;;;;;;;;;;
 ; Keybindings ;;
 ;;;;;;;;;;;;;;;;
@@ -611,3 +618,4 @@
 
 
 ;; init.el ends here
+(put 'downcase-region 'disabled nil)
