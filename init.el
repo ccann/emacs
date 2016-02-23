@@ -31,6 +31,7 @@
 
 (eval-when-compile (require 'use-package))
 (setq use-package-verbose t)
+(setq use-package-always-ensure t)
 (require 'bind-key)
 (require 'diminish)
 
@@ -63,7 +64,7 @@
 ;;;;;;;;;;;;;;
 
 (use-package god-mode
-  :ensure t
+  
   :config
   (god-mode-all)
   (defun my-update-cursor ()
@@ -115,7 +116,7 @@
   :config (smex-initialize))  ; smart meta-x (use IDO in minibuffer)
 
 (use-package ido
-  :ensure t
+  
   :demand t
   :bind (("C-x b" . ido-switch-buffer))
   :init
@@ -125,9 +126,9 @@
         ido-case-fold t)  ; ignore case
   :config (ido-mode 1))
 
-(use-package ido-ubiquitous :ensure t :config (ido-ubiquitous-mode 1))
-(use-package flx-ido :ensure t :config (flx-ido-mode 1))
-(use-package ido-vertical-mode :ensure t :config (ido-vertical-mode 1))
+(use-package ido-ubiquitous  :config (ido-ubiquitous-mode 1))
+(use-package flx-ido  :config (flx-ido-mode 1))
+(use-package ido-vertical-mode  :config (ido-vertical-mode 1))
 
 (use-package magit
   :diminish magit-auto-revert-mode
@@ -142,12 +143,10 @@
 (use-package rainbow-mode :defer t)
 
 (use-package company-anaconda
-  :ensure t
   :defer t
   :diminish anaconda-mode)
 
 (use-package company
-  :ensure t
   :defer 2
   :init
   ;; (setq company-idle-delay .2
@@ -160,13 +159,10 @@
 
 (use-package dired-details+ :defer t)
 
-(use-package uniquify :init (setq uniquify-buffer-name-style 'forward))
-
 (use-package saveplace
   :init
   (setq-default save-place t)
   (setq save-place-file (concat user-emacs-directory "places")))
-
 
 (use-package smart-mode-line
   :init
@@ -176,8 +172,6 @@
   (setq sml/modified-char " x ")
   :config
   (sml/setup))
-
-;; (use-package zone :config (zone-when-idle 300))
 
 (use-package flycheck
   :defer t
@@ -237,7 +231,7 @@
 (use-package nyan-mode :config (nyan-mode 1))
 
 (use-package multiple-cursors
-  :ensure t
+  
   :init (defhydra multiple-cursors-hydra (:hint nil)
           "
      ^Up^            ^Down^        ^Other^
@@ -258,8 +252,7 @@
   ("M-p" mc/unmark-previous-like-this)
   ("r" mc/mark-all-in-region-regexp)
   ("d" mc/mark-all-dwim)
-  ("q" nil))
-  :config (key-chord-define-global "mk" 'multiple-cursors-hydra/body))
+  ("q" nil)))
 
 ;;;;;;;;;;;;;;;;;
 ; markup modes ;;
@@ -366,7 +359,8 @@
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
-(use-package smartparens
+(use-package smartparens-config
+  :ensure smartparens
   :commands (smartparens-mode show-smartparens-mode)
   :diminish smartparens-mode
   :init
@@ -376,13 +370,13 @@
                                    ("M-<backspace>" . nil)
                                    ("C-(" . sp-forward-barf-sexp)))
   :config
-  (use-package smartparens-config)
   (sp-use-smartparens-bindings)
   (sp--update-override-key-bindings))
 
 (use-package ess :defer t)
 
 (use-package python-mode
+  
   :mode ("\\.py\\'" . python-mode)
   :init
   (add-hook 'python-mode-hook #'elpy-mode)
@@ -402,6 +396,7 @@
 
 (use-package elpy
   ;; :diminish elpy-mode
+  
   :init
   (setq elpy-rpc-backend "jedi")
   (setq elpy-modules '(elpy-module-company
@@ -427,7 +422,6 @@
   :diminish eldoc-mode)
 
 (use-package clojure-mode
-  :ensure t
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode)
          ("\\.cljs\\'" . clojure-mode))
@@ -443,18 +437,18 @@
   (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
     
 
-(use-package slamhound :defer t :ensure t)
+(use-package slamhound :defer t )
 
 (use-package clj-refactor
   :defer t
-  :ensure t
+  :pin melpa-stable
+  
   :diminish clj-refactor-mode
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))  
 
-(use-package cider-eval-sexp-fu :defer t :ensure t)
+(use-package cider-eval-sexp-fu :defer t )
 
 (use-package cider
-  :ensure t
   :pin melpa-stable
   :defer t
   :init
@@ -472,14 +466,11 @@
   (cider-repl-toggle-pretty-printing)
   (define-key cider-repl-mode-map (kbd "TAB") 'company-indent-or-complete-common)) ; wtf
 
-(use-package emacs-lisp
-  :mode ("\\.el\\'" . emacs-lisp-mode)
-  :init
-  (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-  (add-hook 'emacs-lisp-mode-hook #'linum-mode)
-  (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
-  ;; (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
-  (add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode))
+
+(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+(add-hook 'emacs-lisp-mode-hook #'linum-mode)
+(add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
+(add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode)
 
 
 (use-package web-mode
@@ -596,23 +587,24 @@
 (use-package hydra :defer t)
 
 (use-package key-chord
-  :init
+  :config
   (key-chord-mode 1)
   (key-chord-define-global "sf" 'save-buffer)
   (key-chord-define-global "jf" 'projectile-find-file)
   (key-chord-define-global "jp" 'projectile-switch-project)
   (key-chord-define-global "jb" 'ido-switch-buffer)
+  (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
   (key-chord-define-global "jj" 'god-local-mode))
 
 
 ;;;;;;;;;;;
 ; themes ;;
 ;;;;;;;;;;;
-(use-package flatui-theme :defer t :ensure t)
+(use-package flatui-theme :defer t )
 (use-package zenburn-theme :defer t)
 (use-package badger-theme :defer t)
 (use-package gotham-theme :defer t)
-(use-package darktooth-theme :defer t :ensure t)
+(use-package darktooth-theme :defer t)
 (use-package material-theme :defer t)
 (defvar curr-theme nil)
 (defvar my-themes '(flatui darktooth))
