@@ -98,7 +98,7 @@
 ;;;;;;;;;;;;;
 (use-package idle-highlight-mode
   :defer t
-  :init (setq idle-highlight-idle-time 1.0))
+  :init (setq idle-highlight-idle-time 0.2))
 
 ;; indent unless point is at the end of a symbol
 (use-package smart-tab
