@@ -116,7 +116,6 @@
   :config (smex-initialize))  ; smart meta-x (use IDO in minibuffer)
 
 (use-package ido
-  
   :demand t
   :bind (("C-x b" . ido-switch-buffer))
   :init
@@ -227,7 +226,7 @@
   :config
   (highlight-symbol-mode 1))
   
-(use-package hlinum :config (hlinum-activate))
+;; (use-package hlinum :config (hlinum-activate))
 (use-package nyan-mode :config (nyan-mode 1))
 
 (use-package multiple-cursors
@@ -565,6 +564,12 @@
 
 (delete-selection-mode 1)
 
+(use-package visual-regexp
+  :defer t
+  :bind (("C-c r" . vr/replace)
+         ("C-c q" . vr/query-replace)))
+  
+
 ;;;;;;;;;;;;;;;;
 ; Keybindings ;;
 ;;;;;;;;;;;;;;;;
@@ -613,3 +618,4 @@
 
 ;; init.el ends here
 (put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
