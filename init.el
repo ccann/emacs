@@ -131,6 +131,7 @@
 
 (use-package magit
   :diminish magit-auto-revert-mode
+  :pin melpa-stable
   :init
   (setq magit-status-buffer-switch-function 'switch-to-buffer)
   :bind (("<f10>" . magit-status))
