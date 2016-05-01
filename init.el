@@ -96,9 +96,9 @@
 ;;;;;;;;;;;;;
 ; Packages ;;
 ;;;;;;;;;;;;;
-(use-package idle-highlight-mode
-  :defer t
-  :init (setq idle-highlight-idle-time 0.2))
+;; (use-package idle-highlight-mode
+;;   :defer t
+;;   :init (setq idle-highlight-idle-time 0.2))
 
 ;; indent unless point is at the end of a symbol
 (use-package smart-tab
@@ -141,6 +141,7 @@
 (use-package rainbow-delimiters :defer t)
 (use-package rainbow-mode :defer t)
 
+
 (use-package company-anaconda
   :defer t
   :diminish anaconda-mode)
@@ -148,9 +149,10 @@
 (use-package company
   :defer 2
   :init
-  ;; (setq company-idle-delay .2
-  ;;       company-minimum-prefix-length 2)
+  (setq company-idle-delay .05
+        company-minimum-prefix-length 2)
   (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
+  (setq tab-always-indent nil)
   :diminish company-mode
   :config 
   (add-to-list 'company-backends 'company-anaconda)
@@ -229,37 +231,39 @@
 ;; (use-package hlinum :config (hlinum-activate))
 (use-package nyan-mode :config (nyan-mode 1))
 
-(use-package multiple-cursors
+;; (use-package multiple-cursors
   
-  :init (defhydra multiple-cursors-hydra (:hint nil)
-          "
-     ^Up^            ^Down^        ^Other^
-----------------------------------------------
-[_p_]   Next    [_n_]   Next    [_l_] Edit lines
-[_P_]   Skip    [_N_]   Skip    [_a_] Mark all
-[_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp
-                            [_d_] Mark all DWIM
-^ ^             ^ ^             [_q_] Quit
-"
-  ("l" mc/edit-lines)
-  ("a" mc/mark-all-like-this)
-  ("n" mc/mark-next-like-this)
-  ("N" mc/skip-to-next-like-this)
-  ("M-n" mc/unmark-next-like-this)
-  ("p" mc/mark-previous-like-this)
-  ("P" mc/skip-to-previous-like-this)
-  ("M-p" mc/unmark-previous-like-this)
-  ("r" mc/mark-all-in-region-regexp)
-  ("d" mc/mark-all-dwim)
-  ("q" nil)))
+;;   :init (defhydra multiple-cursors-hydra (:hint nil)
+;;           "
+;;      ^Up^            ^Down^        ^Other^
+;; ----------------------------------------------
+;; [_p_]   Next    [_n_]   Next    [_l_] Edit lines
+;; [_P_]   Skip    [_N_]   Skip    [_a_] Mark all
+;; [_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp
+;;                             [_d_] Mark all DWIM
+;; ^ ^             ^ ^             [_q_] Quit
+;; "
+;;   ("l" mc/edit-lines)
+;;   ("a" mc/mark-all-like-this)
+;;   ("n" mc/mark-next-like-this)
+;;   ("N" mc/skip-to-next-like-this)
+;;   ("M-n" mc/unmark-next-like-this)
+;;   ("p" mc/mark-previous-like-this)
+;;   ("P" mc/skip-to-previous-like-this)
+;;   ("M-p" mc/unmark-previous-like-this)
+;;   ("r" mc/mark-all-in-region-regexp)
+;;   ("d" mc/mark-all-dwim)
+;;   ("q" nil)))
 
 ;;;;;;;;;;;;;;;;;
 ; markup modes ;;
 ;;;;;;;;;;;;;;;;;
 
+
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :init
+  (use-package htmlize)
   (add-hook 'org-mode-hook #'flyspell-mode)
   (add-hook 'org-mode-hook #'visual-line-mode)
   (add-hook 'org-mode-hook #'org-indent-mode)
@@ -361,7 +365,6 @@
 (use-package smartparens-config
   :ensure smartparens
   :commands (smartparens-mode show-smartparens-mode)
-  :diminish smartparens-mode
   :init
   (setq sp-override-key-bindings '(("C-<right>" . nil)
                                    ("C-<left>" . nil)
@@ -385,7 +388,7 @@
   ;; (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
   
   (add-hook 'python-mode-hook #'flycheck-mode)
-  (add-hook 'python-mode-hook #'idle-highlight-mode)
+  ;; (add-hook 'python-mode-hook #'idle-highlight-mode)
   (add-hook 'python-mode-hook #'eldoc-mode)
   
   (setq-default python-indent-guess-indent-offset nil
@@ -420,39 +423,33 @@
   :defer t
   :diminish eldoc-mode)
 
+;;;;;;;;;;;;;
+;; Clojure ;;
+;;;;;;;;;;;;;
+
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode)
-         ("\\.edn\\'" . clojure-mode)
-         ("\\.cljs\\'" . clojure-mode))
+         ("\\.edn\\'" . clojure-mode))
+  :diminish (subword-mode smartparens-mode hi-lock-mode)
   :init
+  (use-package slamhound :defer t )
   (setq cljr-suppress-middleware-warnings t)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
   (add-hook 'clojure-mode-hook #'linum-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
-  (add-hook 'clojure-mode-hook #'smartparens-mode)
-  ;; (add-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'idle-highlight-mode)
+  ;; (add-hook 'clojure-mode-hook #'idle-highlight-mode)
   (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
-    
-
-(use-package slamhound :defer t )
-
-(use-package clj-refactor
-  :defer t
-  :pin melpa-stable
-  
-  :diminish clj-refactor-mode
-  :config (cljr-add-keybindings-with-prefix "C-c C-m"))  
-
-(use-package cider-eval-sexp-fu :defer t )
 
 (use-package cider
   :pin melpa-stable
   :defer t
   :init
+  (use-package cider-eval-sexp-fu)
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
-  :diminish subword-mode
+  (add-hook 'cider-repl-mode-hook #'subword-mode)
+  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+  (add-hook 'cider-repl-mode-hook #'smartparens-strict-mode)
   :config
   (setq nrepl-log-messages t                    ; log communication with the nREPL server
         cider-repl-display-in-current-window t 
@@ -462,9 +459,14 @@
         cider-font-lock-dynamically '(macro core function var)
         nrepl-hide-special-buffers t            ; hide *nrepl-connection* and *nrepl-server*
         cider-overlays-use-font-lock nil)
-  (cider-repl-toggle-pretty-printing)
-  (define-key cider-repl-mode-map (kbd "TAB") 'company-indent-or-complete-common)) ; wtf
+  (cider-repl-toggle-pretty-printing))
 
+(use-package clj-refactor
+  :defer t
+  :pin melpa-stable
+  
+  :diminish clj-refactor-mode
+  :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'linum-mode)
