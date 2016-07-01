@@ -15,6 +15,11 @@
 
 (setq load-prefer-newer t)
 
+;; this seemingly has no effect...
+;; (let ((display-table (or standard-display-table (make-display-table))))
+;;   (set-display-table-slot display-table 'vertical-border (make-glyph-code ?┃))
+;;   (setq standard-display-table display-table))
+
 (require 'package)
 
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
@@ -36,6 +41,17 @@
 (require 'diminish)
 
 (defconst ccann/is-osx (eq system-type 'darwin))
+
+;; (use-package spaceline
+;;   :init
+;;   (require 'spaceline-config)
+;;   (setq powerline-default-separator 'wave)
+;;   (setq powerline-height 20)
+;;   (setq powerline-raw " ")
+;;   (setq ns-use-srgb-colorspace nil)
+;;   :ensure t
+;;   :config (spaceline-emacs-theme))
+
 
 ;;;;;;;;;;;;;;
 ;; Security ;;
@@ -64,7 +80,6 @@
 ;;;;;;;;;;;;;;
 
 (use-package god-mode
-  
   :config
   (god-mode-all)
   (defun my-update-cursor ()
@@ -96,13 +111,13 @@
 ;;;;;;;;;;;;;
 ; Packages ;;
 ;;;;;;;;;;;;;
-;; (use-package idle-highlight-mode
-;;   :defer t
-;;   :init (setq idle-highlight-idle-time 0.2))
+(use-package idle-highlight-mode
+  :defer t
+  :init (setq idle-highlight-idle-time 0.3))
 
 ;; indent unless point is at the end of a symbol
-(use-package smart-tab
-  :init (bind-key "<tab>" 'hippie-expand read-expression-map))
+;; (use-package smart-tab
+;;   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
 
 (use-package exec-path-from-shell
   :defer 2
@@ -150,10 +165,10 @@
 (use-package company
   :defer 2
   :init
-  (setq company-idle-delay .05
-        company-minimum-prefix-length 2)
-  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
-  (setq tab-always-indent nil)
+  (setq company-idle-delay 0.3
+        company-minimum-prefix-length 3)
+  (global-set-key (kbd "<S-tab>") #'company-indent-or-complete-common)
+  (setq tab-always-indent t) ;; set this to nil if you want `indent-for-tab-command` instead
   :diminish company-mode
   :config 
   (add-to-list 'company-backends 'company-anaconda)
@@ -256,14 +271,15 @@
 ;;   ("d" mc/mark-all-dwim)
 ;;   ("q" nil)))
 
-;;;;;;;;;;;;;;;;;
-; markup modes ;;
-;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;
+;; markup modes ;;
+;;;;;;;;;;;;;;;;;;
 
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :init
+  (setq org-directory "~/org")
   (use-package htmlize)
   (add-hook 'org-mode-hook #'flyspell-mode)
   (add-hook 'org-mode-hook #'visual-line-mode)
@@ -301,16 +317,11 @@
         org-latex-to-pdf-process (list "latexmk -f -pdf")
         org-fontify-done-headline nil)
 
-  ;; (setq org-capture-templates
-  ;;       '(("v" "Vessel Watcher" entry (file+headline (concat org-directory "/vessel-watcher.org") "Tasks")
-  ;;          "* TODO %?\n  %T\n  %i\n")
-  ;;         ("c" "Conflux" entry (file+headline (concat org-directory "/conflux.org") "Tasks")
-  ;;          "* TODO %?\n  %T\n  %i\n")
-  ;;         ("m" "Miscellaneous" entry (file+headline (concat org-directory "/misc.org") "Tasks")
-  ;;          "* TODO %?\n  %T\n  %i\n")
-  ;;         ("n" "Notes" entry (file+headline (concat org-directory "/notes.org") "Notes")
-  ;;          "* %?\n  %T\n")))
-
+  (setq org-capture-templates
+        '(("n" "Note" entry
+           (file+headline (concat org-directory "/notes.org") "Notes")
+           "* %?")))
+        
   ;; Make Org-mode use evince in linux to open PDFs
   (if (not ccann/is-osx)
       (add-hook 'org-mode-hook
@@ -319,11 +330,16 @@
                   (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))))
 
   :bind
-  (("C-c a" . org-agenda)
-   ("<f8>" . org-capture)))
+  (("<f8>" . org-capture)))
+
 
 (use-package markdown-mode
-  :mode ("\\.md\\'" . markdown-mode))
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
 
 (use-package auctex
   :mode ("\\.tex\\'" . latex-mode)
@@ -343,7 +359,8 @@
         TeX-PDF-mode t
         TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
                                  "Evince" "evince --page-index=%(outpage) %o")))
-    (setq-default TeX-master nil))
+  (setq-default TeX-master nil))
+
 
 (use-package auctex-latexmk
   :defer t
@@ -355,9 +372,9 @@
   :commands turn-on-reftex
   :init (setq reftex-plug-into-AUCTeX t))
 
-;;;;;;;;;;;;;;;;;;;;;;
-; Programming Modes ;;
-;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+;; Programming Modes ;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq-default fill-column 89)
 (show-paren-mode 1)
@@ -378,8 +395,13 @@
 
 (use-package ess :defer t)
 
+(use-package ruby-mode
+  :mode ("\\.rb\\'" . ruby-mode)
+  :init 
+  (add-hook 'ruby-mode-hook #'linum-mode)
+  (add-hook 'ruby-mode-hook #'idle-highlight-mode))
+
 (use-package python-mode
-  
   :mode ("\\.py\\'" . python-mode)
   :init
   (add-hook 'python-mode-hook #'elpy-mode)
@@ -389,7 +411,7 @@
   ;; (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
   
   (add-hook 'python-mode-hook #'flycheck-mode)
-  ;; (add-hook 'python-mode-hook #'idle-highlight-mode)
+  (add-hook 'python-mode-hook #'idle-highlight-mode)
   (add-hook 'python-mode-hook #'eldoc-mode)
   
   (setq-default python-indent-guess-indent-offset nil
@@ -431,7 +453,7 @@
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
-  :diminish (subword-mode smartparens-mode hi-lock-mode)
+  :diminish (subword-mode smartparens-mode)
   :init
   (use-package slamhound :defer t )
   (setq cljr-suppress-middleware-warnings t)
@@ -439,7 +461,8 @@
   (add-hook 'clojure-mode-hook #'linum-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
-  ;; (add-hook 'clojure-mode-hook #'idle-highlight-mode)
+  (add-hook 'clojure-mode-hook #'idle-highlight-mode)
+  (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
 
 (use-package cider
@@ -451,6 +474,7 @@
   (add-hook 'cider-repl-mode-hook #'subword-mode)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'smartparens-strict-mode)
+  (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   :config
   (setq nrepl-log-messages t                    ; log communication with the nREPL server
         cider-repl-display-in-current-window t 
@@ -465,7 +489,6 @@
 (use-package clj-refactor
   :defer t
   :pin melpa-stable
-  
   :diminish clj-refactor-mode
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
@@ -473,6 +496,7 @@
 (add-hook 'emacs-lisp-mode-hook #'linum-mode)
 (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
 (add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode)
+(add-hook 'emacs-lisp-mode-hook #'idle-highlight-mode)
 
 
 (use-package web-mode
@@ -480,7 +504,9 @@
   :init
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 4)
-  (setq web-mode-code-indent-offset 4))
+  (setq web-mode-code-indent-offset 4)
+  (add-hook 'web-mode-hook #'linum-mode)
+  (add-hook 'web-mode-hook #'idle-highlight-mode))
 
 
 (use-package projectile
@@ -488,14 +514,15 @@
   (setq projectile-enable-caching t)
   :diminish projectile-mode
   :config
+  (setq shell-file-name "/bin/sh")
   (projectile-global-mode 1))
 
-;;;;;;;;;;;;;;;;;;;;;
-; Display Settings ;;
-;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;
+;; Display Settings ;;
+;;;;;;;;;;;;;;;;;;;;;;
 (column-number-mode 1)
 (blink-cursor-mode 1)
-(set-fringe-mode '(0 . 0)) ; turn off right fringe
+(set-fringe-mode '(0 . 0)) ; left-only fringe
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
@@ -544,7 +571,6 @@
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
-
 ;;;;;;;;;
 ; Misc ;;
 ;;;;;;;;;
@@ -555,17 +581,28 @@
 (setq create-lockfiles nil)
 (setq-default indent-tabs-mode nil) ; disallow tab insertion
 
-; configure smooth scrolling
-(setq scroll-step 1)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ; one line at a time
-;(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(use-package smooth-scrolling
+  :config
+  (smooth-scrolling-mode 1))
+
 (setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
+
+;; (use-package smooth-scroll
+;;   :config
+;;   (smooth-scroll-mode 0)
+;;   (setq smooth-scroll/vscroll-step-size 5))
 
 ; configure clipoard
 (setq save-interprogram-paste-before-kill t
       mouse-yank-at-point t) ; Mouse-2 inserts text at point, not click location
 
 (delete-selection-mode 1)
+
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode)
+  (which-key-enable-god-mode-support))
 
 (use-package visual-regexp
   :defer t
@@ -597,11 +634,11 @@
 (use-package key-chord
   :config
   (key-chord-mode 1)
-  (key-chord-define-global "sf" 'save-buffer)
+  (key-chord-define-global "sz" 'save-buffer)
   (key-chord-define-global "jf" 'projectile-find-file)
   (key-chord-define-global "jp" 'projectile-switch-project)
-  (key-chord-define-global "jb" 'ido-switch-buffer)
-  (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
+  (key-chord-define-global "fb" 'ido-switch-buffer)
+  ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
   (key-chord-define-global "jj" 'god-local-mode))
 
 
@@ -615,10 +652,12 @@
 (use-package darktooth-theme :defer t)
 (use-package material-theme :defer t)
 (defvar curr-theme nil)
-(defvar my-themes '(flatui darktooth))
+(defvar my-themes '(flatui darktooth zenburn))
 (cycle-my-theme)
 
 
+
 ;; init.el ends here
+
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
