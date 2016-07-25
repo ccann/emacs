@@ -90,6 +90,17 @@
   (add-hook 'god-mode-disabled-hook 'my-update-cursor)
   (bind-key "i" 'god-local-mode god-local-mode-map))
 
+;; (use-package evil
+;;   :ensure t
+;;   :config  (evil-mode 1)
+;;   )
+
+;; (use-package evil-escape
+;;   :ensure t
+;;   :init (setq-default evil-escape-key-sequence "fd")
+;;   :config (evil-escape-mode 1))
+
+;; (use-package evil-tutor :ensure t)
 
 ;;;;;;;;;
 ; libs ;;
@@ -156,7 +167,6 @@
 
 (use-package rainbow-delimiters :defer t)
 (use-package rainbow-mode :defer t)
-
 
 (use-package company-anaconda
   :defer t
@@ -245,7 +255,8 @@
   (highlight-symbol-mode 1))
   
 ;; (use-package hlinum :config (hlinum-activate))
-(use-package nyan-mode :config (nyan-mode 1))
+(use-package nyan-mode
+  :config (nyan-mode -1))
 
 ;; (use-package multiple-cursors
   
@@ -380,8 +391,7 @@
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
-(use-package smartparens-config
-  :ensure smartparens
+(use-package smartparens
   :commands (smartparens-mode show-smartparens-mode)
   :init
   (setq sp-override-key-bindings '(("C-<right>" . nil)
@@ -391,7 +401,12 @@
                                    ("C-(" . sp-forward-barf-sexp)))
   :config
   (sp-use-smartparens-bindings)
-  (sp--update-override-key-bindings))
+  (sp--update-override-key-bindings)
+  ;; no '' pair in emacs lisp and clojure mode
+  (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
+  (sp-local-pair 'clojure-mode "'" nil :actions nil)
+  ;; don't pair "'" if we're at the end of a word (like when typing an apostrophe)
+  (sp-pair "'" nil :unless '(sp-point-after-word-p)))
 
 (use-package ess :defer t)
 
@@ -483,7 +498,8 @@
         cider-prompt-for-symbol nil
         cider-font-lock-dynamically '(macro core function var)
         nrepl-hide-special-buffers t            ; hide *nrepl-connection* and *nrepl-server*
-        cider-overlays-use-font-lock nil)
+        cider-overlays-use-font-lock nil
+        nrepl-prompt-to-kill-server-buffer-on-quit nil)
   (cider-repl-toggle-pretty-printing))
 
 (use-package clj-refactor
@@ -639,7 +655,8 @@
   (key-chord-define-global "jp" 'projectile-switch-project)
   (key-chord-define-global "fb" 'ido-switch-buffer)
   ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
-  (key-chord-define-global "jj" 'god-local-mode))
+  (key-chord-define-global "fd" 'god-local-mode)
+)
 
 
 ;;;;;;;;;;;
@@ -651,8 +668,10 @@
 (use-package gotham-theme :defer t)
 (use-package darktooth-theme :defer t)
 (use-package material-theme :defer t)
+(use-package metalheart-theme :defer t)
+
 (defvar curr-theme nil)
-(defvar my-themes '(flatui darktooth zenburn))
+(defvar my-themes '(flatui darktooth zenburn metalheart gotham))
 (cycle-my-theme)
 
 
@@ -661,3 +680,4 @@
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
