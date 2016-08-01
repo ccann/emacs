@@ -81,7 +81,7 @@
 
 (use-package god-mode
   :config
-  (god-mode-all)
+  ;; (god-mode-all)
   (defun my-update-cursor ()
     (setq cursor-type (if (or god-local-mode buffer-read-only)
                           'box
@@ -468,7 +468,7 @@
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
-  :diminish (subword-mode smartparens-mode)
+  :diminish (subword-mode smartparens-mode smartparens-strict-mode)
   :init
   (use-package slamhound :defer t )
   (setq cljr-suppress-middleware-warnings t)
@@ -483,6 +483,8 @@
 (use-package cider
   :pin melpa-stable
   :defer t
+  ;; :bind (("C-S-n" . ccann/forward-clj-def)
+  ;;        ("C-S-p" . ccann/backward-clj-def))
   :init
   (use-package cider-eval-sexp-fu)
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
@@ -513,6 +515,7 @@
 (add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
 (add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode)
 (add-hook 'emacs-lisp-mode-hook #'idle-highlight-mode)
+(diminish 'auto-revert-mode)
 
 
 (use-package web-mode
@@ -616,6 +619,7 @@
 
 (use-package which-key
   :ensure t
+  :diminish (which-key-mode)
   :config
   (which-key-mode)
   (which-key-enable-god-mode-support))
