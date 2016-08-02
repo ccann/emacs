@@ -258,30 +258,6 @@
 (use-package nyan-mode
   :config (nyan-mode -1))
 
-;; (use-package multiple-cursors
-  
-;;   :init (defhydra multiple-cursors-hydra (:hint nil)
-;;           "
-;;      ^Up^            ^Down^        ^Other^
-;; ----------------------------------------------
-;; [_p_]   Next    [_n_]   Next    [_l_] Edit lines
-;; [_P_]   Skip    [_N_]   Skip    [_a_] Mark all
-;; [_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp
-;;                             [_d_] Mark all DWIM
-;; ^ ^             ^ ^             [_q_] Quit
-;; "
-;;   ("l" mc/edit-lines)
-;;   ("a" mc/mark-all-like-this)
-;;   ("n" mc/mark-next-like-this)
-;;   ("N" mc/skip-to-next-like-this)
-;;   ("M-n" mc/unmark-next-like-this)
-;;   ("p" mc/mark-previous-like-this)
-;;   ("P" mc/skip-to-previous-like-this)
-;;   ("M-p" mc/unmark-previous-like-this)
-;;   ("r" mc/mark-all-in-region-regexp)
-;;   ("d" mc/mark-all-dwim)
-;;   ("q" nil)))
-
 ;;;;;;;;;;;;;;;;;;
 ;; markup modes ;;
 ;;;;;;;;;;;;;;;;;;
@@ -541,7 +517,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 (column-number-mode 1)
 (blink-cursor-mode 1)
-(set-fringe-mode '(0 . 0)) ; left-only fringe
+(set-fringe-mode '(1 . 0))
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
@@ -660,7 +636,7 @@
   (key-chord-define-global "jp" 'projectile-switch-project)
   (key-chord-define-global "fb" 'ido-switch-buffer)
   ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
-  (key-chord-define-global "fd" 'god-local-mode)
+  ;; (key-chord-define-global "fd" 'god-local-mode)
 )
 
 
