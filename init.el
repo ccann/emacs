@@ -601,6 +601,7 @@
 (setq-default indent-tabs-mode nil) ; disallow tab insertion
 
 (use-package smooth-scrolling
+  :ensure t
   :config
   (smooth-scrolling-mode 1))
 
