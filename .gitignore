@@ -25,3 +25,4 @@ init.el~
 /flycheck_init.el
 /projectile.cache
 /.mc-lists.el
+/abbrev_defs
