@@ -267,8 +267,6 @@
   :mode ("\\.org\\'" . org-mode)
   :init
   (setq org-directory "~/Dropbox (Personal)/org")
-
-(add-hook 'after-save-hook 'org-mode-export-hook)
   (use-package htmlize)
   (add-hook 'org-mode-hook #'flyspell-mode)
   (add-hook 'org-mode-hook #'visual-line-mode)
