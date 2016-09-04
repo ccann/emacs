@@ -21,6 +21,21 @@
   (interactive)
   (find-file user-init-file))
 
+(defun ccann/toggle-org-html-export-on-save ()
+  (interactive)
+  (if (memq 'org-html-export-to-html after-save-hook)
+      (progn
+        (remove-hook 'after-save-hook 'org-html-export-to-html t)
+        (message "Disabled org html export on save for current buffer..."))
+    (add-hook 'after-save-hook 'org-html-export-to-html nil t)
+    (message "Enabled org html export on save for current buffer...")))
+
+(defun find-notes-file ()
+  (interactive)
+  (progn
+    (find-file (concat org-directory "/notes.org"))
+    (ccann/toggle-org-html-export-on-save)))
+
 
 (defun cycle-my-theme ()
   "Cycle through a list of themes, my-themes."

@@ -266,7 +266,9 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :init
-  (setq org-directory "~/org")
+  (setq org-directory "~/Dropbox (Personal)/org")
+
+(add-hook 'after-save-hook 'org-mode-export-hook)
   (use-package htmlize)
   (add-hook 'org-mode-hook #'flyspell-mode)
   (add-hook 'org-mode-hook #'visual-line-mode)
@@ -276,6 +278,8 @@
   :config
   ;; the following jekyll-boostrap integration depends on ~/dev/ccann.github.io
   ;; and ~/blog existing, see below.
+  (setq org-hide-emphasis-markers nil)
+  
   (setq org-publish-project-alist
         '(("org-ccann"
            :base-directory "~/blog"  ;; Path to your org files.
@@ -305,8 +309,11 @@
         org-fontify-done-headline nil)
 
   (setq org-capture-templates
-        '(("n" "Note" entry
-           (file+headline (concat org-directory "/notes.org") "Notes")
+        '(("l" "Programming Language Note" entry
+           (file+headline (concat org-directory "/notes.org") "Languages")
+           "* %?")
+          ("d" "Database Note" entry
+           (file+headline (concat org-directory "/notes.org") "Databases")
            "* %?")))
         
   ;; Make Org-mode use evince in linux to open PDFs
@@ -621,6 +628,7 @@
 (global-set-key (kbd "C-l") 'goto-line)
 (global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
 (global-set-key (kbd "C-c I") 'find-user-init-file)
+(global-set-key (kbd "C-c N") 'find-notes-file)
 (global-set-key (kbd "<f12>") 'ibuffer)
 (global-set-key (kbd "<f9>") 'cycle-my-theme)
 (global-set-key (kbd "C-;") 'endless/comment-line)
