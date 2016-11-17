@@ -27,6 +27,12 @@
                          ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 
+;; some wizard online concocted this
+(when (>= emacs-major-version 25)
+  (eval-after-load 'bytecomp
+    '(add-to-list 'byte-compile-not-obsolete-funcs
+                  'preceding-sexp)))
+
 (setq package-enable-at-startup nil)
 (package-initialize)
 
@@ -133,8 +139,9 @@
 (use-package exec-path-from-shell
   :defer 2
   :config
-  (when (memq window-system '(mac ns))
+  (when ccann/is-osx
     (exec-path-from-shell-initialize)
+    (exec-path-from-shell-copy-envs (ccann/get-envs "~/.profile"))
     (exec-path-from-shell-copy-env "PYTHONPATH")))
 
 (use-package smex
@@ -263,7 +270,11 @@
 ;;;;;;;;;;;;;;;;;;
 
 
+(use-package ob-ipython
+  :ensure t)
+
 (use-package org
+  :ensure t
   :mode ("\\.org\\'" . org-mode)
   :init
   (setq org-directory "~/Dropbox (Personal)/org")
@@ -274,6 +285,12 @@
   (add-hook 'org-mode-hook #'auto-fill-mode)
 
   :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (clojure . t)
+     (shell . t)
+     (python . t)))
   ;; the following jekyll-boostrap integration depends on ~/dev/ccann.github.io
   ;; and ~/blog existing, see below.
   (setq org-hide-emphasis-markers nil)
@@ -333,6 +350,18 @@
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
+(use-package yaml-mode
+  :ensure t)
+
+(use-package dockerfile-mode
+  :ensure t)
+
+(use-package terraform-mode
+  :ensure t)
+
+(use-package git-timemachine
+  :ensure t)
+
 (use-package auctex
   :mode ("\\.tex\\'" . latex-mode)
   :commands (latex-mode LaTeX-mode plain-tex-mode)
@@ -372,22 +401,8 @@
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
-(use-package smartparens
-  :commands (smartparens-mode show-smartparens-mode)
-  :init
-  (setq sp-override-key-bindings '(("C-<right>" . nil)
-                                   ("C-<left>" . nil)
-                                   ("C-)" . sp-forward-slurp-sexp)
-                                   ("M-<backspace>" . nil)
-                                   ("C-(" . sp-forward-barf-sexp)))
-  :config
-  (sp-use-smartparens-bindings)
-  (sp--update-override-key-bindings)
-  ;; no '' pair in emacs lisp and clojure mode
-  (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
-  (sp-local-pair 'clojure-mode "'" nil :actions nil)
-  ;; don't pair "'" if we're at the end of a word (like when typing an apostrophe)
-  (sp-pair "'" nil :unless '(sp-point-after-word-p)))
+(use-package lispy
+  :ensure t)
 
 (use-package ess :defer t)
 
@@ -398,10 +413,12 @@
   (add-hook 'ruby-mode-hook #'idle-highlight-mode))
 
 (use-package python-mode
+  :ensure t
   :mode ("\\.py\\'" . python-mode)
   :init
   (add-hook 'python-mode-hook #'elpy-mode)
   (add-hook 'python-mode-hook #'elpy-enable)
+  (add-hook 'python-mode-hook (lambda () (elpy-use-ipython "ipython")))
   (add-hook 'python-mode-hook #'subword-mode)
   (add-hook 'python-mode-hook #'linum-mode)
   ;; (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
@@ -416,16 +433,16 @@
         python-check-command "flake8"))
 
 (use-package elpy
-  ;; :diminish elpy-mode
-  
+  :ensure t
   :init
+  (fringe-mode '(10 . 0))
   (setq elpy-rpc-backend "jedi")
   (setq elpy-modules '(elpy-module-company
                        elpy-module-eldoc
                        elpy-module-sane-defaults
                        elpy-module-pyvenv))
   (when ccann/is-osx
-    (setq elpy-rpc-python-command "/usr/local/bin/python")))
+    (setq elpy-rpc-python-command "/usr/local/bin/python3")))
 
 (use-package jedi
   :defer t
@@ -449,7 +466,28 @@
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
-  :diminish (subword-mode smartparens-mode smartparens-strict-mode)
+  :diminish (subword-mode)
+  :config
+  (define-clojure-indent
+    ; compojure
+    (defroutes 'defun)
+    (GET 2)
+    (POST 2)
+    (PUT 2)
+    (DELETE 2)
+    (HEAD 2)
+    (ANY 2)
+    (context 2)
+    ; metosin
+    (defapi 'defun)
+    (swaggered 'defun)
+    (swagger-docs 2)
+    (GET* 2)
+    (POST* 2)
+    (PUT* 2)
+    (DELETE* 2)
+    (HEAD* 2)
+    (ANY* 2))
   :init
   (use-package slamhound :defer t )
   (setq cljr-suppress-middleware-warnings t)
@@ -459,19 +497,16 @@
   (add-hook 'clojure-mode-hook #'eldoc-mode)
   (add-hook 'clojure-mode-hook #'idle-highlight-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
-  (add-hook 'clojure-mode-hook #'smartparens-strict-mode))
+  (add-hook 'clojure-mode-hook #'lispy-mode))
 
 (use-package cider
-  :pin melpa-stable
+  :ensure t
   :defer t
-  ;; :bind (("C-S-n" . ccann/forward-clj-def)
-  ;;        ("C-S-p" . ccann/backward-clj-def))
   :init
   (use-package cider-eval-sexp-fu)
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-  (add-hook 'cider-repl-mode-hook #'smartparens-strict-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   :config
   (setq nrepl-log-messages t                    ; log communication with the nREPL server
@@ -486,6 +521,7 @@
   (cider-repl-toggle-pretty-printing))
 
 (use-package clj-refactor
+  :ensure t
   :defer t
   :pin melpa-stable
   :diminish clj-refactor-mode
@@ -493,8 +529,7 @@
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'linum-mode)
-(add-hook 'emacs-lisp-mode-hook #'smartparens-mode)
-(add-hook 'emacs-lisp-mode-hook #'smartparens-strict-mode)
+(add-hook 'emacs-lisp-mode-hook #'lispy-mode)
 (add-hook 'emacs-lisp-mode-hook #'idle-highlight-mode)
 (diminish 'auto-revert-mode)
 
@@ -502,6 +537,7 @@
 (use-package web-mode
   :mode ("\\.html?\\'" . web-mode)
   :init
+  (setq js-indent-level 2)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 4)
   (setq web-mode-code-indent-offset 4)
@@ -528,8 +564,7 @@
 (setq inhibit-startup-screen t) ; turn off splash screen
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
-    ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-13")
-    (set-face-attribute 'default nil :weight 'normal :font "Source Code Pro-13")
+    (set-face-attribute 'default nil :weight 'normal :font "Office Code Pro-13")
   (progn
     (menu-bar-mode 0)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
@@ -586,12 +621,10 @@
   :config
   (smooth-scrolling-mode 1))
 
+(setq mouse-wheel-scroll-amount '(2)) ;; n lines at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
 
-;; (use-package smooth-scroll
-;;   :config
-;;   (smooth-scroll-mode 0)
-;;   (setq smooth-scroll/vscroll-step-size 5))
 
 ; configure clipoard
 (setq save-interprogram-paste-before-kill t
@@ -611,7 +644,7 @@
   :bind (("C-c r" . vr/replace)
          ("C-c q" . vr/query-replace)))
   
-
+(setq scroll-error-top-bottom t)
 ;;;;;;;;;;;;;;;;
 ; Keybindings ;;
 ;;;;;;;;;;;;;;;;
@@ -621,15 +654,15 @@
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
-(global-set-key (kbd "C-S-n") 'scroll-up)
-(global-set-key (kbd "C-S-p") 'scroll-down)
+(global-set-key (kbd "C-S-n") (lambda () (interactive) (scroll-up 8) (next-line 8)))
+(global-set-key (kbd "C-S-p") (lambda () (interactive) (scroll-down 8) (previous-line 8)))
 (global-set-key (kbd "C-l") 'goto-line)
 (global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
 (global-set-key (kbd "C-c I") 'find-user-init-file)
 (global-set-key (kbd "C-c N") 'find-notes-file)
 (global-set-key (kbd "<f12>") 'ibuffer)
 (global-set-key (kbd "<f9>") 'cycle-my-theme)
-(global-set-key (kbd "C-;") 'endless/comment-line)
+(global-set-key (kbd "C-;") 'comment-line)
 (global-set-key [(hyper q)] 'save-buffers-kill-emacs)
 
 (use-package hydra :defer t)
