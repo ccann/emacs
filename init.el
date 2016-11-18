@@ -164,9 +164,9 @@
 
 (use-package magit
   :diminish magit-auto-revert-mode
-  :pin melpa-stable
   :init
   (setq magit-status-buffer-switch-function 'switch-to-buffer)
+  (setq magit-display-buffer-function  #'magit-display-buffer-fullframe-status-v1)
   :bind (("<f10>" . magit-status))
   :config
   (when ccann/is-osx
@@ -689,9 +689,10 @@
 (use-package darktooth-theme :defer t)
 (use-package material-theme :defer t)
 (use-package metalheart-theme :defer t)
+(use-package apropospriate-theme :defer t)
 
 (defvar curr-theme nil)
-(defvar my-themes '(flatui darktooth zenburn metalheart gotham))
+(defvar my-themes '(flatui apropospriate-light darktooth metalheart apropospriate-dark))
 (cycle-my-theme)
 
 
