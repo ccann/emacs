@@ -26,3 +26,4 @@ init.el~
 /projectile.cache
 /.mc-lists.el
 /abbrev_defs
+semanticdb/*

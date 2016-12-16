@@ -128,9 +128,6 @@
 ;;;;;;;;;;;;;
 ; Packages ;;
 ;;;;;;;;;;;;;
-(use-package idle-highlight-mode
-  :defer t
-  :init (setq idle-highlight-idle-time 0.3))
 
 ;; indent unless point is at the end of a symbol
 ;; (use-package smart-tab
@@ -180,23 +177,24 @@
   :diminish anaconda-mode)
 
 (use-package company
+  :ensure t
   :defer 2
   :init
-  (setq company-idle-delay 0.3
+  (setq company-idle-delay 0.2
         company-minimum-prefix-length 3)
   (global-set-key (kbd "<S-tab>") #'company-indent-or-complete-common)
   (setq tab-always-indent t) ;; set this to nil if you want `indent-for-tab-command` instead
   :diminish company-mode
-  :config 
+  :config
+  (use-package company-quickhelp
+    :ensure t
+    :config (company-quickhelp-mode 1))
   (add-to-list 'company-backends 'company-anaconda)
   (global-company-mode))
 
 (use-package dired-details+ :defer t)
 
-(use-package saveplace
-  :init
-  (setq-default save-place t)
-  (setq save-place-file (concat user-emacs-directory "places")))
+(save-place-mode 1)
 
 (use-package smart-mode-line
   :init
@@ -254,14 +252,18 @@
 
 (use-package highlight-symbol
   :init
-  (setq highlight-symbol-on-navigation-p t)
-  (setq hi-lock-auto-select-face t) ; when non-nil cycle through faces in hi-lock-faces-defaults instead of prompting
+  (setq highlight-symbol-idle-delay 0.4)
+  ;; autocycle highlighter colors
+  (setq hi-lock-auto-select-face t)
   :bind
+  ;; toggle highlighting of symbol at point throughout buffer
   (("C-h s" . highlight-symbol))
   :config
+  ;; automatically highlight symbol at point until point moves
   (highlight-symbol-mode 1))
   
 ;; (use-package hlinum :config (hlinum-activate))
+
 (use-package nyan-mode
   :config (nyan-mode -1))
 
@@ -341,6 +343,10 @@
   :bind
   (("<f8>" . org-capture)))
 
+
+(use-package pov-mode
+  :mode ("\\.pov\\'" . pov-mode)
+  :init (add-hook 'pov-mode-hook #'linum-mode))
 
 (use-package markdown-mode
   :ensure t
@@ -509,21 +515,24 @@
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   :config
-  (setq nrepl-log-messages t                    ; log communication with the nREPL server
-        cider-repl-display-in-current-window t 
+  (setq nrepl-log-messages t            ; log communication with the nREPL server
+        cider-repl-display-in-current-window t
         cider-repl-use-clojure-font-lock t
         cider-prompt-save-file-on-load nil
         cider-prompt-for-symbol nil
         cider-font-lock-dynamically '(macro core function var)
-        nrepl-hide-special-buffers t            ; hide *nrepl-connection* and *nrepl-server*
+        nrepl-hide-special-buffers t    ; hide *nrepl-connection* and *nrepl-server*
         cider-overlays-use-font-lock nil
         nrepl-prompt-to-kill-server-buffer-on-quit nil)
-  (cider-repl-toggle-pretty-printing))
+  (cider-repl-toggle-pretty-printing)
+  (add-hook 'cider-popup-buffer-mode-hook
+            (lambda ()
+              (when (string= (buffer-name) "*cider-grimoire*")
+                (markdown-mode)))))
 
 (use-package clj-refactor
   :ensure t
   :defer t
-  :pin melpa-stable
   :diminish clj-refactor-mode
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
@@ -550,6 +559,7 @@
   (setq projectile-enable-caching t)
   :diminish projectile-mode
   :config
+  ;; change the shell to sh from bash because I use fish
   (setq shell-file-name "/bin/sh")
   (projectile-global-mode 1))
 
@@ -606,6 +616,13 @@
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
+(use-package avy
+  :ensure t
+  :defer t
+  :bind
+  ((""))
+  )
+
 ;;;;;;;;;
 ; Misc ;;
 ;;;;;;;;;
@@ -616,19 +633,31 @@
 (setq create-lockfiles nil)
 (setq-default indent-tabs-mode nil) ; disallow tab insertion
 
-(use-package smooth-scrolling
-  :ensure t
-  :config
-  (smooth-scrolling-mode 1))
+;; (use-package smooth-scrolling
+;;   :ensure t
+;;   :config
+;;   (smooth-scrolling-mode 1))
 
 (setq mouse-wheel-scroll-amount '(2)) ;; n lines at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
 
 
+
+(use-package sublimity
+  :ensure t
+  :init
+  (require 'sublimity-scroll)
+  (setq sublimity-scroll-weight 4
+        sublimity-scroll-drift-length 6)
+  :config (sublimity-mode 1))
+
+
+
 ; configure clipoard
 (setq save-interprogram-paste-before-kill t
-      mouse-yank-at-point t) ; Mouse-2 inserts text at point, not click location
+      ; Mouse-2 inserts text at point, not click location
+      mouse-yank-at-point t) 
 
 (delete-selection-mode 1)
 
@@ -645,6 +674,21 @@
          ("C-c q" . vr/query-replace)))
   
 (setq scroll-error-top-bottom t)
+
+(use-package browse-kill-ring
+  :init
+  (setq browse-kill-ring-highlight-current-entry t
+        browse-kill-ring-highlight-inserted-item 'pulse
+        browse-kill-ring-separator ""
+        browse-kill-ring-show-preview nil)
+  :ensure t
+  :bind ("M-y" . browse-kill-ring))
+
+(use-package google-this
+  :ensure t
+  :defer t
+  :bind ("C-x g" . google-this))
+
 ;;;;;;;;;;;;;;;;
 ; Keybindings ;;
 ;;;;;;;;;;;;;;;;
@@ -670,13 +714,15 @@
 (use-package key-chord
   :config
   (key-chord-mode 1)
-  (key-chord-define-global "sz" 'save-buffer)
+  (key-chord-define-global "jv" 'avy-goto-char-2)
+  (key-chord-define-global "jw" 'ace-window)
+  (key-chord-define-global "jc" 'save-buffer)
   (key-chord-define-global "jf" 'projectile-find-file)
   (key-chord-define-global "jp" 'projectile-switch-project)
   (key-chord-define-global "fb" 'ido-switch-buffer)
   ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
   ;; (key-chord-define-global "fd" 'god-local-mode)
-)
+  )
 
 
 ;;;;;;;;;;;
@@ -690,9 +736,15 @@
 (use-package material-theme :defer t)
 (use-package metalheart-theme :defer t)
 (use-package apropospriate-theme :defer t)
+(use-package ample-theme :defer t)
 
 (defvar curr-theme nil)
-(defvar my-themes '(flatui apropospriate-light darktooth metalheart apropospriate-dark))
+(defvar my-themes '(flatui
+                    apropospriate-light
+                    ample-light
+                    darktooth
+                    metalheart
+                    apropospriate-dark))
 (cycle-my-theme)
 
 
@@ -702,3 +754,7 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
+
+
+
+
