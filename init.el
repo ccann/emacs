@@ -13,6 +13,7 @@
 
 ;;; Code:
 
+(setq warning-minimum-level :emergency)
 (setq load-prefer-newer t)
 
 ;; this seemingly has no effect...
@@ -55,7 +56,6 @@
 ;;   (setq powerline-height 20)
 ;;   (setq powerline-raw " ")
 ;;   (setq ns-use-srgb-colorspace nil)
-;;   :ensure t
 ;;   :config (spaceline-emacs-theme))
 
 
@@ -97,16 +97,13 @@
   (bind-key "i" 'god-local-mode god-local-mode-map))
 
 ;; (use-package evil
-;;   :ensure t
 ;;   :config  (evil-mode 1)
 ;;   )
 
 ;; (use-package evil-escape
-;;   :ensure t
 ;;   :init (setq-default evil-escape-key-sequence "fd")
 ;;   :config (evil-escape-mode 1))
 
-;; (use-package evil-tutor :ensure t)
 
 ;;;;;;;;;
 ; libs ;;
@@ -177,7 +174,6 @@
   :diminish anaconda-mode)
 
 (use-package company
-  :ensure t
   :defer 2
   :init
   (setq company-idle-delay 0.2
@@ -187,12 +183,15 @@
   :diminish company-mode
   :config
   (use-package company-quickhelp
-    :ensure t
     :config (company-quickhelp-mode 1))
   (add-to-list 'company-backends 'company-anaconda)
   (global-company-mode))
 
-(use-package dired-details+ :defer t)
+(use-package dired-details+
+  :defer t)
+
+(use-package dired+
+  :defer t)
 
 (save-place-mode 1)
 
@@ -252,7 +251,6 @@
 
 (use-package highlight-symbol
   :init
-  (setq highlight-symbol-idle-delay 0.4)
   ;; autocycle highlighter colors
   (setq hi-lock-auto-select-face t)
   :bind
@@ -272,11 +270,9 @@
 ;;;;;;;;;;;;;;;;;;
 
 
-(use-package ob-ipython
-  :ensure t)
+(use-package ob-ipython)
 
 (use-package org
-  :ensure t
   :mode ("\\.org\\'" . org-mode)
   :init
   (setq org-directory "~/Dropbox (Personal)/org")
@@ -291,7 +287,7 @@
    'org-babel-load-languages
    '((emacs-lisp . t)
      (clojure . t)
-     (shell . t)
+     (sh . t)
      (python . t)))
   ;; the following jekyll-boostrap integration depends on ~/dev/ccann.github.io
   ;; and ~/blog existing, see below.
@@ -345,28 +341,22 @@
 
 
 (use-package pov-mode
-  :mode ("\\.pov\\'" . pov-mode)
-  :init (add-hook 'pov-mode-hook #'linum-mode))
+  :mode ("\\.pov\\'" . pov-mode))
 
 (use-package markdown-mode
-  :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
-(use-package yaml-mode
-  :ensure t)
+(use-package yaml-mode)
 
-(use-package dockerfile-mode
-  :ensure t)
+(use-package dockerfile-mode)
 
-(use-package terraform-mode
-  :ensure t)
+(use-package terraform-mode)
 
-(use-package git-timemachine
-  :ensure t)
+(use-package git-timemachine)
 
 (use-package auctex
   :mode ("\\.tex\\'" . latex-mode)
@@ -408,29 +398,29 @@
 (global-hl-line-mode 1)
 
 (use-package lispy
-  :ensure t)
+  :defer t
+  :init (setq lispy-compat '(cider)))
+
+(use-package parinfer :defer t)
 
 (use-package ess :defer t)
 
 (use-package ruby-mode
-  :mode ("\\.rb\\'" . ruby-mode)
-  :init 
-  (add-hook 'ruby-mode-hook #'linum-mode)
-  (add-hook 'ruby-mode-hook #'idle-highlight-mode))
+  :mode ("\\.rb\\'" . ruby-mode))
+
+
+
 
 (use-package python-mode
-  :ensure t
   :mode ("\\.py\\'" . python-mode)
   :init
   (add-hook 'python-mode-hook #'elpy-mode)
   (add-hook 'python-mode-hook #'elpy-enable)
   (add-hook 'python-mode-hook (lambda () (elpy-use-ipython "ipython")))
   (add-hook 'python-mode-hook #'subword-mode)
-  (add-hook 'python-mode-hook #'linum-mode)
   ;; (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
   
   (add-hook 'python-mode-hook #'flycheck-mode)
-  (add-hook 'python-mode-hook #'idle-highlight-mode)
   (add-hook 'python-mode-hook #'eldoc-mode)
   
   (setq-default python-indent-guess-indent-offset nil
@@ -439,7 +429,6 @@
         python-check-command "flake8"))
 
 (use-package elpy
-  :ensure t
   :init
   (fringe-mode '(10 . 0))
   (setq elpy-rpc-backend "jedi")
@@ -465,11 +454,13 @@
   :defer t
   :diminish eldoc-mode)
 
+
 ;;;;;;;;;;;;;
 ;; Clojure ;;
 ;;;;;;;;;;;;;
 
 (use-package clojure-mode
+  :pin melpa-stable
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
@@ -495,26 +486,28 @@
     (HEAD* 2)
     (ANY* 2))
   :init
-  (use-package slamhound :defer t )
   (setq cljr-suppress-middleware-warnings t)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
-  (add-hook 'clojure-mode-hook #'linum-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'idle-highlight-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   (add-hook 'clojure-mode-hook #'lispy-mode))
 
 (use-package cider
-  :ensure t
+  :pin melpa-stable
   :defer t
   :init
-  (use-package cider-eval-sexp-fu)
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   :config
+  (use-package cider-eval-sexp-fu :defer t)
+  (use-package clj-refactor
+    :defer t
+    :pin melpa-stable
+    :diminish clj-refactor-mode
+    :config (cljr-add-keybindings-with-prefix "C-c C-m"))
   (setq nrepl-log-messages t            ; log communication with the nREPL server
         cider-repl-display-in-current-window t
         cider-repl-use-clojure-font-lock t
@@ -530,16 +523,10 @@
               (when (string= (buffer-name) "*cider-grimoire*")
                 (markdown-mode)))))
 
-(use-package clj-refactor
-  :ensure t
-  :defer t
-  :diminish clj-refactor-mode
-  :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-(add-hook 'emacs-lisp-mode-hook #'linum-mode)
 (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
-(add-hook 'emacs-lisp-mode-hook #'idle-highlight-mode)
 (diminish 'auto-revert-mode)
 
 
@@ -549,9 +536,8 @@
   (setq js-indent-level 2)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 4)
-  (setq web-mode-code-indent-offset 4)
-  (add-hook 'web-mode-hook #'linum-mode)
-  (add-hook 'web-mode-hook #'idle-highlight-mode))
+  (setq web-mode-code-indent-offset 4))
+
 
 
 (use-package projectile
@@ -574,7 +560,7 @@
 (setq inhibit-startup-screen t) ; turn off splash screen
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
-    (set-face-attribute 'default nil :weight 'normal :font "Office Code Pro-13")
+    (set-face-attribute 'default nil :weight 'normal :font "Office Code Pro-11")
   (progn
     (menu-bar-mode 0)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
@@ -598,6 +584,7 @@
           (lambda ()
             (set-face-attribute 'linum nil :height 100)))
 
+(global-linum-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Buffers and Navigation ;;
@@ -617,11 +604,7 @@
   (windmove-default-keybindings))
 
 (use-package avy
-  :ensure t
-  :defer t
-  :bind
-  ((""))
-  )
+  :defer t)
 
 ;;;;;;;;;
 ; Misc ;;
@@ -634,7 +617,6 @@
 (setq-default indent-tabs-mode nil) ; disallow tab insertion
 
 ;; (use-package smooth-scrolling
-;;   :ensure t
 ;;   :config
 ;;   (smooth-scrolling-mode 1))
 
@@ -645,7 +627,6 @@
 
 
 (use-package sublimity
-  :ensure t
   :init
   (require 'sublimity-scroll)
   (setq sublimity-scroll-weight 4
@@ -662,7 +643,6 @@
 (delete-selection-mode 1)
 
 (use-package which-key
-  :ensure t
   :diminish (which-key-mode)
   :config
   (which-key-mode)
@@ -681,17 +661,17 @@
         browse-kill-ring-highlight-inserted-item 'pulse
         browse-kill-ring-separator ""
         browse-kill-ring-show-preview nil)
-  :ensure t
   :bind ("M-y" . browse-kill-ring))
 
 (use-package google-this
-  :ensure t
   :defer t
   :bind ("C-x g" . google-this))
 
 ;;;;;;;;;;;;;;;;
 ; Keybindings ;;
 ;;;;;;;;;;;;;;;;
+;; (global-set-key (kbd "C-x d") 'dired-jump)
+(global-set-key (kbd "C-x d") 'projectile-dired)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-x k") 'kill-buffer)
 (global-set-key (kbd "C-o") 'other-window)
@@ -720,6 +700,7 @@
   (key-chord-define-global "jf" 'projectile-find-file)
   (key-chord-define-global "jp" 'projectile-switch-project)
   (key-chord-define-global "fb" 'ido-switch-buffer)
+  (key-chord-define-global "cv" 'recenter)
   ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
   ;; (key-chord-define-global "fd" 'god-local-mode)
   )
@@ -728,7 +709,7 @@
 ;;;;;;;;;;;
 ; themes ;;
 ;;;;;;;;;;;
-(use-package flatui-theme :defer t )
+(use-package flatui-theme :defer t)
 (use-package zenburn-theme :defer t)
 (use-package badger-theme :defer t)
 (use-package gotham-theme :defer t)
@@ -754,7 +735,3 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
-
-
-
-
