@@ -252,7 +252,8 @@
 (use-package highlight-symbol
   :init
   ;; autocycle highlighter colors
-  (setq hi-lock-auto-select-face t)
+  (setq hi-lock-auto-select-face t
+        highlight-symbol-idle-delay 0.5)
   :bind
   ;; toggle highlighting of symbol at point throughout buffer
   (("C-h s" . highlight-symbol))
@@ -466,7 +467,7 @@
   :diminish (subword-mode)
   :config
   (define-clojure-indent
-    ; compojure
+                                        ; compojure
     (defroutes 'defun)
     (GET 2)
     (POST 2)
@@ -475,7 +476,7 @@
     (HEAD 2)
     (ANY 2)
     (context 2)
-    ; metosin
+                                        ; metosin
     (defapi 'defun)
     (swaggered 'defun)
     (swagger-docs 2)
@@ -490,11 +491,11 @@
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
+  (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   (add-hook 'clojure-mode-hook #'lispy-mode))
 
 (use-package cider
-  :pin melpa-stable
   :defer t
   :init
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
@@ -509,6 +510,7 @@
     :diminish clj-refactor-mode
     :config (cljr-add-keybindings-with-prefix "C-c C-m"))
   (setq nrepl-log-messages t            ; log communication with the nREPL server
+        cider-lein-parameters "with-profile +test repl :headless"
         cider-repl-display-in-current-window t
         cider-repl-use-clojure-font-lock t
         cider-prompt-save-file-on-load nil
@@ -666,6 +668,16 @@
 (use-package google-this
   :defer t
   :bind ("C-x g" . google-this))
+
+
+(use-package neotree
+  :ensure t
+  :bind (("<f2>" . neotree-toggle))
+  :init
+  (add-hook 'projectile-after-switch-project-hook #'neotree-projectile-action)
+  ;; (use-package all-the-icons)
+  (setq neo-theme 'arrow
+        neo-smart-open t))
 
 ;;;;;;;;;;;;;;;;
 ; Keybindings ;;
