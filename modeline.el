@@ -5,6 +5,22 @@
 (use-package powerline
   :config
 
+  (defun custom-modeline-github-vc ()
+    (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
+      (concat
+       (propertize (format "%s" (all-the-icons-octicon "git-branch"))
+                   'face `(:height 1.2 :family ,(all-the-icons-octicon-family))
+                   'display '(raise -0.1))
+       (propertize (format " %s" branch) 'face `(:height 1.0)))))
+
+  
+  (defun custom-modeline-icon-vc ()
+    (when vc-mode
+      (cond
+       ((string-match "Git[:-]" vc-mode) (custom-modeline-github-vc))
+       (t (format "%s" vc-mode)))))
+
+
   (defun make-rect (color height width)
     "Create an XPM bitmap."
     (when window-system
@@ -43,7 +59,9 @@
                                                          :face (when active 'error)
                                                          :v-adjust -0.01)))
                                 " "
-                                (powerline-buffer-id)))
+                                (powerline-buffer-id)
+                                " | "
+                                (powerline-raw "%l:%c" 'face1 'r)))
                           (center (list
                                    " "
                                    (powerline-mode-icon)
@@ -51,9 +69,8 @@
                                    (powerline-major-mode)
                                    " "))
                           (rhs (list
+                                (custom-modeline-icon-vc)
                                 ;; (format "%s" (eyebrowse--get 'current-slot))
-                                ;; " | "
-                                (powerline-raw "(%l, %c)" 'face1 'r)
                                 " | "
                                 (powerline-raw "%6p" 'face1 'r)
                                 (powerline-hud 'highlight 'region 1)
