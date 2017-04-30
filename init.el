@@ -91,11 +91,13 @@
 
 (use-package god-mode
   :init
+  (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
   (defun my-update-cursor ()
     (setq cursor-type
           (if (or god-local-mode buffer-read-only)
               'box
             'bar)))
+
   
   (add-hook 'god-mode-enabled-hook 'my-update-cursor)
   (add-hook 'god-mode-disabled-hook 'my-update-cursor)
@@ -146,7 +148,7 @@
 ;;   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
 
 (use-package exec-path-from-shell
-  :defer 2
+  :defer 1
   :config
   (when ccann/is-osx
     (exec-path-from-shell-initialize)
@@ -223,7 +225,9 @@
   :defer t
   :diminish flycheck-mode
   :init
-  ; Custom fringe indicator (circle)
+  (add-hook 'flycheck-mode-hook
+            (lambda () (set-face-attribute 'linum nil :underline nil)))
+  ;; Custom fringe indicator (circle)
   (when (fboundp 'define-fringe-bitmap)
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
       (vector #b00000000
@@ -244,20 +248,36 @@
               #b00000000
               #b01111111)))
 
-    (flycheck-define-error-level 'error
-      :overlay-category 'flycheck-error-overlay
-      :fringe-bitmap 'my-flycheck-fringe-indicator
-      :fringe-face 'flycheck-fringe-error)
+  (flycheck-define-error-level 'error
+    :overlay-category 'flycheck-error-overlay
+    :fringe-bitmap 'my-flycheck-fringe-indicator
+    :fringe-face 'flycheck-fringe-error)
     
-    (flycheck-define-error-level 'warning
-      :overlay-category 'flycheck-warning-overlay
-      :fringe-bitmap 'my-flycheck-fringe-indicator
-      :fringe-face 'flycheck-fringe-warning)
+  (flycheck-define-error-level 'warning
+    :overlay-category 'flycheck-warning-overlay
+    :fringe-bitmap 'my-flycheck-fringe-indicator
+    :fringe-face 'flycheck-fringe-warning)
     
-    (flycheck-define-error-level 'info
-      :overlay-category 'flycheck-info-overlay
-      :fringe-bitmap 'my-flycheck-fringe-indicator
-      :fringe-face 'flycheck-fringe-info))
+  (flycheck-define-error-level 'info
+    :overlay-category 'flycheck-info-overlay
+    :fringe-bitmap 'my-flycheck-fringe-indicator
+    :fringe-face 'flycheck-fringe-info)
+
+  :config
+  
+  ;; (set-face-attribute 'flycheck-error nil
+  ;;                     :foreground (face-attribute 'error :foreground)
+  ;;                     :background (face-attribute 'error :background)
+  ;;                     :underline 'unspecified)
+  ;; (set-face-attribute 'flycheck-warning nil
+  ;;                     :foreground (face-attribute 'warning :foreground)
+  ;;                     :background (face-attribute 'warning :background)
+  ;;                     :underline 'unspecified)
+  ;; (set-face-attribute 'flycheck-info nil
+  ;;                     :foreground (face-attribute 'info :foreground)
+  ;;                     :background (face-attribute 'info :background)
+  ;;                     :underline 'unspecified)
+  )
 
 
 (use-package fill-column-indicator :disabled t)
@@ -776,15 +796,16 @@
 (use-package challenger-deep-theme)
 (use-package spacemacs-theme)
 
+
+
 (defvar curr-theme nil)
 (defvar my-themes '(
                     ;; apropospriate-light
                     ;; ample-light
-                    darktooth
-                    metalheart
                     challenger-deep
                     spacemacs-dark
                     apropospriate-dark
+                    darktooth
                     flatui))
 (cycle-my-theme)
 

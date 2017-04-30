@@ -70,7 +70,8 @@
     (setq curr-underline-color (cdr (assoc :color (loop for (head . tail) on (face-attribute 'flycheck-error :underline) by 'cddr collect (cons head (car tail))))))
     (set-face-attribute 'flycheck-error nil :underline `(:color ,curr-underline-color :style line))
     (setq curr-underline-color (cdr (assoc :color (loop for (head . tail) on (face-attribute 'flycheck-info :underline) by 'cddr collect (cons head (car tail))))))
-    (set-face-attribute 'flycheck-info nil :underline `(:color ,curr-underline-color :style line))))
+    (set-face-attribute 'flycheck-info nil :underline `(:color ,curr-underline-color :style line))
+    (set-face-attribute 'linum nil :underline nil)))
 
 
 (defun ccann/get-envs (filename)
