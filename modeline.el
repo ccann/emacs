@@ -46,11 +46,12 @@
                    (let* ((active (powerline-selected-window-active))
                           (modified (buffer-modified-p))
                           (face1 (if active 'mode-line 'mode-line-inactive))
+                          ;; (face1 (if active 'powerline-active1 'powerline-inactive1))
                           (bar-color (cond ((and active modified) (face-foreground 'error))
                                            (active (face-background 'cursor))
                                            (t (face-background 'tooltip))))
                           (lhs (list
-                                (make-rect bar-color 30 3)
+                                (make-rect bar-color 24 3)
                                 (when modified
                                   (concat
                                    " "
@@ -69,7 +70,8 @@
                                    " "))
                           (rhs (list
                                 (custom-modeline-icon-vc)
-                                ;; (format "%s" (eyebrowse--get 'current-slot))
+                                " | "
+                                (format "%s" (eyebrowse--get 'current-slot))
                                 " | "
                                 (powerline-raw "%6p" face1 'r)
                                 (powerline-hud 'highlight 'region 1)

@@ -48,7 +48,10 @@
   ;; (sml/apply-theme 'respectful)
   (underline-straight)
   ;; (setq highlight-symbol-foreground-color "#000000")
-  (if (eq curr-theme 'darktooth)
+  (when (eq curr-theme 'challenger-deep)
+    (set-face-attribute 'mode-line nil :box nil)
+    (set-face-attribute 'mode-line-inactive nil :box nil))
+  (when (eq curr-theme 'darktooth)
       (custom-set-faces '(vertical-border ((t (:foreground "#504945")))))))
 
 
