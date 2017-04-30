@@ -14,7 +14,7 @@
 ;;; Code:
 
 (setq warning-minimum-level :emergency)
-(setq load-prefer-newer t)
+;; (setq load-prefer-newer t)
 
 ;; this seemingly has no effect...
 ;; (let ((display-table (or standard-display-table (make-display-table))))
@@ -34,20 +34,23 @@
     '(add-to-list 'byte-compile-not-obsolete-funcs
                   'preceding-sexp)))
 
-(setq package-enable-at-startup nil)
+;;(setq package-enable-at-startup nil)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-(eval-when-compile (require 'use-package))
-(setq use-package-verbose t)
-(setq use-package-always-ensure t)
+(eval-when-compile 
+  (progn (require 'use-package)
+	 (setq use-package-verbose t)
+	 (setq use-package-always-ensure t)))
 (require 'bind-key)
 (require 'diminish)
 
 (defconst ccann/is-osx (eq system-type 'darwin))
+
+
 
 ;; (use-package spaceline
 ;;   :init
@@ -85,25 +88,35 @@
 ; Modifiers ;;
 ;;;;;;;;;;;;;;
 
+
 (use-package god-mode
-  :config
-  ;; (god-mode-all)
+  :init
   (defun my-update-cursor ()
-    (setq cursor-type (if (or god-local-mode buffer-read-only)
-                          'box
-                        'bar)))
+    (setq cursor-type
+          (if (or god-local-mode buffer-read-only)
+              'box
+            'bar)))
+  
   (add-hook 'god-mode-enabled-hook 'my-update-cursor)
   (add-hook 'god-mode-disabled-hook 'my-update-cursor)
-  (bind-key "i" 'god-local-mode god-local-mode-map))
+
+  (defun update-lispy ()
+    (if (bound-and-true-p lispy-mode)
+        (lispy-mode -1)
+      (lispy-mode 1)))
+  
+  (add-hook 'god-mode-enabled-hook 'update-lispy)
+  (add-hook 'god-mode-disabled-hook 'update-lispy)
+
+  :config
+  (define-key god-local-mode-map (kbd "i") 'god-local-mode)
+  (god-mode-all))
 
 ;; (use-package evil
-;;   :config  (evil-mode 1)
-;;   )
-
-;; (use-package evil-escape
-;;   :init (setq-default evil-escape-key-sequence "fd")
-;;   :config (evil-escape-mode 1))
-
+;;   :config (evil-mode 1)
+;;   (use-package evil-escape
+;;     :init (setq-default evil-escape-key-sequence "fd")
+;;     :config (evil-escape-mode 1)))
 
 ;;;;;;;;;
 ; libs ;;
@@ -119,6 +132,8 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 (load (expand-file-name "functions.el" user-emacs-directory))
+(load (expand-file-name "modeline.el" user-emacs-directory))
+
 
 (add-to-list 'auto-mode-alist '("\\.cql\\'" . sql-mode))
 
@@ -167,7 +182,7 @@
     (setq magit-emacsclient-executable "/usr/local/bin/emacsclient")))
 
 (use-package rainbow-delimiters :defer t)
-(use-package rainbow-mode :defer t)
+;;(use-package rainbow-mode :defer t)
 
 (use-package company-anaconda
   :defer t
@@ -195,14 +210,14 @@
 
 (save-place-mode 1)
 
-(use-package smart-mode-line
-  :init
-  (setq sml/mule-info nil)
-  (setq sml/numbers-separator ":")
-  (setq sml/show-remote nil)
-  (setq sml/modified-char " x ")
-  :config
-  (sml/setup))
+;; (use-package smart-mode-line
+;;   :init
+;;   (setq sml/mule-info nil)
+;;   (setq sml/numbers-separator ":")
+;;   (setq sml/show-remote nil)
+;;   (setq sml/modified-char " x ")
+;;   :config
+;;   (sml/setup))
 
 (use-package flycheck
   :defer t
@@ -256,10 +271,7 @@
         highlight-symbol-idle-delay 0.5)
   :bind
   ;; toggle highlighting of symbol at point throughout buffer
-  (("C-h s" . highlight-symbol))
-  :config
-  ;; automatically highlight symbol at point until point moves
-  (highlight-symbol-mode 1))
+  (("C-h s" . highlight-symbol)))
   
 ;; (use-package hlinum :config (hlinum-activate))
 
@@ -359,36 +371,36 @@
 
 (use-package git-timemachine)
 
-(use-package auctex
-  :mode ("\\.tex\\'" . latex-mode)
-  :commands (latex-mode LaTeX-mode plain-tex-mode)
-  :config
-  (if ccann/is-osx
-      (setq TeX-view-program-selection '((output-pdf "Preview")))
-    (setq TeX-view-program-selection '((output-pdf "Evince"))))
-  :init
-  (add-hook 'LaTeX-mode-hook #'flyspell-mode)
-  (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-  (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
-  (add-hook 'LaTeX-mode-hook #'auctex-latexmk-setup)
-  (setq TeX-auto-save t
-        TeX-parse-self t
-        TeX-save-query nil
-        TeX-PDF-mode t
-        TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
-                                 "Evince" "evince --page-index=%(outpage) %o")))
-  (setq-default TeX-master nil))
 
+;;(use-package auctex
+;;  :mode ("\\.tex\\'" . latex-mode)
+;;  :commands (latex-mode LaTeX-mode plain-tex-mode)
+;;  :config
+;;  (if ccann/is-osx
+;;      (setq TeX-view-program-selection '((output-pdf "Preview")))
+;;    (setq TeX-view-program-selection '((output-pdf "Evince"))))
+;;  :init
+;;  (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+;;  (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+;;  (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
+;;  (add-hook 'LaTeX-mode-hook #'auctex-latexmk-setup)
+;;  (setq TeX-auto-save t
+;;        TeX-parse-self t
+;;        TeX-save-query nil
+;;        TeX-PDF-mode t
+;;        TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
+;;                                 "Evince" "evince --page-index=%(outpage) %o")))
+;;  (setq-default TeX-master nil))
 
-(use-package auctex-latexmk
-  :defer t
-  :init (setq auctex-latexmk-inherit-TeX-PDF-mode t)
-  :commands auctex-latexmk-setup)
+;;(use-package auctex-latexmk
+;;  :defer t
+;;  :init (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+;;  :commands auctex-latexmk-setup)
 
-(use-package reftex
-  :defer t
-  :commands turn-on-reftex
-  :init (setq reftex-plug-into-AUCTeX t))
+;;(use-package reftex
+;;  :defer t
+;;  :commands turn-on-reftex
+;;  :init (setq reftex-plug-into-AUCTeX t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; Programming Modes ;;
@@ -400,7 +412,12 @@
 
 (use-package lispy
   :defer t
-  :init (setq lispy-compat '(cider)))
+  :init
+  (setq lispy-compat '(cider edebug))
+  (define-advice git-timemachine-mode (:after (&optional arg))
+    (if (bound-and-true-p git-timemachine-mode)
+        (lispy-mode -1)
+      (lispy-mode 1))))
 
 (use-package parinfer :defer t)
 
@@ -408,9 +425,6 @@
 
 (use-package ruby-mode
   :mode ("\\.rb\\'" . ruby-mode))
-
-
-
 
 (use-package python-mode
   :mode ("\\.py\\'" . python-mode)
@@ -420,10 +434,10 @@
   (add-hook 'python-mode-hook (lambda () (elpy-use-ipython "ipython")))
   (add-hook 'python-mode-hook #'subword-mode)
   ;; (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
-  
+
   (add-hook 'python-mode-hook #'flycheck-mode)
   (add-hook 'python-mode-hook #'eldoc-mode)
-  
+
   (setq-default python-indent-guess-indent-offset nil
                 python-indent-offset 4)
   (setq python-fill-docstring-style 'pep-257-nn
@@ -431,7 +445,6 @@
 
 (use-package elpy
   :init
-  (fringe-mode '(10 . 0))
   (setq elpy-rpc-backend "jedi")
   (setq elpy-modules '(elpy-module-company
                        elpy-module-eldoc
@@ -466,65 +479,85 @@
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
   :config
+  (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
   (define-clojure-indent
-                                        ; compojure
+    (db-schema 'defun)
     (defroutes 'defun)
     (GET 2)
     (POST 2)
+    (PATCH 2)
     (PUT 2)
     (DELETE 2)
     (HEAD 2)
     (ANY 2)
     (context 2)
-                                        ; metosin
     (defapi 'defun)
     (swaggered 'defun)
-    (swagger-docs 2)
-    (GET* 2)
-    (POST* 2)
-    (PUT* 2)
-    (DELETE* 2)
-    (HEAD* 2)
-    (ANY* 2))
+    (swagger-docs 2))
+  (use-package clj-refactor
+    :defer t
+    :init
+    (setq cljr-suppress-middleware-warnings t
+	  cljr-warn-on-eval nil
+	  cljr-project-clean-prompt nil
+	  cljr-magic-require-namespaces
+	  '(("io" . "clojure.java.io")
+	    ("set" . "clojure.set")
+	    ("str" . "clojure.string")
+	    ("walk" . "clojure.walk")
+	    ("zip" . "clojure.zip")
+	    ("s" . "schema.core")))
+    :diminish clj-refactor-mode
+    :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+
   :init
-  (setq cljr-suppress-middleware-warnings t)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
+  ;; (add-hook 'clojure-mode-hook 'flycheck-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
-  (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
+  ;; (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   (add-hook 'clojure-mode-hook #'lispy-mode))
+
+;; (use-package flycheck-clojure
+;;   :defer t
+;;   :init (add-hook 'after-init-hook 'global-flycheck-mode)
+;;   :config
+;;   (use-package flycheck :config (flycheck-clojure-setup))
+;;   (use-package flycheck-pos-tip
+;;     :config
+;;     (setq flycheck-display-errors-function 'flycheck-pos-tip-error-messages)))
+
 
 (use-package cider
   :defer t
+  :pin melpa-stable
   :init
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-  (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
+  (add-hook 'cider-repl-mode-hook #'toggle-truncate-lines)
   :config
   (use-package cider-eval-sexp-fu :defer t)
-  (use-package clj-refactor
-    :defer t
-    :pin melpa-stable
-    :diminish clj-refactor-mode
-    :config (cljr-add-keybindings-with-prefix "C-c C-m"))
-  (setq nrepl-log-messages t            ; log communication with the nREPL server
-        cider-lein-parameters "with-profile +test repl :headless"
-        cider-repl-display-in-current-window t
-        cider-repl-use-clojure-font-lock t
-        cider-prompt-save-file-on-load nil
-        cider-prompt-for-symbol nil
-        cider-font-lock-dynamically '(macro core function var)
-        nrepl-hide-special-buffers t    ; hide *nrepl-connection* and *nrepl-server*
-        cider-overlays-use-font-lock nil
-        nrepl-prompt-to-kill-server-buffer-on-quit nil)
-  (cider-repl-toggle-pretty-printing)
+  (setq
+   cider-repl-display-help-banner nil
+   ;; nrepl-log-messages t                 ; log communication with the nREPL server
+   cider-lein-parameters "with-profile +test repl :headless"
+   ;; cider-repl-display-in-current-window t
+   cider-repl-use-clojure-font-lock t
+   cider-prompt-save-file-on-load nil
+   cider-prompt-for-symbol nil
+   ;; cider-stacktrace-fill-column 80
+   cider-font-lock-max-length 500
+   cider-repl-use-pretty-printing t
+   cider-font-lock-dynamically '(macro core function var)
+   nrepl-hide-special-buffers t         ; hide *nrepl-connection* and *nrepl-server*
+   cider-overlays-use-font-lock t
+   nrepl-prompt-to-kill-server-buffer-on-quit nil)
   (add-hook 'cider-popup-buffer-mode-hook
             (lambda ()
               (when (string= (buffer-name) "*cider-grimoire*")
                 (markdown-mode)))))
-
 
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
@@ -540,9 +573,8 @@
   (setq web-mode-css-indent-offset 4)
   (setq web-mode-code-indent-offset 4))
 
-
-
 (use-package projectile
+  :pin melpa-stable
   :init
   (setq projectile-enable-caching t)
   :diminish projectile-mode
@@ -556,13 +588,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 (column-number-mode 1)
 (blink-cursor-mode 1)
-(set-fringe-mode '(1 . 0))
+(set-fringe-mode '(10 . 10))
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
-    (set-face-attribute 'default nil :weight 'normal :font "Office Code Pro-11")
+    (set-face-attribute 'default nil
+                        ;; :weight 'normal
+                        ;; :font "Inconsolata-13"
+                        :font "Office Code Pro-11"
+                        ;; :font "Hack-11"
+                        )
   (progn
     (menu-bar-mode 0)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
@@ -586,7 +623,9 @@
           (lambda ()
             (set-face-attribute 'linum nil :height 100)))
 
+
 (global-linum-mode 1)
+(setq linum-format "%4d ")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Buffers and Navigation ;;
@@ -626,6 +665,7 @@
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
 
+(setq-default bidi-display-reordering nil)
 
 
 (use-package sublimity
@@ -674,9 +714,9 @@
   :ensure t
   :bind (("<f2>" . neotree-toggle))
   :init
-  (add-hook 'projectile-after-switch-project-hook #'neotree-projectile-action)
-  ;; (use-package all-the-icons)
-  (setq neo-theme 'arrow
+  ;; (add-hook 'projectile-after-switch-project-hook #'neotree-projectile-action)
+
+  (setq neo-theme 'icons
         neo-smart-open t))
 
 ;;;;;;;;;;;;;;;;
@@ -703,6 +743,10 @@
 
 (use-package hydra :defer t)
 
+(use-package ace-window
+  :defer t
+  :init (global-set-key (kbd "M-p") 'ace-window))
+
 (use-package key-chord
   :config
   (key-chord-mode 1)
@@ -714,30 +758,34 @@
   (key-chord-define-global "fb" 'ido-switch-buffer)
   (key-chord-define-global "cv" 'recenter)
   ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
-  ;; (key-chord-define-global "fd" 'god-local-mode)
-  )
+  (key-chord-define-global "fd" 'god-local-mode))
 
 
 ;;;;;;;;;;;
 ; themes ;;
 ;;;;;;;;;;;
-(use-package flatui-theme :defer t)
-(use-package zenburn-theme :defer t)
-(use-package badger-theme :defer t)
-(use-package gotham-theme :defer t)
-(use-package darktooth-theme :defer t)
-(use-package material-theme :defer t)
-(use-package metalheart-theme :defer t)
-(use-package apropospriate-theme :defer t)
-(use-package ample-theme :defer t)
+(use-package flatui-theme)
+(use-package zenburn-theme)
+(use-package badger-theme)
+(use-package gotham-theme)
+(use-package darktooth-theme)
+(use-package material-theme)
+(use-package metalheart-theme)
+(use-package apropospriate-theme)
+(use-package ample-theme)
+(use-package challenger-deep-theme)
+(use-package spacemacs-theme)
 
 (defvar curr-theme nil)
-(defvar my-themes '(flatui
-                    apropospriate-light
-                    ample-light
+(defvar my-themes '(
+                    ;; apropospriate-light
+                    ;; ample-light
                     darktooth
                     metalheart
-                    apropospriate-dark))
+                    challenger-deep
+                    spacemacs-dark
+                    apropospriate-dark
+                    flatui))
 (cycle-my-theme)
 
 

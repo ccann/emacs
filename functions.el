@@ -45,8 +45,9 @@
     (setq my-themes (append my-themes (list curr-theme))))
   (setq curr-theme (pop my-themes))
   (load-theme curr-theme t)
-  (sml/apply-theme 'respectful)
+  ;; (sml/apply-theme 'respectful)
   (underline-straight)
+  ;; (setq highlight-symbol-foreground-color "#000000")
   (if (eq curr-theme 'darktooth)
       (custom-set-faces '(vertical-border ((t (:foreground "#504945")))))))
 

@@ -27,3 +27,4 @@ init.el~
 /.mc-lists.el
 /abbrev_defs
 semanticdb/*
+/recentf
