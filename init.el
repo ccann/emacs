@@ -603,6 +603,9 @@
   (setq shell-file-name "/bin/sh")
   (projectile-global-mode 1))
 
+(use-package eyebrowse
+  :config (eyebrowse-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Display Settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;

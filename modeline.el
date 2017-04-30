@@ -1,7 +1,7 @@
 ;; Courtesy of https://github.com/MaxSt/challenger-deep/issues/1
 ;; (use-package rainbow-mode)
 (use-package all-the-icons)
-;; (use-package eyebrowse)
+
 (defun custom-modeline-github-vc ()
   (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
     (concat
