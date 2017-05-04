@@ -89,30 +89,30 @@
 ;;;;;;;;;;;;;;
 
 
-(use-package god-mode
-  :init
-  (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
-  (defun my-update-cursor ()
-    (setq cursor-type
-          (if (or god-local-mode buffer-read-only)
-              'box
-            'bar)))
+;; (use-package god-mode
+;;   :init
+;;   (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
+;;   (defun my-update-cursor ()
+;;     (setq cursor-type
+;;           (if (or god-local-mode buffer-read-only)
+;;               'box
+;;             'bar)))
 
   
-  (add-hook 'god-mode-enabled-hook 'my-update-cursor)
-  (add-hook 'god-mode-disabled-hook 'my-update-cursor)
+;;   (add-hook 'god-mode-enabled-hook 'my-update-cursor)
+;;   (add-hook 'god-mode-disabled-hook 'my-update-cursor)
 
-  (defun update-lispy ()
-    (if (bound-and-true-p lispy-mode)
-        (lispy-mode -1)
-      (lispy-mode 1)))
+;;   (defun update-lispy ()
+;;     (if (bound-and-true-p lispy-mode)
+;;         (lispy-mode -1)
+;;       (lispy-mode 1)))
   
-  (add-hook 'god-mode-enabled-hook 'update-lispy)
-  (add-hook 'god-mode-disabled-hook 'update-lispy)
+;;   (add-hook 'god-mode-enabled-hook 'update-lispy)
+;;   (add-hook 'god-mode-disabled-hook 'update-lispy)
 
-  :config
-  (define-key god-local-mode-map (kbd "i") 'god-local-mode)
-  (god-mode-all))
+;;   :config
+;;   (define-key god-local-mode-map (kbd "i") 'god-local-mode)
+;;   (god-mode-all))
 
 ;; (use-package evil
 ;;   :config (evil-mode 1)
@@ -220,6 +220,40 @@
 ;;   (setq sml/modified-char " x ")
 ;;   :config
 ;;   (sml/setup))
+
+;; (define-fringe-bitmap 'right-truncation
+;;   [#b00000000
+;;    #b00000000
+;;    #b00000000
+;;    #b00000000
+;;    #b01110000
+;;    #b00010000
+;;    #b00010000
+;;    #b00000000])
+
+;; (define-fringe-bitmap 'left-truncation
+;;   [#b00000000
+;;    #b00001000
+;;    #b00001000
+;;    #b00001110
+;;    #b00000000
+;;    #b00000000
+;;    #b00000000
+;;    #b00000000])
+
+(define-fringe-bitmap 'right-truncation 
+  "\xa9\x02\x04" nil nil 'bottom) 
+(define-fringe-bitmap 'left-truncation 
+  "\x20\x40\xaa\0\0" nil nil 'bottom) 
+(define-fringe-bitmap 'right-continuation 
+  "\xa8\0\0" nil nil 'bottom) 
+(define-fringe-bitmap 'left-continuation 
+  "\x2a\0\0" nil nil 'bottom)
+
+(let ((tr (assoc 'truncation fringe-indicator-alist)) 
+      (co (assoc 'continuation fringe-indicator-alist))) 
+  (if tr (setcdr tr '(left-truncation right-truncation))) 
+  (if co (setcdr co '(left-continuation right-continuation))))
 
 (use-package flycheck
   :defer t
@@ -494,7 +528,6 @@
 ;;;;;;;;;;;;;
 
 (use-package clojure-mode
-  :pin melpa-stable
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
@@ -526,7 +559,9 @@
 	    ("str" . "clojure.string")
 	    ("walk" . "clojure.walk")
 	    ("zip" . "clojure.zip")
-	    ("s" . "schema.core")))
+	    ("s" . "schema.core"))
+          ;; clojure-align-forms-automatically t
+          )
     :diminish clj-refactor-mode
     :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
@@ -551,7 +586,7 @@
 
 (use-package cider
   :defer t
-  :pin melpa-stable
+  :pin melpa
   :init
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
@@ -578,7 +613,6 @@
             (lambda ()
               (when (string= (buffer-name) "*cider-grimoire*")
                 (markdown-mode)))))
-
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
@@ -609,9 +643,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Display Settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;
+(setq frame-resize-pixelwise t)
 (column-number-mode 1)
 (blink-cursor-mode 1)
-(set-fringe-mode '(10 . 10))
+(set-fringe-mode '(10 . 0))
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
@@ -624,7 +659,7 @@
                         ;; :font "Hack-11"
                         )
   (progn
-    (menu-bar-mode 0)
+    (menu-bar-mode 1)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -798,6 +833,7 @@
 (use-package ample-theme)
 (use-package challenger-deep-theme)
 (use-package spacemacs-theme)
+(use-package kaolin-theme)
 
 
 
@@ -805,6 +841,7 @@
 (defvar my-themes '(
                     ;; apropospriate-light
                     ;; ample-light
+                    kaolin
                     challenger-deep
                     spacemacs-dark
                     apropospriate-dark

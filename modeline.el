@@ -10,6 +10,13 @@
                  'display '(raise -0.1))
      (propertize (format " %s" branch) 'face `(:height 1.0)))))
 
+(defun projectile-root ()
+  "Show the current projectile root."
+  (when (and (fboundp 'projectile-project-p)
+             (stringp (projectile-project-p))
+             (not (string= (projectile-project-name) (buffer-name))))
+    (projectile-project-name)))
+
 (use-package powerline
   :config
   
@@ -51,17 +58,18 @@
                                            (active (face-background 'cursor))
                                            (t (face-background 'tooltip))))
                           (lhs (list
-                                (make-rect bar-color 24 3)
+                                (make-rect bar-color 26 3)
                                 (when modified
                                   (concat
                                    " "
                                    (all-the-icons-faicon "floppy-o"
                                                          :face (when active 'error)
                                                          :v-adjust -0.01)))
-                                " "
-                                (powerline-buffer-id)
+                                "  "
+                                (powerline-raw "%l:%c" face1)
                                 " | "
-                                (powerline-raw "%l:%c" face1 'r)))
+                                (powerline-raw (format "[%s]" (projectile-root)) 'font-lock-keyword-face)
+                                (powerline-buffer-id)))
                           (center (list
                                    " "
                                    (powerline-mode-icon)

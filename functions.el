@@ -21,6 +21,23 @@
   (interactive)
   (find-file user-init-file))
 
+(defun toggle-case-camel-kebab ()
+  "Toggle between camelcase and kebab notation for the symbol at point."
+  (interactive)
+  (save-excursion
+    (let* ((bounds (bounds-of-thing-at-point 'symbol))
+           (start (car bounds))
+           (end (cdr bounds))
+           (currently-using-dashes-p (progn (goto-char start)
+                                                 (re-search-forward "-" end t))))
+      (if currently-using-dashes-p
+          (progn
+            (upcase-initials-region start end)
+            (replace-string "-" "" nil start end)
+            (downcase-region start (1+ start)))
+        (replace-regexp "\\([A-Z]\\)" "-\\1" nil (1+ start) end)
+        (downcase-region start (cdr (bounds-of-thing-at-point 'symbol)))))))
+
 (defun ccann/toggle-org-html-export-on-save ()
   (interactive)
   (if (memq 'org-html-export-to-html after-save-hook)
