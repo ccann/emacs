@@ -212,14 +212,20 @@
 
 (save-place-mode 1)
 
-;; (use-package smart-mode-line
-;;   :init
-;;   (setq sml/mule-info nil)
-;;   (setq sml/numbers-separator ":")
-;;   (setq sml/show-remote nil)
-;;   (setq sml/modified-char " x ")
-;;   :config
-;;   (sml/setup))
+(use-package smart-mode-line
+  :disabled t
+  :init
+  (setq sml/mule-info nil
+        ;; sml/numbers-separator "--"
+        sml/show-remote nil
+        sml/modified-char " × "
+        sml/projectile-replacement-format "[%s] "
+        ;; fix graphical artifact in row number
+        mode-line-format (cons " " mode-line-format)
+        rm-whitelist '(" LY"))
+  :config
+  (sml/setup))
+
 
 ;; (define-fringe-bitmap 'right-truncation
 ;;   [#b00000000
@@ -314,7 +320,14 @@
   )
 
 
-(use-package fill-column-indicator :disabled t)
+(use-package fill-column-indicator
+  :init
+  (setq fci-rule-column 99
+        fci-rule-use-dashes t
+        fci-dash-pattern 0.75
+        fci-rule-width 1
+        ;; fci-rule-color
+        ))
 
 (use-package indent-guide :disabled t)
 
@@ -531,6 +544,16 @@
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
+  :init
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)
+  ;; (add-hook 'clojure-mode-hook 'flycheck-mode)
+  (add-hook 'clojure-mode-hook #'subword-mode)
+  (add-hook 'clojure-mode-hook #'eldoc-mode)
+  (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
+  ;; (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
+  (add-hook 'clojure-mode-hook #'lispy-mode)
+  (add-hook 'clojure-mode-hook #'fci-mode)
+  
   :config
   (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
   (define-clojure-indent
@@ -551,73 +574,54 @@
     :defer t
     :init
     (setq cljr-suppress-middleware-warnings t
-	  cljr-warn-on-eval nil
-	  cljr-project-clean-prompt nil
-	  cljr-magic-require-namespaces
-	  '(("io" . "clojure.java.io")
-	    ("set" . "clojure.set")
-	    ("str" . "clojure.string")
-	    ("walk" . "clojure.walk")
-	    ("zip" . "clojure.zip")
-	    ("s" . "schema.core"))
+          cljr-warn-on-eval nil
+          cljr-favor-prefix-notation t
+          cljr-project-clean-prompt nil
+          cljr-magic-require-namespaces
+          '(("io" . "clojure.java.io")
+            ("set" . "clojure.set")
+            ("str" . "clojure.string")
+            ("walk" . "clojure.walk")
+            ("zip" . "clojure.zip")
+            ("s" . "schema.core"))
           ;; clojure-align-forms-automatically t
           )
     :diminish clj-refactor-mode
     :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+  (use-package cider
+    :defer t
+    :pin melpa
+    :init
+    (add-hook 'cider-mode-hook #'clj-refactor-mode)
+    (add-hook 'cider-repl-mode-hook #'subword-mode)
+    (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+    (add-hook 'cider-repl-mode-hook #'toggle-truncate-lines)
+    :config
+    (use-package cider-eval-sexp-fu :defer t)
+    (setq
+     cider-repl-display-help-banner nil
+     ;; nrepl-log-messages t                 ; log communication with the nREPL server
+     cider-lein-parameters "with-profile +test repl :headless"
+     ;; cider-repl-display-in-current-window t
+     cider-repl-use-clojure-font-lock t
+     cider-prompt-save-file-on-load nil
+     cider-prompt-for-symbol nil
+     ;; cider-stacktrace-fill-column 80
+     cider-font-lock-max-length 500
+     cider-repl-use-pretty-printing t
+     cider-font-lock-dynamically '(macro core function var)
+     nrepl-hide-special-buffers t       ; hide *nrepl-connection* and *nrepl-server*
+     cider-overlays-use-font-lock t
+     nrepl-prompt-to-kill-server-buffer-on-quit nil)
+    (add-hook 'cider-popup-buffer-mode-hook
+              (lambda ()
+                (when (string= (buffer-name) "*cider-grimoire*")
+                  (markdown-mode))))))
 
-  :init
-  (add-hook 'clojure-mode-hook #'yas-minor-mode)
-  ;; (add-hook 'clojure-mode-hook 'flycheck-mode)
-  (add-hook 'clojure-mode-hook #'subword-mode)
-  (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
-  ;; (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
-  (add-hook 'clojure-mode-hook #'lispy-mode))
-
-;; (use-package flycheck-clojure
-;;   :defer t
-;;   :init (add-hook 'after-init-hook 'global-flycheck-mode)
-;;   :config
-;;   (use-package flycheck :config (flycheck-clojure-setup))
-;;   (use-package flycheck-pos-tip
-;;     :config
-;;     (setq flycheck-display-errors-function 'flycheck-pos-tip-error-messages)))
-
-
-(use-package cider
-  :defer t
-  :pin melpa
-  :init
-  (add-hook 'cider-mode-hook #'clj-refactor-mode)
-  (add-hook 'cider-repl-mode-hook #'subword-mode)
-  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-  (add-hook 'cider-repl-mode-hook #'toggle-truncate-lines)
-  :config
-  (use-package cider-eval-sexp-fu :defer t)
-  (setq
-   cider-repl-display-help-banner nil
-   ;; nrepl-log-messages t                 ; log communication with the nREPL server
-   cider-lein-parameters "with-profile +test repl :headless"
-   ;; cider-repl-display-in-current-window t
-   cider-repl-use-clojure-font-lock t
-   cider-prompt-save-file-on-load nil
-   cider-prompt-for-symbol nil
-   ;; cider-stacktrace-fill-column 80
-   cider-font-lock-max-length 500
-   cider-repl-use-pretty-printing t
-   cider-font-lock-dynamically '(macro core function var)
-   nrepl-hide-special-buffers t         ; hide *nrepl-connection* and *nrepl-server*
-   cider-overlays-use-font-lock t
-   nrepl-prompt-to-kill-server-buffer-on-quit nil)
-  (add-hook 'cider-popup-buffer-mode-hook
-            (lambda ()
-              (when (string= (buffer-name) "*cider-grimoire*")
-                (markdown-mode)))))
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
 (diminish 'auto-revert-mode)
-
 
 (use-package web-mode
   :mode ("\\.html?\\'" . web-mode)
@@ -842,13 +846,12 @@
                     ;; apropospriate-light
                     ;; ample-light
                     kaolin
+                    darktooth
                     challenger-deep
                     spacemacs-dark
                     apropospriate-dark
-                    darktooth
                     flatui))
 (cycle-my-theme)
-
 
 
 ;; init.el ends here

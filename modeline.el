@@ -1,21 +1,29 @@
-;; Courtesy of https://github.com/MaxSt/challenger-deep/issues/1
-;; (use-package rainbow-mode)
+;;; modeline.el --- Modeline implementation
+
+;;; Commentary:
+;;; adapted from https://github.com/MaxSt/challenger-deep/issues/1
+
+;;; Code:
+
 (use-package all-the-icons)
 
 (defun custom-modeline-github-vc ()
   (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
     (concat
-     (propertize (format "%s" (all-the-icons-octicon "git-branch"))
-                 'face `(:height 1.2 :family ,(all-the-icons-octicon-family))
+     (propertize (format "  %s" (all-the-icons-octicon "git-branch"))
+                 'face `(:height 1.2 :family ,(all-the-icons-octicon-family)
+                                 :foreground ,(face-attribute 'font-lock-type-face :foreground))
                  'display '(raise -0.1))
-     (propertize (format " %s" branch) 'face `(:height 1.0)))))
+     (propertize (format " %s" branch) 'face
+                 `(:height 1.0 :foreground ,(face-attribute 'font-lock-type-face :foreground))))))
 
 (defun projectile-root ()
   "Show the current projectile root."
-  (when (and (fboundp 'projectile-project-p)
-             (stringp (projectile-project-p))
-             (not (string= (projectile-project-name) (buffer-name))))
-    (projectile-project-name)))
+  (if (and (fboundp 'projectile-project-p)
+           (stringp (projectile-project-p))
+           (not (string= (projectile-project-name) (buffer-name))))
+      (format "[%s]" (projectile-project-name))
+    ""))
 
 (use-package powerline
   :config
@@ -53,7 +61,9 @@
                    (let* ((active (powerline-selected-window-active))
                           (modified (buffer-modified-p))
                           (face1 (if active 'mode-line 'mode-line-inactive))
-                          ;; (face1 (if active 'powerline-active1 'powerline-inactive1))
+                          (face2 (if active 'font-lock-keyword-face 'mode-line-inactive))
+                          (face3 (if active 'font-lock-type-face 'mode-line-inactive))
+                          (spacer (powerline-raw " " face1))
                           (bar-color (cond ((and active modified) (face-foreground 'error))
                                            (active (face-background 'cursor))
                                            (t (face-background 'tooltip))))
@@ -61,27 +71,27 @@
                                 (make-rect bar-color 26 3)
                                 (when modified
                                   (concat
-                                   " "
+                                   spacer
                                    (all-the-icons-faicon "floppy-o"
-                                                         :face (when active 'error)
+                                                         :face (if active 'error 'mode-line-inactive)
                                                          :v-adjust -0.01)))
-                                "  "
-                                (powerline-raw "%l:%c" face1)
-                                " | "
-                                (powerline-raw (format "[%s]" (projectile-root)) 'font-lock-keyword-face)
-                                (powerline-buffer-id)))
+                                spacer
+                                (powerline-raw (projectile-root) face2)
+                                (powerline-raw (powerline-buffer-id) face1)
+                                spacer
+                                (custom-modeline-icon-vc)))
                           (center (list
-                                   " "
+                                   spacer
                                    (powerline-mode-icon)
-                                   " "
+                                   spacer
                                    (powerline-major-mode)
-                                   " "))
+                                   spacer))
                           (rhs (list
-                                (custom-modeline-icon-vc)
+                                (powerline-raw "%l:%c" 'mode-line)
                                 " | "
                                 (format "%s" (eyebrowse--get 'current-slot))
                                 " | "
-                                (powerline-raw "%6p" face1 'r)
+                                (powerline-raw "%6p" 'mode-line 'r)
                                 (powerline-hud 'highlight 'region 1)
                                 " ")))
                      (concat
@@ -90,3 +100,5 @@
                       (powerline-render center)
                       (powerline-fill face1 (powerline-width rhs))
                       (powerline-render rhs)))))))
+
+;;; modeline.el ends here
