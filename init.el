@@ -340,8 +340,6 @@
   ;; toggle highlighting of symbol at point throughout buffer
   (("C-h s" . highlight-symbol)))
   
-;; (use-package hlinum :config (hlinum-activate))
-
 (use-package nyan-mode
   :config (nyan-mode -1))
 
@@ -680,14 +678,18 @@
 (setq minibuffer-prompt-properties
       '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
-; prevent linum-mode and text-scale-adjust from fucking each other, not a perfect solution
-(add-hook 'linum-mode-hook
-          (lambda ()
-            (set-face-attribute 'linum nil :height 100)))
 
+(use-package nlinum
+  :init
+  ; prevent nlinum-mode and text-scale-adjust from fucking each other, not a perfect solution
+  (add-hook 'nlinum-mode-hook
+            (lambda ()
+              (set-face-attribute 'linum nil :height 100)))
+  (setq nlinum-format "%4d ")
 
-(global-linum-mode 1)
-(setq linum-format "%4d ")
+  :config
+  (global-nlinum-mode 1))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;Buffers and Navigation ;;
