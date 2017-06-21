@@ -595,7 +595,6 @@
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     (add-hook 'cider-repl-mode-hook #'subword-mode)
     (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-    (add-hook 'cider-repl-mode-hook #'toggle-truncate-lines)
     :config
     (use-package cider-eval-sexp-fu :defer t)
     (setq
@@ -826,6 +825,9 @@
 ;;;;;;;;;;;
 ; themes ;;
 ;;;;;;;;;;;
+(use-package all-the-icons)
+;; run M-x all-the-icons-install-fonts once
+
 (use-package flatui-theme)
 (use-package zenburn-theme)
 (use-package badger-theme)
@@ -843,14 +845,14 @@
 
 (defvar curr-theme nil)
 (defvar my-themes '(
-                    ;; apropospriate-light
                     ;; ample-light
                     kaolin
-                    darktooth
-                    challenger-deep
+                    ;; darktooth
+                    ;; challenger-deep
                     spacemacs-dark
                     apropospriate-dark
-                    flatui))
+                    flatui
+                    apropospriate-light))
 (cycle-my-theme)
 
 
