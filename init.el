@@ -599,7 +599,7 @@
      cider-repl-display-help-banner nil
      ;; nrepl-log-messages t                 ; log communication with the nREPL server
      cider-lein-parameters "with-profile +test repl :headless"
-     ;; cider-repl-display-in-current-window t
+     cider-repl-display-in-current-window t
      cider-repl-use-clojure-font-lock t
      cider-prompt-save-file-on-load nil
      cider-prompt-for-symbol nil
@@ -830,7 +830,11 @@
 (use-package all-the-icons)
 ;; run M-x all-the-icons-install-fonts once
 
+
+;; TODO add color theme support for matching parens like doom-themes do
 (use-package flatui-theme)
+(use-package doom-themes)
+(use-package gruvbox-theme)
 (use-package zenburn-theme)
 (use-package badger-theme)
 (use-package gotham-theme)
@@ -849,6 +853,8 @@
 (defvar my-themes '(
                     ;; ample-light
                     kaolin
+                    doom-one
+                    gruvbox
                     ;; darktooth
                     ;; challenger-deep
                     spacemacs-dark
