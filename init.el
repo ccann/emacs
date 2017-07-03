@@ -593,14 +593,14 @@
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     (add-hook 'cider-repl-mode-hook #'subword-mode)
     (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-    ;; (add-hook 'cider-repl-mode-hook #'toggle-truncate-lines)
+    
     :config
     (use-package cider-eval-sexp-fu :defer t)
     (setq
      cider-repl-display-help-banner nil
      ;; nrepl-log-messages t                 ; log communication with the nREPL server
      cider-lein-parameters "with-profile +test repl :headless"
-     ;; cider-repl-display-in-current-window t
+     cider-repl-display-in-current-window t
      cider-repl-use-clojure-font-lock t
      cider-prompt-save-file-on-load nil
      cider-prompt-for-symbol nil
@@ -828,7 +828,14 @@
 ;;;;;;;;;;;
 ; themes ;;
 ;;;;;;;;;;;
+(use-package all-the-icons)
+;; run M-x all-the-icons-install-fonts once
+
+
+;; TODO add color theme support for matching parens like doom-themes do
 (use-package flatui-theme)
+(use-package doom-themes)
+(use-package gruvbox-theme)
 (use-package zenburn-theme)
 (use-package badger-theme)
 (use-package gotham-theme)
@@ -845,14 +852,16 @@
 
 (defvar curr-theme nil)
 (defvar my-themes '(
-                    ;; apropospriate-light
                     ;; ample-light
                     kaolin
-                    darktooth
-                    challenger-deep
+                    doom-one
+                    gruvbox
+                    ;; darktooth
+                    ;; challenger-deep
                     spacemacs-dark
                     apropospriate-dark
-                    flatui))
+                    flatui
+                    apropospriate-light))
 (cycle-my-theme)
 
 
