@@ -593,7 +593,7 @@
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     (add-hook 'cider-repl-mode-hook #'subword-mode)
     (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-    (add-hook 'cider-repl-mode-hook #'toggle-truncate-lines)
+    ;; (add-hook 'cider-repl-mode-hook #'toggle-truncate-lines)
     :config
     (use-package cider-eval-sexp-fu :defer t)
     (setq
