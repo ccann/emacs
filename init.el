@@ -84,11 +84,12 @@
   (add-hook 'god-mode-enabled-hook 'update-lispy)
   (add-hook 'god-mode-disabled-hook 'update-lispy)
 
-  (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode 'cider-test-report-mode)
   :config
   ;; (define-key god-local-mode-map (kbd "i") 'god-local-mode)
   (define-key god-local-mode-map (kbd ".") 'repeat)
-  (god-mode-all))
+  (god-mode-all)
+  (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
+  (add-to-list 'god-exempt-major-modes 'cider-test-report-mode))
 
 
 ;; (global-set-key (kbd "C-x d") 'dired-jump)
