@@ -84,13 +84,10 @@
   (add-hook 'god-mode-enabled-hook 'update-lispy)
   (add-hook 'god-mode-disabled-hook 'update-lispy)
 
+  (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode 'cider-test-report-mode)
   :config
-  (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
   ;; (define-key god-local-mode-map (kbd "i") 'god-local-mode)
   (define-key god-local-mode-map (kbd ".") 'repeat)
-  (require 'god-mode-isearch)
-  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
-  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
   (god-mode-all))
 
 
@@ -106,7 +103,6 @@
 (global-set-key (kbd "M-x") 'counsel-M-x)
 
 
-;; (define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
 (global-set-key (kbd "C-l") 'goto-line)
 (global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
 (global-set-key (kbd "C-c I") 'find-user-init-file)
@@ -133,8 +129,8 @@
 (use-package key-chord
   :config
   (key-chord-mode 1)
-  (key-chord-define god-local-mode-map "nn" (lambda () (interactive) (scroll-up 10) (next-line 10)))
-  (key-chord-define god-local-mode-map "pp" (lambda () (interactive) (scroll-down 10) (previous-line 10)))
+  (key-chord-define god-local-mode-map "vn" (lambda () (interactive) (scroll-up 10) (next-line 10)))
+  (key-chord-define god-local-mode-map "vp" (lambda () (interactive) (scroll-down 10) (previous-line 10)))
   (key-chord-define-global "jv" 'avy-goto-char-2)
   (key-chord-define-global "jw" 'ace-window)
   (key-chord-define-global "jc" 'save-buffer)
@@ -168,7 +164,7 @@
   (setq ivy-height 20)
   (use-package ivy-hydra)
   :config
-  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   (ivy-mode 1))

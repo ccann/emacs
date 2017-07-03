@@ -75,7 +75,7 @@
 (defun fc/isearch-yank-symbol ()
   "Yank the symbol at point into the isearch minibuffer."
   (interactive)
-  (isearch-yank-string
+  (ivy-yank-word
    (save-excursion
      (when (and (not isearch-forward)
                 isearch-other-end)
