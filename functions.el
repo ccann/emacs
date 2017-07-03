@@ -54,7 +54,7 @@
     (ccann/toggle-org-html-export-on-save)))
 
 
-(defun cycle-my-theme ()
+(defun cycle-theme ()
   "Cycle through a list of themes, my-themes."
   (interactive)
   (when curr-theme

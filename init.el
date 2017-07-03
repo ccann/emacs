@@ -13,7 +13,7 @@
 
 ;;; Code:
 
-(setq warning-minimum-level :emergency)
+(setq-default warning-minimum-level :emergency)
 ;; (setq load-prefer-newer t)
 
 ;; this seemingly has no effect...
@@ -22,7 +22,7 @@
 ;;   (setq standard-display-table display-table))
 
 (require 'package)
-
+(setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org/packages/")
@@ -34,7 +34,6 @@
     '(add-to-list 'byte-compile-not-obsolete-funcs
                   'preceding-sexp)))
 
-;;(setq package-enable-at-startup nil)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -42,102 +41,119 @@
   (package-install 'use-package))
 
 (eval-when-compile 
-  (progn (require 'use-package)
-	 (setq use-package-verbose t)
-	 (setq use-package-always-ensure t)))
-(require 'bind-key)
-(require 'diminish)
+  (require 'use-package)
+  (setq use-package-verbose t)
+  (setq use-package-always-ensure t)
+  (require 'bind-key)
+  (require 'diminish))
+
 
 (defconst ccann/is-osx (eq system-type 'darwin))
 
-
-
-;; (use-package spaceline
-;;   :init
-;;   (require 'spaceline-config)
-;;   (setq powerline-default-separator 'wave)
-;;   (setq powerline-height 20)
-;;   (setq powerline-raw " ")
-;;   (setq ns-use-srgb-colorspace nil)
-;;   :config (spaceline-emacs-theme))
-
-
-;;;;;;;;;;;;;;
-;; Security ;;
-;;;;;;;;;;;;;;
-
-;; https://glyph.twistedmatrix.com/2015/11/editor-malware.html
-
-;; (setq tls-checktrust t) ;; always
-
-;; (let ((trustfile
-;;        (replace-regexp-in-string
-;;         "\\\\" "/"
-;;         (replace-regexp-in-string
-;;          "\n" ""
-;;          (shell-command-to-string "python -m certifi")))))
-;;   (setq tls-program
-;;         (list
-;;          (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
-;;                  (if (eq window-system 'w32) ".exe" "") trustfile)))
-;;   (setq gnutls-verify-error t)
-;;   (setq gnutls-trustfiles (list trustfile)))
-
-
-;;;;;;;;;;;;;;
-; Modifiers ;;
-;;;;;;;;;;;;;;
-
-
-;; (use-package god-mode
-;;   :init
-;;   (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
-;;   (defun my-update-cursor ()
-;;     (setq cursor-type
-;;           (if (or god-local-mode buffer-read-only)
-;;               'box
-;;             'bar)))
-
-  
-;;   (add-hook 'god-mode-enabled-hook 'my-update-cursor)
-;;   (add-hook 'god-mode-disabled-hook 'my-update-cursor)
-
-;;   (defun update-lispy ()
-;;     (if (bound-and-true-p lispy-mode)
-;;         (lispy-mode -1)
-;;       (lispy-mode 1)))
-  
-;;   (add-hook 'god-mode-enabled-hook 'update-lispy)
-;;   (add-hook 'god-mode-disabled-hook 'update-lispy)
-
-;;   :config
-;;   (define-key god-local-mode-map (kbd "i") 'god-local-mode)
-;;   (god-mode-all))
-
-;; (use-package evil
-;;   :config (evil-mode 1)
-;;   (use-package evil-escape
-;;     :init (setq-default evil-escape-key-sequence "fd")
-;;     :config (evil-escape-mode 1)))
-
-;;;;;;;;;
-; libs ;;
-;;;;;;;;;
+;; libs
 (use-package list-utils)
-(use-package popwin
-  :defer t
-  :config (popwin-mode 1))
+(use-package hydra :defer t)
+(use-package popwin :defer t :config (popwin-mode 1))
 
-;;;;;;;;;;;;
-; Loaders ;;
-;;;;;;;;;;;;
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 (load (expand-file-name "functions.el" user-emacs-directory))
 (load (expand-file-name "modeline.el" user-emacs-directory))
 
 
-(add-to-list 'auto-mode-alist '("\\.cql\\'" . sql-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Modifiers and Keybindings ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package god-mode
+  :init
+  (defun god-mode-update-cursor ()
+    (setq cursor-type
+          (if (or god-local-mode buffer-read-only)
+              'box
+            'bar)))
+  
+  (add-hook 'god-mode-enabled-hook 'god-mode-update-cursor)
+  (add-hook 'god-mode-disabled-hook 'god-mode-update-cursor)
+
+  (defun update-lispy ()
+    (if (bound-and-true-p lispy-mode)
+        (lispy-mode -1)
+      (lispy-mode 1)))
+  
+  (add-hook 'god-mode-enabled-hook 'update-lispy)
+  (add-hook 'god-mode-disabled-hook 'update-lispy)
+
+  :config
+  (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
+  ;; (define-key god-local-mode-map (kbd "i") 'god-local-mode)
+  (define-key god-local-mode-map (kbd ".") 'repeat)
+  (require 'god-mode-isearch)
+  (define-key isearch-mode-map (kbd "<escape>") 'god-mode-isearch-activate)
+  (define-key god-mode-isearch-map (kbd "<escape>") 'god-mode-isearch-disable)
+  (god-mode-all))
+
+
+;; (global-set-key (kbd "C-x d") 'dired-jump)
+(global-set-key (kbd "C-x d") 'projectile-dired)
+(global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-x k") 'kill-buffer)
+(global-set-key (kbd "C-o") 'other-window)
+
+
+(global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+
+
+;; (define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
+(global-set-key (kbd "C-l") 'goto-line)
+(global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
+(global-set-key (kbd "C-c I") 'find-user-init-file)
+(global-set-key (kbd "C-c N") 'find-notes-file)
+(global-set-key (kbd "C-;") 'comment-line)
+(global-set-key [(hyper q)] 'save-buffers-kill-emacs)
+
+;; function key bindings
+(global-set-key (kbd "<f6>") 'ivy-resume)
+(global-set-key (kbd "<f9>") 'cycle-theme)
+(global-set-key (kbd "<f12>") 'ibuffer)
+
+;; god-mode helpers
+(global-set-key (kbd "C-x C-1") 'delete-other-windows)
+(global-set-key (kbd "C-x C-2") 'split-window-below)
+(global-set-key (kbd "C-x C-3") 'split-window-right)
+(global-set-key (kbd "C-x C-0") 'delete-window)
+
+
+(use-package ace-window
+  :defer t
+  :init (global-set-key (kbd "M-p") 'ace-window))
+
+(use-package key-chord
+  :config
+  (key-chord-mode 1)
+  (key-chord-define god-local-mode-map "nn" (lambda () (interactive) (scroll-up 10) (next-line 10)))
+  (key-chord-define god-local-mode-map "pp" (lambda () (interactive) (scroll-down 10) (previous-line 10)))
+  (key-chord-define-global "jv" 'avy-goto-char-2)
+  (key-chord-define-global "jw" 'ace-window)
+  (key-chord-define-global "jc" 'save-buffer)
+  (key-chord-define-global "jf" 'projectile-find-file)
+  (key-chord-define-global "jp" 'projectile-switch-project)
+  (key-chord-define-global "fb" 'ido-switch-buffer)
+  (key-chord-define-global "cv" 'recenter)
+  ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
+  (key-chord-define-global "fd" 'god-local-mode))
+
+
+(use-package which-key
+  :diminish (which-key-mode . "Ꙍ")
+  ;; :diminish (which-key-mode)
+  :config
+  (which-key-mode)
+  (which-key-enable-god-mode-support))
+
+
 
 ;;;;;;;;;;;;;
 ; Packages ;;
@@ -147,6 +163,19 @@
 ;; (use-package smart-tab
 ;;   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
 
+(use-package ivy
+  :init
+  (setq ivy-height 20)
+  (use-package ivy-hydra)
+  :config
+  (setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  (ivy-mode 1))
+
+(use-package counsel)
+
+
 (use-package exec-path-from-shell
   :defer 1
   :config
@@ -155,9 +184,9 @@
     (exec-path-from-shell-copy-envs (ccann/get-envs "~/.profile"))
     (exec-path-from-shell-copy-env "PYTHONPATH")))
 
-(use-package smex
-  :bind (("M-x" . smex))
-  :config (smex-initialize))  ; smart meta-x (use IDO in minibuffer)
+;; (use-package smex
+;;   :bind (("M-x" . smex))
+;;   :config (smex-initialize))  ; smart meta-x (use IDO in minibuffer)
 
 (use-package ido
   :demand t
@@ -194,7 +223,8 @@
   :defer 2
   :init
   (setq company-idle-delay 0.2
-        company-minimum-prefix-length 3)
+        company-minimum-p
+        refix-length 3)
   (global-set-key (kbd "<S-tab>") #'company-indent-or-complete-common)
   (setq tab-always-indent t) ;; set this to nil if you want `indent-for-tab-command` instead
   :diminish company-mode
@@ -435,6 +465,8 @@
 (use-package terraform-mode)
 
 (use-package git-timemachine)
+
+(add-to-list 'auto-mode-alist '("\\.cql\\'" . sql-mode))
 
 
 ;;(use-package auctex
@@ -748,12 +780,6 @@
 
 (delete-selection-mode 1)
 
-(use-package which-key
-  :diminish (which-key-mode)
-  :config
-  (which-key-mode)
-  (which-key-enable-god-mode-support))
-
 (use-package visual-regexp
   :defer t
   :bind (("C-c r" . vr/replace)
@@ -782,47 +808,6 @@
 
   (setq neo-theme 'icons
         neo-smart-open t))
-
-;;;;;;;;;;;;;;;;
-; Keybindings ;;
-;;;;;;;;;;;;;;;;
-;; (global-set-key (kbd "C-x d") 'dired-jump)
-(global-set-key (kbd "C-x d") 'projectile-dired)
-(global-set-key (kbd "C-x C-k") 'kill-region)
-(global-set-key (kbd "C-x k") 'kill-buffer)
-(global-set-key (kbd "C-o") 'other-window)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
-(global-set-key (kbd "C-S-n") (lambda () (interactive) (scroll-up 8) (next-line 8)))
-(global-set-key (kbd "C-S-p") (lambda () (interactive) (scroll-down 8) (previous-line 8)))
-(global-set-key (kbd "C-l") 'goto-line)
-(global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
-(global-set-key (kbd "C-c I") 'find-user-init-file)
-(global-set-key (kbd "C-c N") 'find-notes-file)
-(global-set-key (kbd "<f12>") 'ibuffer)
-(global-set-key (kbd "<f9>") 'cycle-my-theme)
-(global-set-key (kbd "C-;") 'comment-line)
-(global-set-key [(hyper q)] 'save-buffers-kill-emacs)
-
-(use-package hydra :defer t)
-
-(use-package ace-window
-  :defer t
-  :init (global-set-key (kbd "M-p") 'ace-window))
-
-(use-package key-chord
-  :config
-  (key-chord-mode 1)
-  (key-chord-define-global "jv" 'avy-goto-char-2)
-  (key-chord-define-global "jw" 'ace-window)
-  (key-chord-define-global "jc" 'save-buffer)
-  (key-chord-define-global "jf" 'projectile-find-file)
-  (key-chord-define-global "jp" 'projectile-switch-project)
-  (key-chord-define-global "fb" 'ido-switch-buffer)
-  (key-chord-define-global "cv" 'recenter)
-  ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
-  (key-chord-define-global "fd" 'god-local-mode))
 
 
 ;;;;;;;;;;;
