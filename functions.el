@@ -69,7 +69,9 @@
   (set-face-attribute 'mode-line nil :box nil)
   (set-face-attribute 'mode-line-inactive nil :box nil)
   (when (eq curr-theme 'darktooth)
-      (custom-set-faces '(vertical-border ((t (:foreground "#504945")))))))
+    (custom-set-faces '(vertical-border ((t (:foreground "#504945")))))))
+
+; show-paren-match
 
 
 (defun fc/isearch-yank-symbol ()
@@ -91,7 +93,9 @@
     (set-face-attribute 'flycheck-error nil :underline `(:color ,curr-underline-color :style line))
     (setq curr-underline-color (cdr (assoc :color (loop for (head . tail) on (face-attribute 'flycheck-info :underline) by 'cddr collect (cons head (car tail))))))
     (set-face-attribute 'flycheck-info nil :underline `(:color ,curr-underline-color :style line))
-    (set-face-attribute 'linum nil :underline nil)))
+    ;; change this to nlinum
+    ;; (set-face-attribute 'linum nil :underline nil)
+    ))
 
 
 (defun ccann/get-envs (filename)

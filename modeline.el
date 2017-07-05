@@ -54,6 +54,53 @@
                             'help-echo (format "Major-mode: `%s`" major-mode)
                             'face `(:height 1.2 :family ,(all-the-icons-icon-family-for-buffer)))))))
 
+  ;; (setq-default mode-line-format
+;;                 '("%e"
+;;                   (:eval
+;;                    (let* ((active (powerline-selected-window-active))
+;;                           (modified (buffer-modified-p))
+;;                           (face1 (if active 'mode-line 'mode-line-inactive))
+;;                           (face2 (if active 'font-lock-keyword-face 'mode-line-inactive))
+;;                           (face3 (if active 'font-lock-type-face 'mode-line-inactive))
+;;                           (spacer (powerline-raw " " face1))
+;;                           (bar-color (cond ((and active modified) (face-foreground 'error))
+;;                                            (active (face-background 'cursor))
+;;                                            (t (face-background 'tooltip))))
+;;                           (lhs (list
+;;                                 (make-rect bar-color 26 3)
+;;                                 (when modified
+;;                                   (concat
+;;                                    spacer
+;;                                    (all-the-icons-faicon "floppy-o"
+;;                                                          :face (if active 'error 'mode-line-inactive)
+;;                                                          :v-adjust -0.01)))
+;;                                 spacer
+;;                                 (powerline-raw (projectile-root) face2)
+;;                                 (powerline-raw (powerline-buffer-id) face1)
+;;                                 spacer
+;;                                 (custom-modeline-icon-vc)))
+;;                           (center (list
+;;                                    spacer
+;;                                    (powerline-mode-icon)
+;;                                    spacer
+;;                                    (powerline-major-mode)
+;;                                    spacer))
+;;                           (rhs (list
+;;                                 (powerline-raw "%l:%c" 'mode-line)
+;;                                 " | "
+;;                                 (format "%s" (eyebrowse--get 'current-slot))
+;;                                 " | "
+;;                                 (powerline-raw "%6p" 'mode-line 'r)
+;;                                 (powerline-hud 'highlight 'region 1)
+;;                                 " ")))
+;;                      (concat
+;;                       (powerline-render lhs)
+;;                       (powerline-fill-center face1 (/ (powerline-width center) 2.0))
+;;                       (powerline-render center)
+;;                       (powerline-fill face1 (powerline-width rhs))
+;;                       (powerline-render rhs)))))))
+
+;; ;;; modeline.el ends here
 
   (setq-default mode-line-format
                 '("%e"
@@ -61,44 +108,42 @@
                    (let* ((active (powerline-selected-window-active))
                           (modified (buffer-modified-p))
                           (face1 (if active 'mode-line 'mode-line-inactive))
-                          (face2 (if active 'font-lock-keyword-face 'mode-line-inactive))
-                          (face3 (if active 'font-lock-type-face 'mode-line-inactive))
-                          (spacer (powerline-raw " " face1))
                           (bar-color (cond ((and active modified) (face-foreground 'error))
                                            (active (face-background 'cursor))
                                            (t (face-background 'tooltip))))
+                          (mm-face (if active 'font-lock-string-face 'mode-line-inactive))
                           (lhs (list
-                                (make-rect bar-color 26 3)
+                                (make-rect bar-color 30 3)
                                 (when modified
                                   (concat
-                                   spacer
+                                   " "
                                    (all-the-icons-faicon "floppy-o"
-                                                         :face (if active 'error 'mode-line-inactive)
+                                                         :face (when active 'error)
                                                          :v-adjust -0.01)))
-                                spacer
-                                (powerline-raw (projectile-root) face2)
-                                (powerline-raw (powerline-buffer-id) face1)
-                                spacer
-                                (custom-modeline-icon-vc)))
+                                " "
+                                (powerline-buffer-id)
+                                ))
                           (center (list
-                                   spacer
+                                   " "
                                    (powerline-mode-icon)
-                                   spacer
-                                   (powerline-major-mode)
-                                   spacer))
+                                   " "
+                                   ;;major-mode
+                                   (powerline-raw (powerline-major-mode) mm-face 'r)
+                                   " "))
                           (rhs (list
-                                (powerline-raw "%l:%c" 'mode-line)
-                                " | "
                                 (format "%s" (eyebrowse--get 'current-slot))
                                 " | "
-                                (powerline-raw "%6p" 'mode-line 'r)
+                                (powerline-raw "%l:%c" face1 'r)
+                                " | "
+                                (powerline-raw "%6p" face1 'r)
                                 (powerline-hud 'highlight 'region 1)
-                                " ")))
+                                " "
+                                ))
+                          )
                      (concat
                       (powerline-render lhs)
                       (powerline-fill-center face1 (/ (powerline-width center) 2.0))
                       (powerline-render center)
                       (powerline-fill face1 (powerline-width rhs))
-                      (powerline-render rhs)))))))
-
-;;; modeline.el ends here
+                      (powerline-render rhs))))))
+  )

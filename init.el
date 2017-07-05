@@ -52,14 +52,21 @@
 
 
 
-;; (use-package spaceline
-;;   :init
-;;   (require 'spaceline-config)
-;;   (setq powerline-default-separator 'wave)
-;;   (setq powerline-height 20)
-;;   (setq powerline-raw " ")
-;;   (setq ns-use-srgb-colorspace nil)
-;;   :config (spaceline-emacs-theme))
+(use-package spaceline
+  :disabled t
+  :init
+  (require 'spaceline-config)
+  :config
+  (setq powerline-height 28)
+  (setq powerline-default-separator 'bar)
+  (setq ns-use-srgb-colorspace t)
+  (setq spaceline-selection-info-p nil
+        spaceline-buffer-size-p nil
+        spaceline-flycheck-error-p nil
+        spaceline-flycheck-warning-p nil
+        spaceline-flycheck-info-p nil
+        spaceline-projectile-root-p t)
+  (spaceline-emacs-theme))
 
 
 ;;;;;;;;;;;;;;
@@ -135,7 +142,7 @@
 (load custom-file)
 (load (expand-file-name "functions.el" user-emacs-directory))
 (load (expand-file-name "modeline.el" user-emacs-directory))
-
+;; (load (expand-file-name "modeline2.el" user-emacs-directory))
 
 (add-to-list 'auto-mode-alist '("\\.cql\\'" . sql-mode))
 
@@ -213,8 +220,8 @@
 (save-place-mode 1)
 
 (use-package smart-mode-line
-  :disabled t
-  :init
+  :config
+  (setq sml/no-confirm-load-theme t)
   (setq sml/mule-info nil
         ;; sml/numbers-separator "--"
         sml/show-remote nil
@@ -223,7 +230,6 @@
         ;; fix graphical artifact in row number
         mode-line-format (cons " " mode-line-format)
         rm-whitelist '(" LY"))
-  :config
   (sml/setup))
 
 
@@ -265,8 +271,8 @@
   :defer t
   :diminish flycheck-mode
   :init
-  (add-hook 'flycheck-mode-hook
-            (lambda () (set-face-attribute 'linum nil :underline nil)))
+  ;; (add-hook 'flycheck-mode-hook
+  ;;           (lambda () (set-face-attribute 'nlinum nil :underline nil)))
   ;; Custom fringe indicator (circle)
   (when (fboundp 'define-fringe-bitmap)
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
@@ -568,6 +574,7 @@
     (defapi 'defun)
     (swaggered 'defun)
     (swagger-docs 2))
+
   (use-package clj-refactor
     :defer t
     :init
@@ -586,9 +593,9 @@
           )
     :diminish clj-refactor-mode
     :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+
   (use-package cider
     :defer t
-    :pin melpa
     :init
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     (add-hook 'cider-repl-mode-hook #'subword-mode)
@@ -601,10 +608,10 @@
      cider-lein-parameters "with-profile +test repl :headless"
      cider-repl-display-in-current-window t
      cider-repl-use-clojure-font-lock t
-     cider-prompt-save-file-on-load nil
+     cider-save-file-on-load nil
      cider-prompt-for-symbol nil
-     ;; cider-stacktrace-fill-column 80
-     cider-font-lock-max-length 500
+     cider-stacktrace-fill-column 80
+     cider-font-lock-max-length 10000
      cider-repl-use-pretty-printing t
      cider-font-lock-dynamically '(macro core function var)
      nrepl-hide-special-buffers t       ; hide *nrepl-connection* and *nrepl-server*
@@ -647,7 +654,7 @@
 (setq frame-resize-pixelwise t)
 (column-number-mode 1)
 (blink-cursor-mode 1)
-(set-fringe-mode '(10 . 0))
+(set-fringe-mode '(10 . 5))
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
@@ -679,8 +686,9 @@
 
 
 (use-package nlinum
+  :disabled t
   :init
-  ; prevent nlinum-mode and text-scale-adjust from fucking each other, not a perfect solution
+  ;; prevent nlinum-mode and text-scale-adjust from fucking each other, not a perfect solution
   (add-hook 'nlinum-mode-hook
             (lambda ()
               (set-face-attribute 'linum nil :height 100)))
@@ -724,7 +732,7 @@
 ;;   :config
 ;;   (smooth-scrolling-mode 1))
 
-(setq mouse-wheel-scroll-amount '(2)) ;; n lines at a time
+(setq mouse-wheel-scroll-amount '(3)) ;; n lines at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
 
@@ -732,6 +740,7 @@
 
 
 (use-package sublimity
+  :disabled t
   :init
   (require 'sublimity-scroll)
   (setq sublimity-scroll-weight 4
@@ -782,6 +791,7 @@
   (setq neo-theme 'icons
         neo-smart-open t))
 
+(use-package rainbow-mode)
 ;;;;;;;;;;;;;;;;
 ; Keybindings ;;
 ;;;;;;;;;;;;;;;;
@@ -790,11 +800,12 @@
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-x k") 'kill-buffer)
 (global-set-key (kbd "C-o") 'other-window)
+(global-set-key (kbd "C-S-o") 'other-frame)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (define-key isearch-mode-map (kbd "C-d") 'fc/isearch-yank-symbol)
-(global-set-key (kbd "C-S-n") (lambda () (interactive) (scroll-up 8) (next-line 8)))
-(global-set-key (kbd "C-S-p") (lambda () (interactive) (scroll-down 8) (previous-line 8)))
+(global-set-key (kbd "C-S-n") (lambda () (interactive) (scroll-up 10) (next-line 10)))
+(global-set-key (kbd "C-S-p") (lambda () (interactive) (scroll-down 10) (previous-line 10)))
 (global-set-key (kbd "C-l") 'goto-line)
 (global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
 (global-set-key (kbd "C-c I") 'find-user-init-file)
