@@ -54,7 +54,7 @@
     (ccann/toggle-org-html-export-on-save)))
 
 
-(defun cycle-my-theme ()
+(defun cycle-theme ()
   "Cycle through a list of themes, my-themes."
   (interactive)
   (when curr-theme
@@ -77,7 +77,7 @@
 (defun fc/isearch-yank-symbol ()
   "Yank the symbol at point into the isearch minibuffer."
   (interactive)
-  (isearch-yank-string
+  (ivy-yank-word
    (save-excursion
      (when (and (not isearch-forward)
                 isearch-other-end)
