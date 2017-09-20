@@ -40,7 +40,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(eval-when-compile 
+(eval-when-compile
   (require 'use-package)
   (setq use-package-verbose t)
   (setq use-package-always-ensure t)
@@ -58,11 +58,12 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 (load (expand-file-name "functions.el" user-emacs-directory))
-(load (expand-file-name "modeline.el" user-emacs-directory))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Modifiers and Keybindings ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq cursor-type 'bar)
 
 (use-package god-mode
   :init
@@ -71,7 +72,7 @@
           (if (or god-local-mode buffer-read-only)
               'box
             'bar)))
-  
+
   (add-hook 'god-mode-enabled-hook 'god-mode-update-cursor)
   (add-hook 'god-mode-disabled-hook 'god-mode-update-cursor)
 
@@ -79,7 +80,7 @@
     (if (bound-and-true-p lispy-mode)
         (lispy-mode -1)
       (lispy-mode 1)))
-  
+
   (add-hook 'god-mode-enabled-hook 'update-lispy)
   (add-hook 'god-mode-disabled-hook 'update-lispy)
 
@@ -112,7 +113,7 @@
 
 ;; function key bindings
 (global-set-key (kbd "<f6>") 'ivy-resume)
-(global-set-key (kbd "<f9>") 'cycle-theme)
+(global-set-key (kbd "<f9>") 'ccann/cycle-theme)
 (global-set-key (kbd "<f12>") 'ibuffer)
 
 ;; god-mode helpers
@@ -238,6 +239,7 @@
 (save-place-mode 1)
 
 (use-package smart-mode-line
+  :disabled t
   :config
   (setq sml/no-confirm-load-theme t)
   (setq sml/mule-info nil
@@ -271,18 +273,18 @@
 ;;    #b00000000
 ;;    #b00000000])
 
-(define-fringe-bitmap 'right-truncation 
-  "\xa9\x02\x04" nil nil 'bottom) 
-(define-fringe-bitmap 'left-truncation 
-  "\x20\x40\xaa\0\0" nil nil 'bottom) 
-(define-fringe-bitmap 'right-continuation 
-  "\xa8\0\0" nil nil 'bottom) 
-(define-fringe-bitmap 'left-continuation 
+(define-fringe-bitmap 'right-truncation
+  "\xa9\x02\x04" nil nil 'bottom)
+(define-fringe-bitmap 'left-truncation
+  "\x20\x40\xaa\0\0" nil nil 'bottom)
+(define-fringe-bitmap 'right-continuation
+  "\xa8\0\0" nil nil 'bottom)
+(define-fringe-bitmap 'left-continuation
   "\x2a\0\0" nil nil 'bottom)
 
-(let ((tr (assoc 'truncation fringe-indicator-alist)) 
-      (co (assoc 'continuation fringe-indicator-alist))) 
-  (if tr (setcdr tr '(left-truncation right-truncation))) 
+(let ((tr (assoc 'truncation fringe-indicator-alist))
+      (co (assoc 'continuation fringe-indicator-alist)))
+  (if tr (setcdr tr '(left-truncation right-truncation)))
   (if co (setcdr co '(left-continuation right-continuation))))
 
 (use-package flycheck
@@ -316,19 +318,19 @@
     :overlay-category 'flycheck-error-overlay
     :fringe-bitmap 'my-flycheck-fringe-indicator
     :fringe-face 'flycheck-fringe-error)
-    
+
   (flycheck-define-error-level 'warning
     :overlay-category 'flycheck-warning-overlay
     :fringe-bitmap 'my-flycheck-fringe-indicator
     :fringe-face 'flycheck-fringe-warning)
-    
+
   (flycheck-define-error-level 'info
     :overlay-category 'flycheck-info-overlay
     :fringe-bitmap 'my-flycheck-fringe-indicator
     :fringe-face 'flycheck-fringe-info)
 
   :config
-  
+
   ;; (set-face-attribute 'flycheck-error nil
   ;;                     :foreground (face-attribute 'error :foreground)
   ;;                     :background (face-attribute 'error :background)
@@ -363,7 +365,7 @@
   :bind
   ;; toggle highlighting of symbol at point throughout buffer
   (("C-h s" . highlight-symbol)))
-  
+
 (use-package nyan-mode
   :config (nyan-mode -1))
 
@@ -394,11 +396,11 @@
   ;; the following jekyll-boostrap integration depends on ~/dev/ccann.github.io
   ;; and ~/blog existing, see below.
   (setq org-hide-emphasis-markers nil)
-  
+
   (setq org-publish-project-alist
         '(("org-ccann"
            :base-directory "~/blog"  ;; Path to your org files.
-           :base-extension "org" 
+           :base-extension "org"
            :publishing-directory "~/dev/ccann.github.io/_posts" ;; Path to your Jekyll project.
            :recursive t
            :publishing-function org-html-publish-to-html
@@ -430,7 +432,7 @@
           ("d" "Database Note" entry
            (file+headline (concat org-directory "/notes.org") "Databases")
            "* %?")))
-        
+
   ;; Make Org-mode use evince in linux to open PDFs
   (if (not ccann/is-osx)
       (add-hook 'org-mode-hook
@@ -450,7 +452,10 @@
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
+  :init
+  (setq markdown-command "/usr/local/bin/markdown")
+  (setq markdown-css-dir "~/.emacs.d/markdown-css/")
+  (setq markdown-css-theme "clearness"))
 
 (use-package yaml-mode)
 
@@ -577,7 +582,7 @@
   ;; (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   (add-hook 'clojure-mode-hook #'lispy-mode)
   (add-hook 'clojure-mode-hook #'fci-mode)
-  
+
   :config
   (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
   (define-clojure-indent
@@ -620,7 +625,34 @@
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     (add-hook 'cider-repl-mode-hook #'subword-mode)
     (add-hook 'cider-repl-mode-hook #'eldoc-mode)
-    
+
+    :bind
+    ;; SPC m e b	eval buffer
+    ;; SPC m e e	eval last sexp
+    ;; SPC m e f	eval function at point
+    ;; SPC m e r	eval region
+    ;; SPC m e m	cider macroexpand 1
+    ;; SPC m e M	cider macroexpand all
+    ;; SPC m e p	print last sexp (clojure interaction mode only)
+    ;; SPC m e w	eval last sexp and replace with result
+    (("C-c e f" . cider-eval-defun-at-point)
+     ("C-c e r" . cider-eval-region)
+     ("C-c e e" . cider-eval-last-sexp)
+     ("C-c e m" . cider-macroexpand-1)
+     ("C-c e M" . cider-macroexpand-all)
+     ("C-c e p" . cider-pprint-eval-last-sexp)
+     ("C-c e w" . cider-eval-last-sexp-and-replace)
+     ("C-c e b" . cider-load-buffer)
+
+     ;; SPC m t a	run all tests in namespace
+     ;; SPC m t r	re-run test failures for namespace
+     ;; SPC m t t	run test at point
+     ("C-c t t" . cider-test-run-test)
+     ("C-c t n" . cider-test-run-ns-tests)
+     ("C-c t p" . cider-test-run-project-tests)
+     ("C-c t r" . cider-test-show-report)
+     ("C-c t f" . cider-test-rerun-failed-tests))
+
     :config
     (use-package cider-eval-sexp-fu :defer t)
     (setq
@@ -651,13 +683,44 @@
 (use-package web-mode
   :mode ("\\.html?\\'" . web-mode)
   :init
-  (setq js-indent-level 2)
+  (setq web-mode-code-indent-offset 2)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 4)
   (setq web-mode-code-indent-offset 4))
 
+
+;; sudo npm install -g tern
+(use-package js2-mode
+  :mode ("\\.js?\\'" . js2-mode)
+  :init
+  (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
+  (add-hook 'js2-mode-hook #'js2-refactor-mode)
+  (add-hook 'js2-mode-hook
+            (lambda ()
+              (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
+  (add-hook 'js2-mode-hook
+            (lambda ()
+              (tern-mode)
+              (company-mode)))
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  :config
+  (use-package js2-refactor
+    :config
+    (js2r-add-keybindings-with-prefix "C-c C-r")
+    (define-key js2-mode-map (kbd "C-k") #'js2r-kill))
+
+  (use-package xref-js2
+    :config
+    (define-key js-mode-map (kbd "M-.") nil))
+
+  (use-package company-tern
+    :config
+    (add-to-list 'company-backends 'company-tern)
+    ;; Disable completion keybindings, as we use xref-js2 instead
+    (define-key tern-mode-keymap (kbd "M-.") nil)
+    (define-key tern-mode-keymap (kbd "M-,") nil)))
+
 (use-package projectile
-  :pin melpa-stable
   :init
   (setq projectile-enable-caching t)
   :diminish projectile-mode
@@ -681,12 +744,14 @@
 (setq inhibit-startup-screen t) ; turn off splash screen
 (setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
-    (set-face-attribute 'default nil
-                        ;; :weight 'normal
-                        ;; :font "Inconsolata-13"
-                        :font "Office Code Pro-11"
-                        ;; :font "Hack-11"
-                        )
+    (progn
+      (set-face-attribute 'default nil
+                          ;; :weight 'normal
+                          ;; :font "Inconsolata-13"
+                          :font "Office Code Pro-13"
+                          ;; :font "Hack-11"
+                          )
+      (menu-bar-mode 1))
   (progn
     (menu-bar-mode 1)
     (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")))
@@ -707,7 +772,6 @@
 
 
 (use-package nlinum
-  :disabled t
   :init
   ;; prevent nlinum-mode and text-scale-adjust from fucking each other, not a perfect solution
   (add-hook 'nlinum-mode-hook
@@ -773,7 +837,7 @@
 ; configure clipoard
 (setq save-interprogram-paste-before-kill t
       ; Mouse-2 inserts text at point, not click location
-      mouse-yank-at-point t) 
+      mouse-yank-at-point t)
 
 (delete-selection-mode 1)
 
@@ -781,7 +845,7 @@
   :defer t
   :bind (("C-c r" . vr/replace)
          ("C-c q" . vr/query-replace)))
-  
+
 (setq scroll-error-top-bottom t)
 
 (use-package browse-kill-ring
@@ -812,39 +876,62 @@
 (use-package all-the-icons)
 ;; run M-x all-the-icons-install-fonts once
 
+(use-package solaire-mode
+  :disabled t
+  :config
+  ;; brighten buffers (that represent real files)
+  (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
+  ;; To enable solaire-mode unconditionally for certain modes:
+  (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
 
-;; TODO add color theme support for matching parens like doom-themes do
-(use-package flatui-theme)
-(use-package doom-themes)
-(use-package gruvbox-theme)
-(use-package zenburn-theme)
-(use-package badger-theme)
-(use-package gotham-theme)
-(use-package darktooth-theme)
-(use-package material-theme)
-(use-package metalheart-theme)
-(use-package apropospriate-theme)
-(use-package ample-theme)
-(use-package challenger-deep-theme)
-(use-package spacemacs-theme)
-(use-package kaolin-theme)
+  ;; ...if you use auto-revert-mode:
+  (add-hook 'after-revert-hook #'turn-on-solaire-mode)
+
+  ;; highlight the minibuffer when it is activated:
+  (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer))
 
 
+(use-package flatui-theme :defer t)
+(use-package gruvbox-theme :defer t)
+(use-package zenburn-theme :defer t)
+(use-package badger-theme :defer t)
+(use-package gotham-theme :defer t)
+(use-package darktooth-theme :defer t)
+(use-package material-theme :defer t)
+(use-package metalheart-theme :defer t)
+(use-package apropospriate-theme :defer t)
+(use-package ample-theme :defer t)
+(use-package challenger-deep-theme :defer t)
+(use-package spacemacs-theme :defer t)
+(use-package kaolin-theme :defer t)
+(use-package doom-themes
+  :init
+  ;; And you can brighten other buffers (unconditionally) with:
+  ;; (add-hook 'ediff-prepare-buffer-hook #'doom-buffer-mode)
+
+  ;; Enable nlinum line highlighting
+  (setq nlinum-highlight-current-line t)
+
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme
+  (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
+
+  ;; (doom-themes-org-config)
+
+  :config
+  (setq doom-themes-enable-bold t       ; if nil, bold is universally disabled
+        doom-themes-enable-italic t     ; if nil, italics is universally disabled
+        doom-one-brighter-modeline nil
+        doom-one-brighter-comments nil
+        ;; doom-one-padded-modeline t
+        ))
 
 (defvar curr-theme nil)
-(defvar my-themes '(
-                    ;; ample-light
-                    kaolin
-                    doom-one
-                    gruvbox
-                    ;; darktooth
-                    ;; challenger-deep
-                    spacemacs-dark
-                    apropospriate-dark
-                    flatui
-                    apropospriate-light))
-(cycle-my-theme)
-
+(defvar my-themes '(doom-one kaolin flatui zenburn))
+(ccann/cycle-theme)
+(load (expand-file-name "modeline.el" user-emacs-directory))
 
 ;; init.el ends here
 
