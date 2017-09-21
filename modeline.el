@@ -9,14 +9,18 @@
 (use-package powerline)
 
 (defun -custom-modeline-github-vc ()
-    (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-")))
+  (let ((branch (mapconcat 'concat (cdr (split-string vc-mode "[:-]")) "-"))
+        (face (if (powerline-selected-window-active) 'font-lock-warning-face 'mode-line-inactive)))
       (concat
        ;; (propertize (format " %s" (all-the-icons-alltheicon "git")) 'face `(:height 1.2) 'display '(raise -0.1))
        "  "
        (propertize (format "%s" (all-the-icons-octicon "git-branch"))
-                   'face `(:height 1.3 :family ,(all-the-icons-octicon-family))
+                   'face `(:height 1.3 :family ,(all-the-icons-octicon-family)
+                                   :inherit ,face)
                    'display '(raise -0.1))
-       (propertize (format " %s" branch) 'face `(:height 0.9 :foreground "#ECBE7B")))))
+       (propertize (format " %s" branch)
+                   'face
+                   `(:height 0.9 :inherit ,face)))))
 
 (defun projectile-root ()
     "Show the current projectile root."
@@ -63,9 +67,11 @@
            (bar-color (cond ((and active modified) (face-foreground 'error))
                             (active (face-background 'cursor))
                             (t (face-background 'tooltip))))
-           (mm-face (if active 'font-lock-string-face 'mode-line-inactive))
+           (mm-face (if active 'font-lock-keyword-face 'mode-line-inactive))
            (separator (powerline-raw " | " mode-line))
            (space (powerline-raw " " mode-line))
+           (hud-face1 (if active 'highlight 'mode-line-inactive))
+           (hud-face2 (if active 'region 'mode-line-inactive))
            (lhs (list (make-rect bar-color 30 3)
                       (when modified
                         (concat
@@ -87,7 +93,7 @@
                       (powerline-raw "%l:%c" mode-line)
                       separator
                       (powerline-raw "%6p" mode-line 'r)
-                      (powerline-hud 'highlight 'region)
+                      (powerline-hud hud-face1 hud-face2)
                       space)))
       (concat (powerline-render lhs)
               (powerline-fill-center mode-line (/ (powerline-width center) 2.0))
