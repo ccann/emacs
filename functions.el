@@ -70,7 +70,8 @@
   (set-face-attribute 'mode-line-inactive nil :box nil)
   (when (eq curr-theme 'darktooth)
     (custom-set-faces '(vertical-border ((t (:foreground "#504945"))))))
-  (when (eq curr-theme 'doom-one) (solaire-mode-swap-bg)))
+  (when (eq curr-theme 'doom-one)
+    (solaire-mode-swap-bg)))
 
 ; show-paren-match
 

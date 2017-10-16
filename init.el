@@ -3,11 +3,8 @@
 ;;; Commentary:
 ;;; LaTeX installation on OSX 10.11.1
 ;;;  $ brew up
-;;;  $ brew install caskroom/cask/brew-cask
 ;;;  $ brew cask install mactex
-;;; # add /usr/texbin to PATH
-;;;  $ brew install latex-mk
-;;;  $ brew install auctex
+;;; # add /usr/texbin to PATH (in /usr/local/texlive)
 
 ;; author: ccann
 
@@ -379,13 +376,14 @@
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :init
-  (setq org-directory "~/Dropbox (Personal)/org")
+  ;; (setq org-directory "~/Dropbox (Personal)/org")
   (use-package htmlize)
-  (add-hook 'org-mode-hook #'flyspell-mode)
+  ;; (add-hook 'org-mode-hook #'flyspell-mode)
   (add-hook 'org-mode-hook #'visual-line-mode)
   (add-hook 'org-mode-hook #'org-indent-mode)
   (add-hook 'org-mode-hook #'auto-fill-mode)
 
+  :bind (("<f8>" . org-capture))
   :config
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -393,13 +391,14 @@
      (clojure . t)
      (sh . t)
      (python . t)))
+
   ;; the following jekyll-boostrap integration depends on ~/dev/ccann.github.io
   ;; and ~/blog existing, see below.
   (setq org-hide-emphasis-markers nil)
 
   (setq org-publish-project-alist
         '(("org-ccann"
-           :base-directory "~/blog"  ;; Path to your org files.
+           :base-directory "~/blog" ;; Path to your org files.
            :base-extension "org"
            :publishing-directory "~/dev/ccann.github.io/_posts" ;; Path to your Jekyll project.
            :recursive t
@@ -416,7 +415,7 @@
           ("blog" :components ("org-ccann" "org-static-ccann"))))
 
   (setq org-default-notes-file (concat org-directory "/notes.org")
-        org-src-fontify-natively t ; fontify source blocks
+        org-src-fontify-natively t      ; fontify source blocks
         org-html-doctype "html5"
         org-html-html5-fancy t
         org-html-postamble nil
@@ -433,15 +432,14 @@
            (file+headline (concat org-directory "/notes.org") "Databases")
            "* %?")))
 
-  ;; Make Org-mode use evince in linux to open PDFs
+  Make Org-mode use evince in linux to open PDFs
   (if (not ccann/is-osx)
       (add-hook 'org-mode-hook
                 (lambda ()
                   (delete '("\\.pdf\\'" . default) org-file-apps)
                   (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))))
 
-  :bind
-  (("<f8>" . org-capture)))
+  )
 
 
 (use-package pov-mode
@@ -467,36 +465,35 @@
 
 (add-to-list 'auto-mode-alist '("\\.cql\\'" . sql-mode))
 
+(use-package auctex
+ :mode ("\\.tex\\'" . latex-mode)
+ :commands (latex-mode LaTeX-mode plain-tex-mode)
+ :config
+ (if ccann/is-osx
+     (setq TeX-view-program-selection '((output-pdf "Preview")))
+   (setq TeX-view-program-selection '((output-pdf "Evince"))))
+ :init
+ (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+ (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+ (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
+ (add-hook 'LaTeX-mode-hook #'auctex-latexmk-setup)
+ (setq TeX-auto-save t
+       TeX-parse-self t
+       TeX-save-query nil
+       TeX-PDF-mode t
+       TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
+                                "Evince" "evince --page-index=%(outpage) %o")))
+ (setq-default TeX-master nil))
 
-;;(use-package auctex
-;;  :mode ("\\.tex\\'" . latex-mode)
-;;  :commands (latex-mode LaTeX-mode plain-tex-mode)
-;;  :config
-;;  (if ccann/is-osx
-;;      (setq TeX-view-program-selection '((output-pdf "Preview")))
-;;    (setq TeX-view-program-selection '((output-pdf "Evince"))))
-;;  :init
-;;  (add-hook 'LaTeX-mode-hook #'flyspell-mode)
-;;  (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-;;  (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
-;;  (add-hook 'LaTeX-mode-hook #'auctex-latexmk-setup)
-;;  (setq TeX-auto-save t
-;;        TeX-parse-self t
-;;        TeX-save-query nil
-;;        TeX-PDF-mode t
-;;        TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
-;;                                 "Evince" "evince --page-index=%(outpage) %o")))
-;;  (setq-default TeX-master nil))
+(use-package auctex-latexmk
+ :defer t
+ :init (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+ :commands auctex-latexmk-setup)
 
-;;(use-package auctex-latexmk
-;;  :defer t
-;;  :init (setq auctex-latexmk-inherit-TeX-PDF-mode t)
-;;  :commands auctex-latexmk-setup)
-
-;;(use-package reftex
-;;  :defer t
-;;  :commands turn-on-reftex
-;;  :init (setq reftex-plug-into-AUCTeX t))
+(use-package reftex
+ :defer t
+ :commands turn-on-reftex
+ :init (setq reftex-plug-into-AUCTeX t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; Programming Modes ;;
@@ -564,6 +561,8 @@
   :defer t
   :diminish eldoc-mode)
 
+(use-package paren-face
+  :defer t)
 
 ;;;;;;;;;;;;;
 ;; Clojure ;;
@@ -574,6 +573,7 @@
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
   :init
+  (add-hook 'clojure-mode-hook #'paren-face-mode)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
   ;; (add-hook 'clojure-mode-hook 'flycheck-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
@@ -678,6 +678,7 @@
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
+(add-hook 'emacs-lisp-mode-hook #'paren-face-mode)
 (diminish 'auto-revert-mode)
 
 (use-package web-mode
@@ -778,7 +779,6 @@
             (lambda ()
               (set-face-attribute 'linum nil :height 100)))
   (setq nlinum-format "%4d ")
-
   :config
   (global-nlinum-mode 1))
 
@@ -918,7 +918,7 @@
   ;; Enable custom neotree theme
   (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
 
-  ;; (doom-themes-org-config)
+  (doom-themes-org-config)
 
   :config
   (setq doom-themes-enable-bold t       ; if nil, bold is universally disabled
@@ -938,3 +938,5 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
+
+(add-hook 'before-save-hook 'whitespace-cleanup)
