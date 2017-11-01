@@ -581,7 +581,7 @@
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
   ;; (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   (add-hook 'clojure-mode-hook #'lispy-mode)
-  (add-hook 'clojure-mode-hook #'fci-mode)
+  ;; (add-hook 'clojure-mode-hook #'fci-mode)
 
   :config
   (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
@@ -658,6 +658,7 @@
     (setq
      cider-repl-display-help-banner nil
      ;; nrepl-log-messages t                 ; log communication with the nREPL server
+     cider-lein-command "/Users/cody/bin/lein"
      cider-lein-parameters "with-profile +test repl :headless"
      cider-repl-display-in-current-window t
      cider-repl-use-clojure-font-lock t
@@ -903,7 +904,7 @@
 (use-package ample-theme :defer t)
 (use-package challenger-deep-theme :defer t)
 (use-package spacemacs-theme :defer t)
-(use-package kaolin-theme :defer t)
+(use-package kaolin-themes :defer t)
 (use-package doom-themes
   :init
   ;; And you can brighten other buffers (unconditionally) with:
@@ -929,7 +930,7 @@
         ))
 
 (defvar curr-theme nil)
-(defvar my-themes '(doom-one kaolin flatui zenburn))
+(defvar my-themes '(doom-one kaolin-dark kaolin-light kaolin-eclipse flatui zenburn))
 (ccann/cycle-theme)
 (load (expand-file-name "modeline.el" user-emacs-directory))
 
