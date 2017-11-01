@@ -47,7 +47,6 @@
          (pl/make-xpm "percent" color color (reverse data))))))
 
 
-
 (defun powerline-mode-icon ()
     (let ((icon (all-the-icons-icon-for-buffer)))
       (unless (symbolp icon) ;; This implies it's the major mode
