@@ -42,7 +42,7 @@
   (setq use-package-verbose t)
   (setq use-package-always-ensure t)
   (require 'bind-key)
-  (require 'diminish))
+  (use-package diminish))
 
 
 (defconst ccann/is-osx (eq system-type 'darwin))
@@ -214,16 +214,16 @@
 
 (use-package company
   :defer 2
+  :pin melpa-stable
   :init
   (setq company-idle-delay 0.2
-        company-minimum-p
-        refix-length 3)
+        company-minimum-prefix-length 3)
   (global-set-key (kbd "<S-tab>") #'company-indent-or-complete-common)
   (setq tab-always-indent t) ;; set this to nil if you want `indent-for-tab-command` instead
   :diminish company-mode
   :config
   (use-package company-quickhelp
-    :config (company-quickhelp-mode 1))
+    :config (company-quickhelp-mode 0))
   (add-to-list 'company-backends 'company-anaconda)
   (global-company-mode))
 
@@ -374,9 +374,10 @@
 (use-package ob-ipython)
 
 (use-package org
+  :pin gnu
   :mode ("\\.org\\'" . org-mode)
   :init
-  ;; (setq org-directory "~/Dropbox (Personal)/org")
+  (setq org-directory "~/Dropbox/org")
   (use-package htmlize)
   ;; (add-hook 'org-mode-hook #'flyspell-mode)
   (add-hook 'org-mode-hook #'visual-line-mode)
@@ -425,21 +426,19 @@
         org-fontify-done-headline nil)
 
   (setq org-capture-templates
-        '(("l" "Programming Language Note" entry
-           (file+headline (concat org-directory "/notes.org") "Languages")
-           "* %?")
-          ("d" "Database Note" entry
-           (file+headline (concat org-directory "/notes.org") "Databases")
-           "* %?")))
+        '(("l" "Logbook" item
+           (file+olp+datetree "~/org/logbook.org")
+           "")
+          ("t" "TODO" entry
+           (file+headline "~/org/todo.org" "Tasks")
+           "* TODO %?\n  %i\n  %a")))
 
-  Make Org-mode use evince in linux to open PDFs
+  ;; Make Org-mode use evince in linux to open PDFs
   (if (not ccann/is-osx)
       (add-hook 'org-mode-hook
                 (lambda ()
                   (delete '("\\.pdf\\'" . default) org-file-apps)
-                  (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s")))))
-
-  )
+                  (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s"))))))
 
 
 (use-package pov-mode
@@ -506,7 +505,7 @@
 (use-package lispy
   :defer t
   :init
-  (setq lispy-compat '(cider edebug))
+  (setq lispy-compat '(edebug cider))
   (define-advice git-timemachine-mode (:after (&optional arg))
     (if (bound-and-true-p git-timemachine-mode)
         (lispy-mode -1)
@@ -602,6 +601,7 @@
 
   (use-package clj-refactor
     :defer t
+    :pin melpa-stable
     :init
     (setq cljr-suppress-middleware-warnings t
           cljr-warn-on-eval nil
@@ -619,8 +619,20 @@
     :diminish clj-refactor-mode
     :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
+
+  (use-package spiral
+    :defer t
+    :disabled t
+    :init
+    (setq spiral-lein-command "/Users/cody/bin/lein"
+          lispy-clojure-eval-method 'spiral)
+    :bind (("C-c C-e" . spiral-eval-last-sexp)
+           ("C-c C-k" . spiral-eval-buffer)))
+
+
   (use-package cider
     :defer t
+    :pin melpa-stable
     :init
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     (add-hook 'cider-repl-mode-hook #'subword-mode)
