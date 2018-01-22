@@ -890,7 +890,7 @@
 ;; run M-x all-the-icons-install-fonts once
 
 (use-package solaire-mode
-  :disabled t
+  ;; :disabled t
   :config
   ;; brighten buffers (that represent real files)
   (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
