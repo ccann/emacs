@@ -22,8 +22,7 @@
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")))
 
 ;; some wizard online concocted this
 (when (>= emacs-major-version 25)
@@ -72,14 +71,6 @@
 
   (add-hook 'god-mode-enabled-hook 'god-mode-update-cursor)
   (add-hook 'god-mode-disabled-hook 'god-mode-update-cursor)
-
-  (defun update-lispy ()
-    (if (bound-and-true-p lispy-mode)
-        (lispy-mode -1)
-      (lispy-mode 1)))
-
-  (add-hook 'god-mode-enabled-hook 'update-lispy)
-  (add-hook 'god-mode-disabled-hook 'update-lispy)
 
   :config
   ;; (define-key god-local-mode-map (kbd "i") 'god-local-mode)
@@ -214,7 +205,7 @@
 
 (use-package company
   :defer 2
-  :pin melpa-stable
+  :pin melpa
   :init
   (setq company-idle-delay 0.2
         company-minimum-prefix-length 3)
@@ -502,14 +493,25 @@
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
+
+
 (use-package lispy
-  :defer t
+  :pin melpa
   :init
   (setq lispy-compat '(edebug cider))
   (define-advice git-timemachine-mode (:after (&optional arg))
     (if (bound-and-true-p git-timemachine-mode)
         (lispy-mode -1)
-      (lispy-mode 1))))
+      (lispy-mode 1)))
+
+  (defun update-lispy ()
+    (if (bound-and-true-p lispy-mode)
+        (lispy-mode -1)
+      (lispy-mode 1)))
+
+  (add-hook 'god-mode-enabled-hook 'update-lispy)
+  (add-hook 'god-mode-disabled-hook 'update-lispy)
+  )
 
 (use-package parinfer :defer t)
 
@@ -579,8 +581,10 @@
   (add-hook 'clojure-mode-hook #'eldoc-mode)
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
   ;; (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
-  (add-hook 'clojure-mode-hook #'lispy-mode)
   ;; (add-hook 'clojure-mode-hook #'fci-mode)
+  (add-hook 'clojure-mode-hook (lambda ()
+                                 (progn (cider-mode 1)
+                                        (lispy-mode 1))))
 
   :config
   (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
@@ -597,11 +601,10 @@
     (context 2)
     (defapi 'defun)
     (swaggered 'defun)
-    (swagger-docs 2))
+    (swagger-docs 2)))
 
-  (use-package clj-refactor
+(use-package clj-refactor
     :defer t
-    :pin melpa-stable
     :init
     (setq cljr-suppress-middleware-warnings t
           cljr-warn-on-eval nil
@@ -619,18 +622,7 @@
     :diminish clj-refactor-mode
     :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
-
-  (use-package spiral
-    :defer t
-    :disabled t
-    :init
-    (setq spiral-lein-command "/Users/cody/bin/lein"
-          lispy-clojure-eval-method 'spiral)
-    :bind (("C-c C-e" . spiral-eval-last-sexp)
-           ("C-c C-k" . spiral-eval-buffer)))
-
-
-  (use-package cider
+(use-package cider
     :defer t
     :pin melpa-stable
     :init
@@ -686,7 +678,16 @@
     (add-hook 'cider-popup-buffer-mode-hook
               (lambda ()
                 (when (string= (buffer-name) "*cider-grimoire*")
-                  (markdown-mode))))))
+                  (markdown-mode)))))
+
+(use-package spiral
+    :defer t
+    :disabled t
+    :init
+    (setq spiral-lein-command "/Users/cody/bin/lein"
+          lispy-clojure-eval-method 'spiral)
+    :bind (("C-c C-e" . spiral-eval-last-sexp)
+           ("C-c C-k" . spiral-eval-buffer)))
 
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
@@ -875,7 +876,6 @@
 
 
 (use-package neotree
-  :ensure t
   :bind (("<f2>" . neotree-toggle))
   :init
   ;; (add-hook 'projectile-after-switch-project-hook #'neotree-projectile-action)
