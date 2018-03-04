@@ -441,7 +441,7 @@
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init
-  (setq markdown-command "/usr/local/bin/markdown")
+  (setq markdown-command "/usr/local/bin/marked")
   (setq markdown-css-dir "~/.emacs.d/markdown-css/")
   (setq markdown-css-theme "clearness"))
 
@@ -569,6 +569,8 @@
 ;; Clojure ;;
 ;;;;;;;;;;;;;
 
+(use-package flycheck-joker)
+
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
@@ -576,7 +578,7 @@
   :init
   (add-hook 'clojure-mode-hook #'paren-face-mode)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
-  ;; (add-hook 'clojure-mode-hook 'flycheck-mode)
+  (add-hook 'clojure-mode-hook #'flycheck-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
@@ -878,10 +880,10 @@
 (use-package neotree
   :bind (("<f2>" . neotree-toggle))
   :init
-  ;; (add-hook 'projectile-after-switch-project-hook #'neotree-projectile-action)
-
   (setq neo-theme 'icons
-        neo-smart-open t))
+        neo-smart-open t
+        neo-window-width 45
+        projectile-switch-project-action 'neotree-projectile-action))
 
 ;;;;;;;;;;;
 ; themes ;;
@@ -942,7 +944,13 @@
         ))
 
 (defvar curr-theme nil)
-(defvar my-themes '(doom-one kaolin-dark kaolin-light kaolin-eclipse flatui zenburn))
+(defvar my-themes '(kaolin-dark
+                    kaolin-galaxy
+                    kaolin-aurora
+                    kaolin-ocean
+                    kaolin-eclipse
+                    flatui
+                    kaolin-light))
 (ccann/cycle-theme)
 (load (expand-file-name "modeline.el" user-emacs-directory))
 
