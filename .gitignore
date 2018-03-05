@@ -19,7 +19,6 @@ ido.last
 init.el~
 /smex-items
 /.tutor/
-/custom.el
 /request/
 /ido.last~
 /flycheck_init.el

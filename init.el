@@ -755,6 +755,7 @@
 (setq frame-resize-pixelwise t)
 (column-number-mode 1)
 (blink-cursor-mode 1)
+(setq blink-cursor-blinks 0)
 (set-fringe-mode '(10 . 5))
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
@@ -883,7 +884,8 @@
   (setq neo-theme 'icons
         neo-smart-open t
         neo-window-width 45
-        projectile-switch-project-action 'neotree-projectile-action))
+        ;; projectile-switch-project-action 'neotree-projectile-action
+        ))
 
 ;;;;;;;;;;;
 ; themes ;;
