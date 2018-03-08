@@ -788,6 +788,9 @@
 (setq minibuffer-prompt-properties
       '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
+(use-package olivetti
+  :init (setq olivetti-body-width 90))
+
 
 (use-package nlinum
   :init
