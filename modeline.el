@@ -61,7 +61,7 @@
  '("%e"
    (:eval
     (let* ((active (powerline-selected-window-active))
-           (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-buffer-id-inactive))
+           (mode-line-buffer-id (if active 'mode-line-buffer-id 'mode-line-inactive))
            (modified (buffer-modified-p))
            (mode-line (if active 'mode-line 'mode-line-inactive))
            (bar-color (cond ((and active modified) (face-foreground 'error))
@@ -88,13 +88,15 @@
                          (powerline-major-mode mm-face 'l)
                          (powerline-process)
                          space))
-           (rhs (list (powerline-raw (format "%s" (eyebrowse--get 'current-slot)) mode-line)
-                      separator
-                      (powerline-raw "%l:%c" mode-line)
-                      separator
-                      (powerline-raw "%6p" mode-line 'r)
-                      (powerline-hud hud-face1 hud-face2)
-                      space)))
+           (rhs (list
+                 ;; (powerline-raw (format "%s" (eyebrowse--get 'current-slot)) mode-line)
+                 ;; separator
+                 (powerline-raw "%l:%c" mode-line)
+                 space
+                 ;; separator
+                 (powerline-raw "%6p" mode-line 'r)
+                 (powerline-hud hud-face1 hud-face2)
+                 space)))
       (concat (powerline-render lhs)
               (powerline-fill-center mode-line (/ (powerline-width center) 2.0))
               (powerline-render center)

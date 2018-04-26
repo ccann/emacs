@@ -159,9 +159,9 @@
 
 (use-package counsel)
 
-
 (use-package exec-path-from-shell
   :defer 1
+  :init (setq exec-path-from-shell-check-startup-files nil)
   :config
   (when ccann/is-osx
     (exec-path-from-shell-initialize)
@@ -203,20 +203,18 @@
   :defer t
   :diminish anaconda-mode)
 
+
 (use-package company
-  :defer 2
-  :pin melpa
   :init
-  (setq company-idle-delay 0.2
-        company-minimum-prefix-length 3)
-  (global-set-key (kbd "<S-tab>") #'company-indent-or-complete-common)
+  (setq company-idle-delay 0.4
+        company-minimum-prefix-length 2)
+  ;; (global-set-key (kbd "<S-tab>") #'company-indent-or-complete-common)
   (setq tab-always-indent t) ;; set this to nil if you want `indent-for-tab-command` instead
   :diminish company-mode
   :config
-  (use-package company-quickhelp
-    :config (company-quickhelp-mode 0))
   (add-to-list 'company-backends 'company-anaconda)
   (global-company-mode))
+
 
 (use-package dired-details+
   :defer t)
@@ -496,7 +494,8 @@
 
 
 (use-package lispy
-  :pin melpa
+  :defer t
+  ;; :pin melpa
   :init
   (setq lispy-compat '(edebug cider))
   (define-advice git-timemachine-mode (:after (&optional arg))
@@ -569,24 +568,24 @@
 ;; Clojure ;;
 ;;;;;;;;;;;;;
 
-(use-package flycheck-joker)
-
 (use-package clojure-mode
+  :defer t
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
+  ;; :pin melpa-stable
   :diminish (subword-mode)
+
   :init
   (add-hook 'clojure-mode-hook #'paren-face-mode)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
   (add-hook 'clojure-mode-hook #'flycheck-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
+  (add-hook 'clojure-mode-hook #'cider-mode)
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
-  ;; (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
   ;; (add-hook 'clojure-mode-hook #'fci-mode)
-  (add-hook 'clojure-mode-hook (lambda ()
-                                 (progn (cider-mode 1)
-                                        (lispy-mode 1))))
+  (add-hook 'clojure-mode-hook #'lispy-mode)
+  (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
 
   :config
   (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
@@ -603,10 +602,9 @@
     (context 2)
     (defapi 'defun)
     (swaggered 'defun)
-    (swagger-docs 2)))
+    (swagger-docs 2))
 
-(use-package clj-refactor
-    :defer t
+  (use-package clj-refactor
     :init
     (setq cljr-suppress-middleware-warnings t
           cljr-warn-on-eval nil
@@ -618,19 +616,44 @@
             ("str" . "clojure.string")
             ("walk" . "clojure.walk")
             ("zip" . "clojure.zip")
-            ("s" . "schema.core"))
+            ("s" . "schema.core")
+            ("casex" . "camel-snake-kebab.extras")
+            ("case" . "camel-snake-kebab.core"))
           ;; clojure-align-forms-automatically t
           )
     :diminish clj-refactor-mode
     :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
-(use-package cider
-    :defer t
-    :pin melpa-stable
+  (use-package cider
     :init
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     (add-hook 'cider-repl-mode-hook #'subword-mode)
     (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+
+    (use-package cider-eval-sexp-fu :defer t)
+    (setq
+     cider-repl-display-help-banner nil
+     ;; nrepl-log-messages t                 ; log communication with the nREPL server
+     cider-lein-command "/Users/cody/bin/lein"
+     ;; cider-lein-parameters "with-profile +test repl :headless"
+     cider-repl-display-in-current-window t
+     cider-repl-use-clojure-font-lock t
+     cider-save-file-on-load nil
+     cider-prompt-for-symbol nil
+     cider-stacktrace-fill-column 80
+     cider-auto-select-error-buffer t
+     cider-font-lock-max-length 10000
+     cider-repl-use-pretty-printing t
+     cider-refresh-before-fn "mount.core/stop"
+     cider-refresh-after-fn "mount.core/start"
+     cider-font-lock-dynamically '(macro core function var)
+     nrepl-hide-special-buffers t       ; hide *nrepl-connection* and *nrepl-server*
+     cider-overlays-use-font-lock t
+     nrepl-prompt-to-kill-server-buffer-on-quit nil)
+    (add-hook 'cider-popup-buffer-mode-hook
+              (lambda ()
+                (when (string= (buffer-name) "*cider-grimoire*")
+                  (markdown-mode))))
 
     :bind
     ;; SPC m e b	eval buffer
@@ -657,30 +680,10 @@
      ("C-c t n" . cider-test-run-ns-tests)
      ("C-c t p" . cider-test-run-project-tests)
      ("C-c t r" . cider-test-show-report)
-     ("C-c t f" . cider-test-rerun-failed-tests))
+     ("C-c t f" . cider-test-rerun-failed-tests)))
 
-    :config
-    (use-package cider-eval-sexp-fu :defer t)
-    (setq
-     cider-repl-display-help-banner nil
-     ;; nrepl-log-messages t                 ; log communication with the nREPL server
-     cider-lein-command "/Users/cody/bin/lein"
-     cider-lein-parameters "with-profile +test repl :headless"
-     cider-repl-display-in-current-window t
-     cider-repl-use-clojure-font-lock t
-     cider-save-file-on-load nil
-     cider-prompt-for-symbol nil
-     cider-stacktrace-fill-column 80
-     cider-font-lock-max-length 10000
-     cider-repl-use-pretty-printing t
-     cider-font-lock-dynamically '(macro core function var)
-     nrepl-hide-special-buffers t       ; hide *nrepl-connection* and *nrepl-server*
-     cider-overlays-use-font-lock t
-     nrepl-prompt-to-kill-server-buffer-on-quit nil)
-    (add-hook 'cider-popup-buffer-mode-hook
-              (lambda ()
-                (when (string= (buffer-name) "*cider-grimoire*")
-                  (markdown-mode)))))
+  (use-package flycheck-joker))
+
 
 (use-package spiral
     :defer t
@@ -789,7 +792,9 @@
       '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
 (use-package olivetti
-  :init (setq olivetti-body-width 90))
+  :init
+  (add-hook 'olivetti-mode-hook (lambda () (nlinum-mode -1)))
+  (setq-default olivetti-body-width 90))
 
 
 (use-package nlinum
@@ -799,8 +804,9 @@
             (lambda ()
               (set-face-attribute 'linum nil :height 100)))
   (setq nlinum-format "%4d ")
-  :config
-  (global-nlinum-mode 1))
+  ;; Enable nlinum line highlighting
+  (setq nlinum-highlight-current-line t)
+  (add-hook 'prog-mode-hook #'nlinum-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -897,7 +903,7 @@
 ;; run M-x all-the-icons-install-fonts once
 
 (use-package solaire-mode
-  ;; :disabled t
+  :disabled t
   :config
   ;; brighten buffers (that represent real files)
   (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
@@ -925,18 +931,16 @@
 (use-package spacemacs-theme :defer t)
 (use-package kaolin-themes :defer t)
 (use-package doom-themes
+  :disabled t
   :init
   ;; And you can brighten other buffers (unconditionally) with:
   ;; (add-hook 'ediff-prepare-buffer-hook #'doom-buffer-mode)
 
-  ;; Enable nlinum line highlighting
-  (setq nlinum-highlight-current-line t)
-
   ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
+  ;; (doom-themes-visual-bell-config)
 
   ;; Enable custom neotree theme
-  (doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
+  (doom-themes-neotree-config)          ; all-the-icons fonts must be installed!
 
   (doom-themes-org-config)
 
@@ -954,10 +958,12 @@
                     kaolin-aurora
                     kaolin-ocean
                     kaolin-eclipse
+                    kaolin-valley-dark
                     flatui
                     kaolin-light))
 (ccann/cycle-theme)
 (load (expand-file-name "modeline.el" user-emacs-directory))
+
 
 ;; init.el ends here
 
