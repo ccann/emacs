@@ -11,7 +11,7 @@
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(custom-safe-themes
    (quote
-    ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
+    ("408e753da5ce585ad73a0388b50749ef4dcf2b047583fb1378516576e40fa71b" "15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" default)))
  '(fci-rule-color "#5B6268")
  '(hl-paren-background-colors (quote ("#2492db" "#95a5a6" nil)))
  '(hl-paren-colors (quote ("#ecf0f1" "#ecf0f1" "#c0392b")))
@@ -19,6 +19,7 @@
  '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#98be65"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#3f444a"))
  '(kaolin-hl-line-colored t)
+ '(kaolin-themes-hl-line-colored t)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
@@ -27,7 +28,7 @@
  '(org-fontify-whole-heading-line t)
  '(package-selected-packages
    (quote
-    (company-quickhelp lispy olivetti flycheck-joker company-tern sql-indent fish-mode diminish csharp-mode org kaolin-themes paren-face-mode paren-face auctex-latexmk auctex org-babel nlinum zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp use-package terraform-mode telephone-line spacemacs-theme solaire-mode smex smart-mode-line rainbow-mode rainbow-delimiters python-mode powerline pov-mode popwin parinfer ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord js2-refactor jedi ivy-hydra indent-guide ido-vertical-mode ido-ubiquitous htmlize highlight-symbol handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flycheck flx-ido flatui-theme fill-column-indicator eyebrowse exec-path-from-shell ess dracula-theme doom-themes dockerfile-mode dired-details+ dired+ darktooth-theme counsel challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme)))
+    (highlight-numbers panda-theme cider clj-refactor cider-eval-sexp-fu company-quickhelp lispy olivetti flycheck-joker company-tern sql-indent fish-mode diminish csharp-mode org kaolin-themes paren-face-mode paren-face auctex-latexmk auctex org-babel nlinum zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp use-package terraform-mode telephone-line spacemacs-theme solaire-mode smex smart-mode-line rainbow-mode rainbow-delimiters python-mode powerline pov-mode popwin parinfer ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord js2-refactor jedi ivy-hydra indent-guide ido-vertical-mode ido-ubiquitous htmlize highlight-symbol handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flycheck flx-ido flatui-theme fill-column-indicator eyebrowse exec-path-from-shell ess dracula-theme doom-themes dockerfile-mode dired-details+ dired+ darktooth-theme counsel challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(safe-local-variable-values
    (quote

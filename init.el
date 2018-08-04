@@ -617,6 +617,7 @@
             ("walk" . "clojure.walk")
             ("zip" . "clojure.zip")
             ("s" . "schema.core")
+            ("log" . "taoensso.timbre")
             ("casex" . "camel-snake-kebab.extras")
             ("case" . "camel-snake-kebab.core"))
           ;; clojure-align-forms-automatically t
@@ -625,6 +626,7 @@
     :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
   (use-package cider
+    :pin melpa-stable
     :init
     (add-hook 'cider-mode-hook #'clj-refactor-mode)
     (add-hook 'cider-repl-mode-hook #'subword-mode)
@@ -724,6 +726,7 @@
               (company-mode)))
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   :config
+  (setq js2-basic-offset 2)
   (use-package js2-refactor
     :config
     (js2r-add-keybindings-with-prefix "C-c C-r")
@@ -740,6 +743,8 @@
     (define-key tern-mode-keymap (kbd "M-.") nil)
     (define-key tern-mode-keymap (kbd "M-,") nil)))
 
+(use-package handlebars-mode)
+
 (use-package projectile
   :init
   (setq projectile-enable-caching t)
@@ -747,6 +752,7 @@
   :config
   ;; change the shell to sh from bash because I use fish
   (setq shell-file-name "/bin/sh")
+  (define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map)
   (projectile-global-mode 1))
 
 (use-package eyebrowse
@@ -770,7 +776,9 @@
                           ;; :weight 'normal
                           ;; :font "Inconsolata-13"
                           :font "Office Code Pro-13"
-                          ;; :font "Hack-11"
+                          ;; :font "Fira Mono-14"
+                          ;; :font "Hack-14"
+
                           )
       (menu-bar-mode 1))
   (progn
@@ -896,6 +904,9 @@
         ;; projectile-switch-project-action 'neotree-projectile-action
         ))
 
+
+(use-package highlight-numbers)
+
 ;;;;;;;;;;;
 ; themes ;;
 ;;;;;;;;;;;
@@ -929,6 +940,7 @@
 (use-package ample-theme :defer t)
 (use-package challenger-deep-theme :defer t)
 (use-package spacemacs-theme :defer t)
+(use-package panda-theme :defer t)
 (use-package kaolin-themes :defer t)
 (use-package doom-themes
   :disabled t
@@ -959,8 +971,13 @@
                     kaolin-ocean
                     kaolin-eclipse
                     kaolin-valley-dark
+                    kaolin-bubblegum
                     flatui
                     kaolin-light))
+
+;; (custom-theme-set-faces 'darktooth
+;;                         '(vertical-border ((t (:foreground "#504945")))))
+
 (ccann/cycle-theme)
 (load (expand-file-name "modeline.el" user-emacs-directory))
 

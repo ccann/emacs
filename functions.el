@@ -67,12 +67,7 @@
   ;; (setq highlight-symbol-foreground-color "#000000")
   ;; (when (eq curr-theme 'challenger-deep)
   (set-face-attribute 'mode-line nil :box nil)
-  (set-face-attribute 'mode-line-inactive nil :box nil)
-  (when (eq curr-theme 'darktooth)
-    (custom-set-faces '(vertical-border ((t (:foreground "#504945"))))))
-  )
-
-; show-paren-match
+  (set-face-attribute 'mode-line-inactive nil :box nil))
 
 
 (defun fc/isearch-yank-symbol ()
@@ -105,5 +100,12 @@
          (env-lines (split-string env-str "\n"))
          (envs (mapcar (lambda (s) (replace-regexp-in-string "=.*$" "" s)) env-lines)))
     (delete "" envs)))
+
+
+(defun ccann/align-whitespace (start end)
+  "Align columns by whitespace"
+  (interactive "r")
+  (align-regexp start end
+                "\\(\\s-*\\)\\s-" 1 0 t))
 
 ;;; functions.el ends here
