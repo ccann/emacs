@@ -523,6 +523,7 @@
   :mode ("\\.py\\'" . python-mode)
   :init
   (add-hook 'python-mode-hook #'elpy-mode)
+  (add-hook 'python-mode-hook #'highlight-symbol-mode)
   (add-hook 'python-mode-hook #'elpy-enable)
   (add-hook 'python-mode-hook (lambda () (elpy-use-ipython "ipython")))
   (add-hook 'python-mode-hook #'subword-mode)
@@ -715,6 +716,7 @@
 (use-package js2-mode
   :mode ("\\.js?\\'" . js2-mode)
   :init
+  (add-hook 'js2-mode-hook #'highlight-symbol-mode)
   (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
   (add-hook 'js2-mode-hook #'js2-refactor-mode)
   (add-hook 'js2-mode-hook
