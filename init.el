@@ -11,14 +11,8 @@
 ;;; Code:
 
 (setq-default warning-minimum-level :emergency)
-;; (setq load-prefer-newer t)
 
-;; this seemingly has no effect...
-;; (let ((display-table (or standard-display-table (make-display-table))))
-;;   (set-display-table-slot display-table 'vertical-border (make-glyph-code ?┃))
-;;   (setq standard-display-table display-table))
-
-(require 'package)
+(package-initialize)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
@@ -30,7 +24,6 @@
     '(add-to-list 'byte-compile-not-obsolete-funcs
                   'preceding-sexp)))
 
-(package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -39,17 +32,22 @@
 (eval-when-compile
   (require 'use-package)
   (setq use-package-verbose t)
-  (setq use-package-always-ensure t)
-  (require 'bind-key)
-  (use-package diminish))
-
+  (setq use-package-always-ensure t))
+(require 'bind-key)
+(require 'diminish)
 
 (defconst ccann/is-osx (eq system-type 'darwin))
 
+(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+(add-hook 'emacs-lisp-mode-hook #'lispy-mode)
+(add-hook 'emacs-lisp-mode-hook #'paren-face-mode)
+(diminish 'auto-revert-mode)
+
+
 ;; libs
 (use-package list-utils)
-(use-package hydra :defer t)
-(use-package popwin :defer t :config (popwin-mode 1))
+(use-package hydra)
+(use-package popwin :config (popwin-mode 1))
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
@@ -112,7 +110,6 @@
 
 
 (use-package ace-window
-  :defer t
   :init (global-set-key (kbd "M-p") 'ace-window))
 
 (use-package key-chord
@@ -143,19 +140,17 @@
 ; Packages ;;
 ;;;;;;;;;;;;;
 
-;; indent unless point is at the end of a symbol
-;; (use-package smart-tab
-;;   :init (bind-key "<tab>" 'hippie-expand read-expression-map))
-
 (use-package ivy
+  :after (ivy-hydra)
   :init
   (setq ivy-height 20)
-  (use-package ivy-hydra)
   :config
   (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   (ivy-mode 1))
+
+(use-package ivy-hydra)
 
 (use-package counsel)
 
@@ -168,9 +163,6 @@
     (exec-path-from-shell-copy-envs (ccann/get-envs "~/.profile"))
     (exec-path-from-shell-copy-env "PYTHONPATH")))
 
-;; (use-package smex
-;;   :bind (("M-x" . smex))
-;;   :config (smex-initialize))  ; smart meta-x (use IDO in minibuffer)
 
 (use-package ido
   :demand t
@@ -182,7 +174,8 @@
         ido-case-fold t)  ; ignore case
   :config (ido-mode 1))
 
-(use-package ido-ubiquitous  :config (ido-ubiquitous-mode 1))
+;; deprecated, see ido-completing-read+
+;; (use-package ido-ubiquitous  :config (ido-ubiquitous-mode 1))
 (use-package flx-ido  :config (flx-ido-mode 1))
 (use-package ido-vertical-mode  :config (ido-vertical-mode 1))
 
@@ -196,13 +189,11 @@
   (when ccann/is-osx
     (setq magit-emacsclient-executable "/usr/local/bin/emacsclient")))
 
-(use-package rainbow-delimiters :defer t)
-;;(use-package rainbow-mode :defer t)
+(use-package rainbow-delimiters)
 
 (use-package company-anaconda
   :defer t
   :diminish anaconda-mode)
-
 
 (use-package company
   :init
@@ -215,12 +206,6 @@
   (add-to-list 'company-backends 'company-anaconda)
   (global-company-mode))
 
-
-(use-package dired-details+
-  :defer t)
-
-(use-package dired+
-  :defer t)
 
 (save-place-mode 1)
 
@@ -274,11 +259,8 @@
   (if co (setcdr co '(left-continuation right-continuation))))
 
 (use-package flycheck
-  :defer t
   :diminish flycheck-mode
   :init
-  ;; (add-hook 'flycheck-mode-hook
-  ;;           (lambda () (set-face-attribute 'nlinum nil :underline nil)))
   ;; Custom fringe indicator (circle)
   (when (fboundp 'define-fringe-bitmap)
     (define-fringe-bitmap 'my-flycheck-fringe-indicator
@@ -337,11 +319,8 @@
   (setq fci-rule-column 99
         fci-rule-use-dashes t
         fci-dash-pattern 0.75
-        fci-rule-width 1
-        ;; fci-rule-color
-        ))
+        fci-rule-width 1))
 
-(use-package indent-guide :disabled t)
 
 (use-package highlight-symbol
   :init
@@ -360,15 +339,17 @@
 ;;;;;;;;;;;;;;;;;;
 
 
-(use-package ob-ipython)
+(use-package ob-ipython
+  :after (org))
+
+(use-package htmlize
+  :after (org))
 
 (use-package org
   :pin gnu
   :mode ("\\.org\\'" . org-mode)
   :init
   (setq org-directory "~/Dropbox/org")
-  (use-package htmlize)
-  ;; (add-hook 'org-mode-hook #'flyspell-mode)
   (add-hook 'org-mode-hook #'visual-line-mode)
   (add-hook 'org-mode-hook #'org-indent-mode)
   (add-hook 'org-mode-hook #'auto-fill-mode)
@@ -474,13 +455,11 @@
  (setq-default TeX-master nil))
 
 (use-package auctex-latexmk
- :defer t
- :init (setq auctex-latexmk-inherit-TeX-PDF-mode t)
- :commands auctex-latexmk-setup)
+  :init (setq auctex-latexmk-inherit-TeX-PDF-mode t)
+  :commands auctex-latexmk-setup)
 
 (use-package reftex
- :defer t
- :commands turn-on-reftex
+  :commands turn-on-reftex
  :init (setq reftex-plug-into-AUCTeX t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -494,8 +473,8 @@
 
 
 (use-package lispy
-  :defer t
   ;; :pin melpa
+  :defer t
   :init
   (setq lispy-compat '(edebug cider))
   (define-advice git-timemachine-mode (:after (&optional arg))
@@ -509,12 +488,8 @@
       (lispy-mode 1)))
 
   (add-hook 'god-mode-enabled-hook 'update-lispy)
-  (add-hook 'god-mode-disabled-hook 'update-lispy)
-  )
+  (add-hook 'god-mode-disabled-hook 'update-lispy))
 
-(use-package parinfer :defer t)
-
-(use-package ess :defer t)
 
 (use-package ruby-mode
   :mode ("\\.rb\\'" . ruby-mode))
@@ -538,6 +513,7 @@
         python-check-command "flake8"))
 
 (use-package elpy
+  :defer t
   :init
   (setq elpy-rpc-backend "jedi")
   (setq elpy-modules '(elpy-module-company
@@ -548,32 +524,28 @@
     (setq elpy-rpc-python-command "/usr/local/bin/python3")))
 
 (use-package jedi
-  :defer t
   :init (setq jedi:complete-on-dot t)
   :bind (("C-c d" . jedi:show-doc)))
 
-(use-package lua-mode :defer t)
+(use-package lua-mode)
 
 (use-package yasnippet
   :defer t
   :diminish yas-minor-mode)
 
 (use-package eldoc
-  :defer t
   :diminish eldoc-mode)
 
-(use-package paren-face
-  :defer t)
+(use-package paren-face)
 
 ;;;;;;;;;;;;;
 ;; Clojure ;;
 ;;;;;;;;;;;;;
 
 (use-package clojure-mode
-  :defer t
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
-  ;; :pin melpa-stable
+
   :diminish (subword-mode)
 
   :init
@@ -584,9 +556,7 @@
   (add-hook 'clojure-mode-hook #'eldoc-mode)
   (add-hook 'clojure-mode-hook #'cider-mode)
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
-  ;; (add-hook 'clojure-mode-hook #'fci-mode)
   (add-hook 'clojure-mode-hook #'lispy-mode)
-  (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
 
   :config
   (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
@@ -603,105 +573,103 @@
     (context 2)
     (defapi 'defun)
     (swaggered 'defun)
-    (swagger-docs 2))
+    (swagger-docs 2)))
 
-  (use-package clj-refactor
-    :init
-    (setq cljr-suppress-middleware-warnings t
-          cljr-warn-on-eval nil
-          cljr-favor-prefix-notation t
-          cljr-project-clean-prompt nil
-          cljr-magic-require-namespaces
-          '(("io" . "clojure.java.io")
-            ("set" . "clojure.set")
-            ("str" . "clojure.string")
-            ("walk" . "clojure.walk")
-            ("zip" . "clojure.zip")
-            ("s" . "schema.core")
-            ("log" . "taoensso.timbre")
-            ("casex" . "camel-snake-kebab.extras")
-            ("case" . "camel-snake-kebab.core"))
-          ;; clojure-align-forms-automatically t
-          )
-    :diminish clj-refactor-mode
-    :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+(use-package flycheck-joker
+  :after (flycheck clojure-mode))
 
-  (use-package cider
-    :pin melpa-stable
-    :init
-    (add-hook 'cider-mode-hook #'clj-refactor-mode)
-    (add-hook 'cider-repl-mode-hook #'subword-mode)
-    (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+(use-package cider-eval-sexp-fu
+  :after (cider))
 
-    (use-package cider-eval-sexp-fu :defer t)
-    (setq
-     cider-repl-display-help-banner nil
-     ;; nrepl-log-messages t                 ; log communication with the nREPL server
-     cider-lein-command "/Users/cody/bin/lein"
-     ;; cider-lein-parameters "with-profile +test repl :headless"
-     cider-repl-display-in-current-window t
-     cider-repl-use-clojure-font-lock t
-     cider-save-file-on-load nil
-     cider-prompt-for-symbol nil
-     cider-stacktrace-fill-column 80
-     cider-auto-select-error-buffer t
-     cider-font-lock-max-length 10000
-     cider-repl-use-pretty-printing t
-     cider-refresh-before-fn "mount.core/stop"
-     cider-refresh-after-fn "mount.core/start"
-     cider-font-lock-dynamically '(macro core function var)
-     nrepl-hide-special-buffers t       ; hide *nrepl-connection* and *nrepl-server*
-     cider-overlays-use-font-lock t
-     nrepl-prompt-to-kill-server-buffer-on-quit nil)
-    (add-hook 'cider-popup-buffer-mode-hook
-              (lambda ()
-                (when (string= (buffer-name) "*cider-grimoire*")
-                  (markdown-mode))))
+(use-package cider
+  :pin melpa-stable
+  :after (clojure-mode clj-refactor)
+  :init
+  (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  (add-hook 'cider-repl-mode-hook #'subword-mode)
+  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+  (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
 
-    :bind
-    ;; SPC m e b	eval buffer
-    ;; SPC m e e	eval last sexp
-    ;; SPC m e f	eval function at point
-    ;; SPC m e r	eval region
-    ;; SPC m e m	cider macroexpand 1
-    ;; SPC m e M	cider macroexpand all
-    ;; SPC m e p	print last sexp (clojure interaction mode only)
-    ;; SPC m e w	eval last sexp and replace with result
-    (("C-c e f" . cider-eval-defun-at-point)
-     ("C-c e r" . cider-eval-region)
-     ("C-c e e" . cider-eval-last-sexp)
-     ("C-c e m" . cider-macroexpand-1)
-     ("C-c e M" . cider-macroexpand-all)
-     ("C-c e p" . cider-pprint-eval-last-sexp)
-     ("C-c e w" . cider-eval-last-sexp-and-replace)
-     ("C-c e b" . cider-load-buffer)
+  (setq
+   cider-repl-display-help-banner nil
+   ;; nrepl-log-messages t                 ; log communication with the nREPL server
+   cider-lein-command "/Users/cody/bin/lein"
+   ;; cider-lein-parameters "with-profile +test repl :headless"
+   cider-repl-display-in-current-window t
+   cider-repl-use-clojure-font-lock t
+   cider-save-file-on-load nil
+   cider-prompt-for-symbol nil
+   cider-stacktrace-fill-column 80
+   cider-auto-select-error-buffer t
+   cider-font-lock-max-length 10000
+   cider-repl-use-pretty-printing t
+   cider-font-lock-dynamically '(macro core function var)
+   nrepl-hide-special-buffers t         ; hide *nrepl-connection* and *nrepl-server*
+   cider-overlays-use-font-lock t
+   nrepl-prompt-to-kill-server-buffer-on-quit nil)
+  (add-hook 'cider-popup-buffer-mode-hook
+            (lambda ()
+              (when (string= (buffer-name) "*cider-grimoire*")
+                (markdown-mode))))
 
-     ;; SPC m t a	run all tests in namespace
-     ;; SPC m t r	re-run test failures for namespace
-     ;; SPC m t t	run test at point
-     ("C-c t t" . cider-test-run-test)
-     ("C-c t n" . cider-test-run-ns-tests)
-     ("C-c t p" . cider-test-run-project-tests)
-     ("C-c t r" . cider-test-show-report)
-     ("C-c t f" . cider-test-rerun-failed-tests)))
+  :bind
+  ;; SPC m e b	eval buffer
+  ;; SPC m e e	eval last sexp
+  ;; SPC m e f	eval function at point
+  ;; SPC m e r	eval region
+  ;; SPC m e m	cider macroexpand 1
+  ;; SPC m e M	cider macroexpand all
+  ;; SPC m e p	print last sexp (clojure interaction mode only)
+  ;; SPC m e w	eval last sexp and replace with result
+  (("C-c e f" . cider-eval-defun-at-point)
+   ("C-c e r" . cider-eval-region)
+   ("C-c e e" . cider-eval-last-sexp)
+   ("C-c e m" . cider-macroexpand-1)
+   ("C-c e M" . cider-macroexpand-all)
+   ("C-c e p" . cider-pprint-eval-last-sexp)
+   ("C-c e w" . cider-eval-last-sexp-and-replace)
+   ("C-c e b" . cider-load-buffer)
 
-  (use-package flycheck-joker))
+   ;; SPC m t a	run all tests in namespace
+   ;; SPC m t r	re-run test failures for namespace
+   ;; SPC m t t	run test at point
+   ("C-c t t" . cider-test-run-test)
+   ("C-c t n" . cider-test-run-ns-tests)
+   ("C-c t p" . cider-test-run-project-tests)
+   ("C-c t r" . cider-test-show-report)
+   ("C-c t f" . cider-test-rerun-failed-tests)))
+
+
+(use-package clj-refactor
+  :after (clojure-mode)
+  :init
+  (setq cljr-suppress-middleware-warnings t
+        cljr-warn-on-eval nil
+        cljr-favor-prefix-notation t
+        cljr-project-clean-prompt nil
+        cljr-magic-require-namespaces
+        '(("io" . "clojure.java.io")
+          ("set" . "clojure.set")
+          ("str" . "clojure.string")
+          ("walk" . "clojure.walk")
+          ("zip" . "clojure.zip")
+          ("s" . "schema.core")
+          ("log" . "taoensso.timbre")
+          ("casex" . "camel-snake-kebab.extras")
+          ("case" . "camel-snake-kebab.core")
+          ("mount" . "mount.core")))
+  :diminish clj-refactor-mode
+  :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
 
 (use-package spiral
-    :defer t
-    :disabled t
-    :init
-    (setq spiral-lein-command "/Users/cody/bin/lein"
-          lispy-clojure-eval-method 'spiral)
-    :bind (("C-c C-e" . spiral-eval-last-sexp)
-           ("C-c C-k" . spiral-eval-buffer)))
+  :disabled t
+  :init
+  (setq spiral-lein-command "/Users/cody/bin/lein"
+        lispy-clojure-eval-method 'spiral)
+  :bind (("C-c C-e" . spiral-eval-last-sexp)
+         ("C-c C-k" . spiral-eval-buffer)))
 
-
-(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-(add-hook 'emacs-lisp-mode-hook #'lispy-mode)
-(add-hook 'emacs-lisp-mode-hook #'paren-face-mode)
-(diminish 'auto-revert-mode)
 
 (use-package web-mode
   :mode ("\\.html?\\'" . web-mode)
@@ -728,22 +696,26 @@
               (company-mode)))
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   :config
-  (setq js2-basic-offset 2)
-  (use-package js2-refactor
-    :config
-    (js2r-add-keybindings-with-prefix "C-c C-r")
-    (define-key js2-mode-map (kbd "C-k") #'js2r-kill))
+  (setq js2-basic-offset 2))
 
-  (use-package xref-js2
-    :config
-    (define-key js-mode-map (kbd "M-.") nil))
+(use-package js2-refactor
+  :after (js2-mode)
+  :config
+  (js2r-add-keybindings-with-prefix "C-c C-r")
+  (define-key js2-mode-map (kbd "C-k") #'js2r-kill))
 
-  (use-package company-tern
-    :config
-    (add-to-list 'company-backends 'company-tern)
-    ;; Disable completion keybindings, as we use xref-js2 instead
-    (define-key tern-mode-keymap (kbd "M-.") nil)
-    (define-key tern-mode-keymap (kbd "M-,") nil)))
+(use-package xref-js2
+  :after (js2-mode)
+  :config
+  (define-key js-mode-map (kbd "M-.") nil))
+
+(use-package company-tern
+  :after (js2-mode)
+  :config
+  (add-to-list 'company-backends 'company-tern)
+  ;; Disable completion keybindings, as we use xref-js2 instead
+  (define-key tern-mode-keymap (kbd "M-.") nil)
+  (define-key tern-mode-keymap (kbd "M-,") nil))
 
 (use-package handlebars-mode)
 
@@ -802,21 +774,20 @@
       '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 
 (use-package olivetti
+  :defer t
   :init
-  (add-hook 'olivetti-mode-hook (lambda () (nlinum-mode -1)))
   (setq-default olivetti-body-width 90))
 
 
-(use-package nlinum
-  :init
-  ;; prevent nlinum-mode and text-scale-adjust from fucking each other, not a perfect solution
-  (add-hook 'nlinum-mode-hook
-            (lambda ()
-              (set-face-attribute 'linum nil :height 100)))
-  (setq nlinum-format "%4d ")
-  ;; Enable nlinum line highlighting
-  (setq nlinum-highlight-current-line t)
-  (add-hook 'prog-mode-hook #'nlinum-mode))
+
+(setq-default display-line-numbers-type t
+              ;; display-line-numbers-current-absolute t
+              display-line-numbers-width 2
+              display-line-numbers-widen t)
+
+(add-hook 'text-mode-hook #'display-line-numbers-mode)
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+(use-package highlight-numbers)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -836,8 +807,7 @@
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
-(use-package avy
-  :defer t)
+(use-package avy :defer t)
 
 ;;;;;;;;;
 ; Misc ;;
@@ -849,25 +819,11 @@
 (setq create-lockfiles nil)
 (setq-default indent-tabs-mode nil) ; disallow tab insertion
 
-;; (use-package smooth-scrolling
-;;   :config
-;;   (smooth-scrolling-mode 1))
-
 (setq mouse-wheel-scroll-amount '(3)) ;; n lines at a time
 (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
 (setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
 
 (setq-default bidi-display-reordering nil)
-
-
-(use-package sublimity
-  :disabled t
-  :init
-  (require 'sublimity-scroll)
-  (setq sublimity-scroll-weight 4
-        sublimity-scroll-drift-length 6)
-  :config (sublimity-mode 1))
-
 
 
 ; configure clipoard
@@ -878,7 +834,6 @@
 (delete-selection-mode 1)
 
 (use-package visual-regexp
-  :defer t
   :bind (("C-c r" . vr/replace)
          ("C-c q" . vr/query-replace)))
 
@@ -893,7 +848,6 @@
   :bind ("M-y" . browse-kill-ring))
 
 (use-package google-this
-  :defer t
   :bind ("C-x g" . google-this))
 
 
@@ -907,64 +861,33 @@
         ))
 
 
-(use-package highlight-numbers)
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'scroll-left 'disabled nil)
+
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
 
 ;;;;;;;;;;;
-; themes ;;
+                                        ; themes ;;
 ;;;;;;;;;;;
 (use-package all-the-icons)
 ;; run M-x all-the-icons-install-fonts once
 
-(use-package solaire-mode
-  :disabled t
-  :config
-  ;; brighten buffers (that represent real files)
-  (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
-  ;; To enable solaire-mode unconditionally for certain modes:
-  (add-hook 'ediff-prepare-buffer-hook #'solaire-mode)
-
-  ;; ...if you use auto-revert-mode:
-  (add-hook 'after-revert-hook #'turn-on-solaire-mode)
-
-  ;; highlight the minibuffer when it is activated:
-  (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer))
-
-
-(use-package flatui-theme :defer t)
-(use-package gruvbox-theme :defer t)
-(use-package zenburn-theme :defer t)
-(use-package badger-theme :defer t)
-(use-package gotham-theme :defer t)
-(use-package darktooth-theme :defer t)
-(use-package material-theme :defer t)
-(use-package metalheart-theme :defer t)
-(use-package apropospriate-theme :defer t)
-(use-package ample-theme :defer t)
-(use-package challenger-deep-theme :defer t)
-(use-package spacemacs-theme :defer t)
-(use-package panda-theme :defer t)
-(use-package kaolin-themes :defer t)
-(use-package doom-themes
-  :disabled t
-  :init
-  ;; And you can brighten other buffers (unconditionally) with:
-  ;; (add-hook 'ediff-prepare-buffer-hook #'doom-buffer-mode)
-
-  ;; Enable flashing mode-line on errors
-  ;; (doom-themes-visual-bell-config)
-
-  ;; Enable custom neotree theme
-  (doom-themes-neotree-config)          ; all-the-icons fonts must be installed!
-
-  (doom-themes-org-config)
-
-  :config
-  (setq doom-themes-enable-bold t       ; if nil, bold is universally disabled
-        doom-themes-enable-italic t     ; if nil, italics is universally disabled
-        doom-one-brighter-modeline nil
-        doom-one-brighter-comments nil
-        ;; doom-one-padded-modeline t
-        ))
+(use-package flatui-theme)
+(use-package gruvbox-theme)
+(use-package zenburn-theme)
+(use-package badger-theme)
+(use-package gotham-theme)
+(use-package darktooth-theme)
+(use-package material-theme)
+(use-package metalheart-theme)
+(use-package apropospriate-theme)
+(use-package ample-theme)
+(use-package challenger-deep-theme)
+(use-package spacemacs-theme)
+(use-package panda-theme)
+(use-package kaolin-themes)
 
 (defvar curr-theme nil)
 (defvar my-themes '(kaolin-dark
@@ -983,11 +906,4 @@
 (ccann/cycle-theme)
 (load (expand-file-name "modeline.el" user-emacs-directory))
 
-
 ;; init.el ends here
-
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)
-(put 'scroll-left 'disabled nil)
-
-(add-hook 'before-save-hook 'whitespace-cleanup)

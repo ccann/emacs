@@ -32,9 +32,11 @@
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(safe-local-variable-values
    (quote
-    ((cider-cljs-lein-repl . "(do (user/go) (user/cljs-repl))")
-     (cider-refresh-after-fn . "reloaded.repl/resume")
-     (cider-refresh-before-fn . "reloaded.repl/suspend"))))
+    ((cider-ns-refresh-after-fn . "mount.core/start")
+     (cider-ns-refresh-before-fn . "mount.core/stop")
+     (cider-ns-refresh-after-fn . "integrant.repl/resume")
+     (cider-ns-refresh-before-fn . "integrant.repl/suspend")
+     (cider-cljs-lein-repl . "(do (user/go) (user/cljs-repl))"))))
  '(sml/active-background-color "#34495e")
  '(sml/active-foreground-color "#ecf0f1")
  '(sml/inactive-background-color "#dfe4ea")
