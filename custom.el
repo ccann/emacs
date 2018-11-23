@@ -28,7 +28,7 @@
  '(org-fontify-whole-heading-line t)
  '(package-selected-packages
    (quote
-    (cider clj-refactor typescript-mode highlight-numbers panda-theme cider-eval-sexp-fu company-quickhelp lispy olivetti flycheck-joker company-tern sql-indent fish-mode diminish csharp-mode org kaolin-themes paren-face-mode paren-face auctex-latexmk auctex org-babel nlinum zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp use-package terraform-mode telephone-line spacemacs-theme solaire-mode smex smart-mode-line rainbow-mode rainbow-delimiters python-mode powerline pov-mode popwin parinfer ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord js2-refactor jedi ivy-hydra indent-guide ido-vertical-mode ido-ubiquitous htmlize highlight-symbol handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flycheck flx-ido flatui-theme fill-column-indicator eyebrowse exec-path-from-shell ess dracula-theme doom-themes dockerfile-mode dired-details+ dired+ darktooth-theme counsel challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme)))
+    (cider clj-refactor typescript-mode highlight-numbers panda-theme cider-eval-sexp-fu company-quickhelp lispy olivetti flycheck-joker company-tern sql-indent fish-mode diminish csharp-mode org kaolin-themes paren-face-mode paren-face auctex-latexmk auctex org-babel nlinum zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp use-package terraform-mode telephone-line spacemacs-theme solaire-mode smex smart-mode-line rainbow-mode rainbow-delimiters python-mode powerline pov-mode popwin parinfer ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord js2-refactor jedi ivy-hydra indent-guide ido-vertical-mode ido-ubiquitous htmlize highlight-symbol handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flycheck flx-ido flatui-theme fill-column-indicator eyebrowse exec-path-from-shell dracula-theme doom-themes dockerfile-mode dired-details+ dired+ darktooth-theme counsel challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(safe-local-variable-values
    (quote
@@ -68,4 +68,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(highlight-symbol-face ((t (:background "yellow")))))
+ '(highlight-symbol-face ((((class color) (min-colors 257)) (:underline t)) (((class color) (min-colors 89)) (:underline t)))))

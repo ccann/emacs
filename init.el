@@ -150,7 +150,7 @@
   (setq enable-recursive-minibuffers t)
   (ivy-mode 1))
 
-(use-package ivy-hydra)
+(use-package ivy-hydra :defer t)
 
 (use-package counsel)
 
@@ -563,6 +563,7 @@
   (define-clojure-indent
     (db-schema 'defun)
     (defroutes 'defun)
+    (stub 'defun)
     (GET 2)
     (POST 2)
     (PATCH 2)
@@ -874,20 +875,20 @@
 (use-package all-the-icons)
 ;; run M-x all-the-icons-install-fonts once
 
-(use-package flatui-theme)
-(use-package gruvbox-theme)
-(use-package zenburn-theme)
-(use-package badger-theme)
-(use-package gotham-theme)
-(use-package darktooth-theme)
-(use-package material-theme)
-(use-package metalheart-theme)
-(use-package apropospriate-theme)
-(use-package ample-theme)
-(use-package challenger-deep-theme)
-(use-package spacemacs-theme)
-(use-package panda-theme)
-(use-package kaolin-themes)
+(use-package flatui-theme :defer t)
+(use-package gruvbox-theme :defer t)
+(use-package zenburn-theme :defer t)
+(use-package badger-theme :defer t)
+(use-package gotham-theme :defer t)
+(use-package darktooth-theme :defer t)
+(use-package material-theme :defer t)
+(use-package metalheart-theme :defer t)
+(use-package apropospriate-theme :defer t)
+(use-package ample-theme :defer t)
+(use-package challenger-deep-theme :defer t)
+(use-package spacemacs-theme :defer t)
+(use-package panda-theme :defer t)
+(use-package kaolin-themes :defer t)
 
 (defvar curr-theme nil)
 (defvar my-themes '(kaolin-dark
