@@ -34,7 +34,7 @@
   (setq use-package-verbose t)
   (setq use-package-always-ensure t))
 (require 'bind-key)
-(require 'diminish)
+(use-package diminish)
 
 (defconst ccann/is-osx (eq system-type 'darwin))
 
@@ -196,6 +196,7 @@
   :diminish anaconda-mode)
 
 (use-package company
+  :defer 1
   :init
   (setq company-idle-delay 0.4
         company-minimum-prefix-length 2)
@@ -721,6 +722,7 @@
 (use-package handlebars-mode)
 
 (use-package projectile
+  :pin melpa-stable
   :init
   (setq projectile-enable-caching t)
   :diminish projectile-mode
@@ -788,7 +790,8 @@
 
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(use-package highlight-numbers)
+
+(use-package highlight-numbers :defer t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
