@@ -143,7 +143,7 @@
 (use-package ivy
   :after (ivy-hydra)
   :init
-  (setq ivy-height 20)
+  (setq ivy-height 25)
   :config
   (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
   (setq ivy-use-virtual-buffers t)
@@ -589,6 +589,7 @@
   :init
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
+  (add-hook 'cider-repl-mode-hook #'lispy-mode)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
 
@@ -894,15 +895,20 @@
 (use-package kaolin-themes :defer t)
 
 (defvar curr-theme nil)
-(defvar my-themes '(kaolin-dark
-                    kaolin-galaxy
-                    kaolin-aurora
-                    kaolin-ocean
-                    kaolin-eclipse
-                    kaolin-valley-dark
-                    kaolin-bubblegum
+(defvar my-themes '(kaolin-dark         ; excellent
+                    kaolin-mono-dark
+                    kaolin-aurora       ; good
+                    kaolin-bubblegum    ; bad
+                    kaolin-eclipse      ; great
+                    kaolin-ocean        ; okay
+                    kaolin-galaxy       ; okay
+                    kaolin-valley-dark  ; excellent
+                    darktooth
+                    kaolin-fusion
                     flatui
-                    kaolin-light))
+                    kaolin-light
+                    kaolin-valley-light
+                    kaolin-breeze))
 
 ;; (custom-theme-set-faces 'darktooth
 ;;                         '(vertical-border ((t (:foreground "#504945")))))

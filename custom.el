@@ -32,7 +32,9 @@
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(safe-local-variable-values
    (quote
-    ((cider-ns-refresh-after-fn . "mount.core/start")
+    ((cider-refresh-after-fn . "reloaded.repl/resume")
+     (cider-refresh-before-fn . "reloaded.repl/suspend")
+     (cider-ns-refresh-after-fn . "mount.core/start")
      (cider-ns-refresh-before-fn . "mount.core/stop")
      (cider-ns-refresh-after-fn . "integrant.repl/resume")
      (cider-ns-refresh-before-fn . "integrant.repl/suspend")

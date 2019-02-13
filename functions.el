@@ -62,6 +62,7 @@
     (setq my-themes (append my-themes (list curr-theme))))
   (setq curr-theme (pop my-themes))
   (load-theme curr-theme t)
+  (message (symbol-name curr-theme))
   ;; (sml/apply-theme 'respectful)
   ;; (underline-straight)
   ;; (setq highlight-symbol-foreground-color "#000000")
