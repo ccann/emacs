@@ -429,7 +429,9 @@
 
 (use-package dockerfile-mode)
 
-(use-package terraform-mode)
+(use-package terraform-mode
+  :init
+  (add-hook 'terraform-mode-hook #'ccann/add-terraform-string-binding))
 
 (use-package git-timemachine)
 
@@ -471,7 +473,7 @@
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
-
+(use-package omnisharp :defer t)
 
 (use-package lispy
   ;; :pin melpa
@@ -539,6 +541,8 @@
 
 (use-package paren-face)
 
+(add-hook 'nxml-mode-hook #'(lambda () (setq require-final-newline nil)))
+
 ;;;;;;;;;;;;;
 ;; Clojure ;;
 ;;;;;;;;;;;;;
@@ -585,7 +589,7 @@
 
 (use-package cider
   :pin melpa-stable
-  :after (clojure-mode clj-refactor)
+  :after (clojure-mode)
   :init
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
@@ -677,6 +681,7 @@
 (use-package web-mode
   :mode ("\\.html?\\'" . web-mode)
   :init
+  (setq css-indent-offset 2)
   (setq web-mode-code-indent-offset 2)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 4)
@@ -739,6 +744,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Display Settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;
+(setq-default tab-width 2)
 (setq frame-resize-pixelwise t)
 (column-number-mode 1)
 (blink-cursor-mode 1)
@@ -753,7 +759,7 @@
       (set-face-attribute 'default nil
                           ;; :weight 'normal
                           ;; :font "Inconsolata-13"
-                          :font "Office Code Pro-13"
+                          :font "Office Code Pro-15"
                           ;; :font "Fira Mono-14"
                           ;; :font "Hack-14"
 
