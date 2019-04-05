@@ -114,7 +114,9 @@
   (insert "\"${}\"")
   (backward-char 2))
 
-(defun ccann/add-terraform-string-binding ()
-  (local-set-key (kbd "C-c j") #'ccann/insert-terraform-string))
+(defun ccann/align-terraform-block ()
+  (interactive)
+  (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)="))
+
 
 ;;; functions.el ends here

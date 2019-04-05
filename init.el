@@ -431,7 +431,8 @@
 
 (use-package terraform-mode
   :init
-  (add-hook 'terraform-mode-hook #'ccann/add-terraform-string-binding))
+  :bind (("C-c j" . ccann/insert-terraform-string)
+         ("C-c a" . ccann/align-terraform-block)))
 
 (use-package git-timemachine)
 
