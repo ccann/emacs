@@ -109,12 +109,17 @@
   (align-regexp start end
                 "\\(\\s-*\\)\\s-" 1 0 t))
 
-(defun ccann/insert-terraform-string ()
+(defun ccann/insert-terraform-interpolation ()
   (interactive)
   (insert "\"${}\"")
   (backward-char 2))
 
-(defun ccann/align-terraform-block ()
+(defun ccann/insert-terraform-interpolation-nested ()
+  (interactive)
+  (insert "${}")
+  (backward-char 1))
+
+(defun ccann/align-terraform-region ()
   (interactive)
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)="))
 

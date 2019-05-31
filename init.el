@@ -47,7 +47,7 @@
 ;; libs
 (use-package list-utils)
 (use-package hydra)
-(use-package popwin :config (popwin-mode 1))
+;; (use-package popwin :config (popwin-mode 1))
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
@@ -198,10 +198,14 @@
 (use-package company
   :defer 1
   :init
-  (setq company-idle-delay 0.4
-        company-minimum-prefix-length 2)
-  ;; (global-set-key (kbd "<S-tab>") #'company-indent-or-complete-common)
-  (setq tab-always-indent t) ;; set this to nil if you want `indent-for-tab-command` instead
+  (setq company-idle-delay 0.4)
+  (setq company-minimum-prefix-length 2)
+  (setq company-tooltip-limit 10)
+  (setq company-tooltip-align-annotations t)
+  (setq company-tooltip-flip-when-above t)
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
+  ;; set this to nil if you want `indent-for-tab-command` instead
+  ;; (setq tab-always-indent 'complete)
   :diminish company-mode
   :config
   (add-to-list 'company-backends 'company-anaconda)
@@ -431,8 +435,10 @@
 
 (use-package terraform-mode
   :init
-  :bind (("C-c j" . ccann/insert-terraform-string)
-         ("C-c a" . ccann/align-terraform-block)))
+  (add-hook 'terraform-mode-hook 'highlight-symbol-mode)
+  :bind (("C-c j" . ccann/insert-terraform-interpolation)
+         ("C-c k" . ccann/insert-terraform-interpolation-nested)
+         ("C-c a" . ccann/align-terraform-region)))
 
 (use-package git-timemachine)
 
@@ -494,9 +500,13 @@
   (add-hook 'god-mode-enabled-hook 'update-lispy)
   (add-hook 'god-mode-disabled-hook 'update-lispy))
 
+(use-package robe)
 
 (use-package ruby-mode
-  :mode ("\\.rb\\'" . ruby-mode))
+  :mode ("\\.rb\\'" . ruby-mode)
+  :init
+  (add-hook 'ruby-mode-hook 'robe-mode)
+  (add-hook 'ruby-mode-hook 'highlight-symbol-mode))
 
 (use-package python-mode
   :mode ("\\.py\\'" . python-mode)
@@ -564,6 +574,7 @@
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
   (add-hook 'clojure-mode-hook #'lispy-mode)
 
+
   :config
   (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
   (define-clojure-indent
@@ -585,6 +596,13 @@
 (use-package flycheck-joker
   :after (flycheck clojure-mode))
 
+(use-package flycheck-clj-kondo
+  :after (flycheck clojure-mode)
+  :config (dolist (checkers '((clj-kondo-clj . clojure-joker)
+                              (clj-kondo-cljs . clojurescript-joker)
+                              (clj-kondo-cljc . clojure-joker)))
+            (flycheck-add-next-checker (car checkers) (cons 'error (cdr checkers)))))
+
 (use-package cider-eval-sexp-fu
   :after (cider))
 
@@ -600,21 +618,24 @@
 
   (setq
    cider-repl-display-help-banner nil
-   ;; nrepl-log-messages t                 ; log communication with the nREPL server
-   cider-lein-command "/Users/cody/bin/lein"
-   ;; cider-lein-parameters "with-profile +test repl :headless"
    cider-repl-display-in-current-window t
    cider-repl-use-clojure-font-lock t
    cider-save-file-on-load nil
    cider-prompt-for-symbol nil
-   cider-stacktrace-fill-column 80
+   cider-stacktrace-fill-column 90
    cider-auto-select-error-buffer t
    cider-font-lock-max-length 10000
    cider-repl-use-pretty-printing t
-   cider-font-lock-dynamically '(macro core function var)
+   ;; cider-font-lock-dynamically '(macro core function var)
    nrepl-hide-special-buffers t         ; hide *nrepl-connection* and *nrepl-server*
    cider-overlays-use-font-lock t
-   nrepl-prompt-to-kill-server-buffer-on-quit nil)
+   nrepl-prompt-to-kill-server-buffer-on-quit nil
+   cider-default-cljs-repl 'shadow)
+
+  ;; (add-hook 'cider-repl-mode-hook #'cider-company-enable-fuzzy-completion)
+  ;; (add-hook 'cider-mode-hook #'cider-company-enable-fuzzy-completion)
+
+  ;; useful for cider-grimoire command which produces a markdown buffer
   (add-hook 'cider-popup-buffer-mode-hook
             (lambda ()
               (when (string= (buffer-name) "*cider-grimoire*")
@@ -849,6 +870,9 @@
   :bind (("C-c r" . vr/replace)
          ("C-c q" . vr/query-replace)))
 
+(use-package visual-regexp-steroids
+  :after (visual-regexp))
+
 (setq scroll-error-top-bottom t)
 
 (use-package browse-kill-ring
@@ -905,13 +929,13 @@
 (defvar my-themes '(kaolin-dark         ; excellent
                     kaolin-mono-dark
                     kaolin-aurora       ; good
-                    kaolin-bubblegum    ; bad
+                    ;; kaolin-bubblegum    ; bad
                     kaolin-eclipse      ; great
                     kaolin-ocean        ; okay
                     kaolin-galaxy       ; okay
                     kaolin-valley-dark  ; excellent
                     darktooth
-                    kaolin-fusion
+                    kaolin-temple       ; nasty
                     flatui
                     kaolin-light
                     kaolin-valley-light
