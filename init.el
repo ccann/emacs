@@ -626,7 +626,7 @@
    cider-auto-select-error-buffer t
    cider-font-lock-max-length 10000
    cider-repl-use-pretty-printing t
-   ;; cider-font-lock-dynamically '(macro core function var)
+   cider-font-lock-dynamically '(macro core deprecated function var)
    nrepl-hide-special-buffers t         ; hide *nrepl-connection* and *nrepl-server*
    cider-overlays-use-font-lock t
    nrepl-prompt-to-kill-server-buffer-on-quit nil
