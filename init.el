@@ -10,6 +10,7 @@
 
 ;;; Code:
 
+(setq mac-option-modifier 'meta)
 (setq-default warning-minimum-level :emergency)
 
 (package-initialize)
@@ -763,6 +764,13 @@
 (use-package eyebrowse
   :config (eyebrowse-mode))
 
+(add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
+(use-package flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook #'flymake-mode)
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Display Settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -775,17 +783,12 @@
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
-(setq ns-use-srgb-colorspace t)
 (if ccann/is-osx
     (progn
       (set-face-attribute 'default nil
                           ;; :weight 'normal
-                          ;; :font "Inconsolata-13"
-                          :font "Office Code Pro-15"
-                          ;; :font "Fira Mono-14"
-                          ;; :font "Hack-14"
-
-                          )
+                          ;; :font "Monaco-13"
+                          :font "Office Code Pro-13")
       (menu-bar-mode 1))
   (progn
     (menu-bar-mode 1)
@@ -852,9 +855,9 @@
 (setq create-lockfiles nil)
 (setq-default indent-tabs-mode nil) ; disallow tab insertion
 
-(setq mouse-wheel-scroll-amount '(3)) ;; n lines at a time
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
+;; (setq mouse-wheel-scroll-amount '(3)) ;; n lines at a time
+;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+;; (setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
 
 (setq-default bidi-display-reordering nil)
 
@@ -904,9 +907,9 @@
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
 
-;;;;;;;;;;;
-                                        ; themes ;;
-;;;;;;;;;;;
+;;;;;;;;;;;;
+;; themes ;;
+;;;;;;;;;;;;
 (use-package all-the-icons)
 ;; run M-x all-the-icons-install-fonts once
 
@@ -923,13 +926,12 @@
 (use-package challenger-deep-theme :defer t)
 (use-package spacemacs-theme :defer t)
 (use-package panda-theme :defer t)
-(use-package kaolin-themes :defer t)
+(use-package kaolin-themes)
 
 (defvar curr-theme nil)
 (defvar my-themes '(kaolin-dark         ; excellent
                     kaolin-mono-dark
                     kaolin-aurora       ; good
-                    ;; kaolin-bubblegum    ; bad
                     kaolin-eclipse      ; great
                     kaolin-ocean        ; okay
                     kaolin-galaxy       ; okay
