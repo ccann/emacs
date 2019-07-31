@@ -10,7 +10,6 @@
 
 ;;; Code:
 
-(setq mac-option-modifier 'meta)
 (setq-default warning-minimum-level :emergency)
 
 (package-initialize)
@@ -78,6 +77,16 @@
   (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
   (add-to-list 'god-exempt-major-modes 'cider-test-report-mode))
 
+;; https://gist.github.com/railwaycat/3498096
+(setq mac-option-modifier 'meta)
+(setq mac-command-modifier 'hyper)
+(global-set-key [(hyper a)] 'mark-whole-buffer)
+(global-set-key [(hyper v)] 'yank)
+(global-set-key [(hyper c)] 'kill-ring-save)
+(global-set-key [(hyper s)] 'save-buffer)
+(global-set-key [(hyper l)] 'goto-line)
+(global-set-key [(hyper w)] (lambda () (interactive) (delete-window)))
+(global-set-key [(hyper z)] 'undo)
 
 ;; (global-set-key (kbd "C-x d") 'dired-jump)
 (global-set-key (kbd "C-x d") 'projectile-dired)
@@ -761,6 +770,11 @@
   (define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map)
   (projectile-global-mode 1))
 
+(use-package ripgrep)
+
+(use-package projectile-ripgrep
+  :after (ripgrep projectile))
+
 (use-package eyebrowse
   :config (eyebrowse-mode))
 
@@ -854,10 +868,6 @@
 (global-auto-revert-mode t) ; automatically reload changed buffers
 (setq create-lockfiles nil)
 (setq-default indent-tabs-mode nil) ; disallow tab insertion
-
-;; (setq mouse-wheel-scroll-amount '(3)) ;; n lines at a time
-;; (setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-;; (setq mouse-wheel-follow-mouse 't) ; scroll window under mouse
 
 (setq-default bidi-display-reordering nil)
 
