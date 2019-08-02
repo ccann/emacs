@@ -28,13 +28,16 @@
  '(org-fontify-whole-heading-line t)
  '(package-selected-packages
    (quote
-    (projectile-ripgrep ripgrep flymake-shellcheck all-the-icons js2-mode clojure-mode elpy company-anaconda ivy ace-window visual-regexp-steroids md4rd flycheck-clj-kondo robe omnisharp projectile cider clj-refactor typescript-mode highlight-numbers panda-theme cider-eval-sexp-fu company-quickhelp lispy olivetti flycheck-joker company-tern sql-indent fish-mode diminish csharp-mode org kaolin-themes paren-face-mode paren-face auctex-latexmk auctex org-babel nlinum zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp use-package terraform-mode telephone-line spacemacs-theme solaire-mode smex smart-mode-line rainbow-mode rainbow-delimiters python-mode powerline pov-mode popwin parinfer ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord js2-refactor jedi ivy-hydra indent-guide ido-vertical-mode ido-ubiquitous htmlize highlight-symbol handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flycheck flx-ido flatui-theme fill-column-indicator eyebrowse exec-path-from-shell dracula-theme doom-themes dockerfile-mode dired-details+ dired+ darktooth-theme counsel challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme)))
+    (projectile-ripgrep ripgrep flymake-shellcheck all-the-icons js2-mode elpy company-anaconda ivy ace-window visual-regexp-steroids md4rd flycheck-clj-kondo robe omnisharp projectile typescript-mode highlight-numbers panda-theme cider-eval-sexp-fu company-quickhelp olivetti flycheck-joker company-tern sql-indent fish-mode diminish csharp-mode org kaolin-themes paren-face-mode paren-face auctex-latexmk auctex org-babel nlinum zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp use-package terraform-mode telephone-line spacemacs-theme solaire-mode smex smart-mode-line rainbow-mode rainbow-delimiters python-mode powerline pov-mode popwin parinfer ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord js2-refactor jedi ivy-hydra indent-guide ido-vertical-mode ido-ubiquitous htmlize highlight-symbol handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flycheck flx-ido flatui-theme fill-column-indicator eyebrowse exec-path-from-shell dracula-theme doom-themes dockerfile-mode dired-details+ dired+ darktooth-theme counsel challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
  '(safe-local-variable-values
    (quote
-    ((cider-default-cljs-repl . edge)
+    ((cider-clojure-cli-global-options . "-A:dev:dev/build:build")
+     (cider-ns-refresh-before-fn . "dev/suspend")
+     (cider-ns-refresh-after-fn . "dev-extras/resume")
+     (cider-default-cljs-repl . edge)
      (cider-clojure-cli-global-options . "-A:dev:build:dev/build")
      (nrepl-sync-request-timeout . 100)
      (cider-cljs-repl-types

@@ -788,6 +788,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Display Settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;
+(setq frame-title-format "%b")
 (setq-default tab-width 2)
 (setq frame-resize-pixelwise t)
 (column-number-mode 1)
