@@ -27,3 +27,4 @@ init.el~
 /abbrev_defs
 semanticdb/*
 /recentf
+/transient
