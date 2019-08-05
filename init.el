@@ -94,12 +94,6 @@
 (global-set-key (kbd "C-x k") 'kill-buffer)
 (global-set-key (kbd "C-o") 'other-window)
 
-
-(global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-
-
 (global-set-key (kbd "C-l") 'goto-line)
 (global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
 (global-set-key (kbd "C-c I") 'find-user-init-file)
@@ -108,7 +102,6 @@
 (global-set-key [(hyper q)] 'save-buffers-kill-emacs)
 
 ;; function key bindings
-(global-set-key (kbd "<f6>") 'ivy-resume)
 (global-set-key (kbd "<f9>") 'ccann/cycle-theme)
 (global-set-key (kbd "<f12>") 'ibuffer)
 
@@ -132,11 +125,9 @@
   (key-chord-define-global "jc" 'save-buffer)
   (key-chord-define-global "jf" 'projectile-find-file)
   (key-chord-define-global "jp" 'projectile-switch-project)
-  (key-chord-define-global "fb" 'ido-switch-buffer)
   (key-chord-define-global "cv" 'recenter)
   ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
   (key-chord-define-global "fd" 'god-local-mode))
-
 
 (use-package which-key
   :diminish (which-key-mode . "Ꙍ")
@@ -150,19 +141,39 @@
 ; Packages ;;
 ;;;;;;;;;;;;;
 
-(use-package ivy
-  :after (ivy-hydra)
+(use-package counsel
+  ;; Counsel - a collection of Ivy-enhanced versions of common Emacs commands.
+  ;; -- Counsel will install Ivy and Swiper as dependencies --
+  ;; Ivy - A generic completion frontend.
+  ;; Swiper - isearch with an overview, and more.
   :init
   (setq ivy-height 25)
   :config
-  (setq ivy-re-builders-alist '((t . ivy--regex-plus)))
+  (setq ivy-initial-inputs-alist nil)
+  (setq ivy-re-builders-alist
+        '((ivy-switch-buffer . ivy--regex-fuzzy)
+          (counsel-M-x . ivy--regex-fuzzy)
+          (t . ivy--regex-plus)))
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
+  (global-set-key (kbd "C-s") 'swiper)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+  (key-chord-define-global "fb" 'ivy-switch-buffer)
   (ivy-mode 1))
 
-(use-package ivy-hydra :defer t)
+;; Matching engine
+(use-package flx)
 
-(use-package counsel)
+(use-package ivy-hydra
+  ;; Additional keybindings for Ivy.
+  :defer t)
+
+(use-package ido-vertical-mode
+  ;; Makes ido-mode display vertically
+  :config (ido-vertical-mode 1))
+
 
 (use-package exec-path-from-shell
   :defer 1
@@ -172,22 +183,6 @@
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-envs (ccann/get-envs "~/.profile"))
     (exec-path-from-shell-copy-env "PYTHONPATH")))
-
-
-(use-package ido
-  :demand t
-  :bind (("C-x b" . ido-switch-buffer))
-  :init
-  (setq ido-create-new-buffer 'always  ; don't confirm when creating new buffers
-        ido-enable-flex-matching t     ; fuzzy matching
-        ido-everywhere t  ; tbd
-        ido-case-fold t)  ; ignore case
-  :config (ido-mode 1))
-
-;; deprecated, see ido-completing-read+
-;; (use-package ido-ubiquitous  :config (ido-ubiquitous-mode 1))
-(use-package flx-ido  :config (flx-ido-mode 1))
-(use-package ido-vertical-mode  :config (ido-vertical-mode 1))
 
 (use-package magit
   :diminish magit-auto-revert-mode
