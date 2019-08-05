@@ -572,7 +572,7 @@
 
 (use-package clojure-mode
   ;; Provides font-lock, indentation, navigation and refactoring for Clojure(Script).
-  :pin melpa-stable
+  :pin melpa
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
@@ -622,7 +622,6 @@
   ;; CIDER extends Emacs with support for interactive programming in Clojure. The
   ;; features are centered around cider-mode, a minor-mode that complements clojure-mode.
   :pin melpa-stable
-  :after (clojure-mode)
   :init
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
   (add-hook 'cider-mode-hook #'lispy-mode)
@@ -687,8 +686,9 @@
 
 
 (use-package clj-refactor
-  ;; Provides refactoring support for Clojure projects.
-  :pin melpa-stable
+  ;; Provides refactoring support for Clojure projects. Prefer the `melpa` version as
+  ;; there hasn't been a stable release since 2018.
+  :pin melpa
   :init
   (setq cljr-inject-dependencies-at-jack-in nil)
   (setq cljr-warn-on-eval nil
