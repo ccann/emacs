@@ -572,17 +572,16 @@
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
-  :init
+  :config
+  ;; (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
+  (add-hook 'clojure-mode-hook #'clj-refactor-mode)
   (add-hook 'clojure-mode-hook #'paren-face-mode)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
   (add-hook 'clojure-mode-hook #'flycheck-mode)
   (add-hook 'clojure-mode-hook #'lispy-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'cider-mode)
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
-  :config
-  ;; (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
   (define-clojure-indent
     (defroutes 'defun)
     (GET 2)
@@ -618,9 +617,8 @@
 (use-package cider
   ;; CIDER extends Emacs with support for interactive programming in Clojure. The
   ;; features are centered around cider-mode, a minor-mode that complements clojure-mode.
-  :pin melpa-stable
-  :init
-  (add-hook 'cider-mode-hook #'clj-refactor-mode)
+  :pin melpa
+  :config
   (add-hook 'cider-repl-mode-hook #'lispy-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
@@ -686,9 +684,8 @@
   ;; there hasn't been a stable release since 2018.
   :pin melpa
   :init
-  (setq cljr-inject-dependencies-at-jack-in nil)
-  (setq cljr-warn-on-eval nil
-        cljr-favor-prefix-notation t
+  ;; (setq cljr-inject-dependencies-at-jack-in nil)
+  (setq cljr-favor-prefix-notation t
         cljr-project-clean-prompt nil
         cljr-magic-require-namespaces
         '(("io" . "clojure.java.io")
