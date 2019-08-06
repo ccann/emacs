@@ -151,7 +151,8 @@
   :config
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
-        '((ivy-switch-buffer . ivy--regex-fuzzy)
+        '((swiper . ivy--regex-plus)
+          (ivy-switch-buffer . ivy--regex-fuzzy)
           (counsel-M-x . ivy--regex-fuzzy)
           (t . ivy--regex-plus)))
   (setq ivy-use-virtual-buffers t)
@@ -575,6 +576,7 @@
   (add-hook 'clojure-mode-hook #'paren-face-mode)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
   (add-hook 'clojure-mode-hook #'flycheck-mode)
+  (add-hook 'clojure-mode-hook #'lispy-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'eldoc-mode)
   (add-hook 'clojure-mode-hook #'cider-mode)
@@ -619,7 +621,6 @@
   :pin melpa-stable
   :init
   (add-hook 'cider-mode-hook #'clj-refactor-mode)
-  (add-hook 'cider-mode-hook #'lispy-mode)
   (add-hook 'cider-repl-mode-hook #'lispy-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
@@ -695,11 +696,12 @@
           ("str" . "clojure.string")
           ("walk" . "clojure.walk")
           ("zip" . "clojure.zip")
-          ("s" . "schema.core")
+          ("s" . "clojure.spec")
           ("log" . "taoensso.timbre")
           ("casex" . "camel-snake-kebab.extras")
           ("case" . "camel-snake-kebab.core")
-          ("mount" . "mount.core")))
+          ("mount" . "mount.core")
+          ("ds" . "net.danielcompton.defn-spec-alpha")))
   :diminish clj-refactor-mode
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
