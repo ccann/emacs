@@ -566,81 +566,34 @@
 ;; Clojure ;;
 ;;;;;;;;;;;;;
 
-(use-package clojure-mode
-  ;; Provides font-lock, indentation, navigation and refactoring for Clojure(Script).
-  :pin melpa
-  :mode (("\\.clj\\'" . clojure-mode)
-         ("\\.edn\\'" . clojure-mode))
-  :diminish (subword-mode)
-  :config
-  ;; (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
-  (add-hook 'clojure-mode-hook #'clj-refactor-mode)
-  (add-hook 'clojure-mode-hook #'paren-face-mode)
-  (add-hook 'clojure-mode-hook #'yas-minor-mode)
-  (add-hook 'clojure-mode-hook #'flycheck-mode)
-  (add-hook 'clojure-mode-hook #'lispy-mode)
-  (add-hook 'clojure-mode-hook #'subword-mode)
-  (add-hook 'clojure-mode-hook #'eldoc-mode)
-  (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
-  (define-clojure-indent
-    (defroutes 'defun)
-    (GET 2)
-    (POST 2)
-    (PATCH 2)
-    (PUT 2)
-    (DELETE 2)
-    (HEAD 2)
-    (ANY 2)
-    (context 2)
-    (defapi 'defun)
-    (swaggered 'defun)
-    (swagger-docs 2)))
-
-(use-package flycheck-joker
-  ;; Integrates joker with Emacs via flycheck.
-  :after (flycheck clojure-mode))
-
-(use-package flycheck-clj-kondo
-  ;; Integrates clj-kondo with Emacs via flycheck.
-  :after (flycheck clojure-mode)
-  :config (dolist (checkers '((clj-kondo-clj . clojure-joker)
-                              (clj-kondo-cljs . clojurescript-joker)
-                              (clj-kondo-cljc . clojure-joker)))
-            (flycheck-add-next-checker (car checkers) (cons 'error (cdr checkers)))))
-
-
-(use-package cider-eval-sexp-fu
-  ;; Provides tiny improvements to CIDER expression evaluation - e.g. the expression
-  ;; you've just evaluated would briefly flash.
-  :after (cider))
-
 (use-package cider
   ;; CIDER extends Emacs with support for interactive programming in Clojure. The
   ;; features are centered around cider-mode, a minor-mode that complements clojure-mode.
+  :defer t
   :pin melpa
+  :init
+  (add-hook 'clojure-mode-hook 'cider-mode)
+  (setq cider-repl-display-help-banner nil
+        cider-repl-display-in-current-window t
+        cider-repl-use-clojure-font-lock t
+        cider-save-file-on-load nil
+        cider-prompt-for-symbol nil
+        cider-stacktrace-fill-column 90
+        cider-auto-select-error-buffer t
+        cider-font-lock-max-length 10000
+        cider-repl-use-pretty-printing t
+        cider-font-lock-dynamically '(macro core deprecated function var)
+        hide *nrepl-connection* and *nrepl-server*
+        nrepl-hide-special-buffers t
+        cider-overlays-use-font-lock t
+        nrepl-prompt-to-kill-server-buffer-on-quit nil)
+  ;; (setq cider-default-cljs-repl 'shadow)
   :config
+  (add-hook 'cider-mode-hook #'eldoc-mode)
+  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'lispy-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
-  (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
-
-  (setq
-   cider-repl-display-help-banner nil
-   cider-repl-display-in-current-window t
-   cider-repl-use-clojure-font-lock t
-   cider-save-file-on-load nil
-   cider-prompt-for-symbol nil
-   cider-stacktrace-fill-column 90
-   cider-auto-select-error-buffer t
-   cider-font-lock-max-length 10000
-   cider-repl-use-pretty-printing t
-   cider-font-lock-dynamically '(macro core deprecated function var)
-   ;; hide *nrepl-connection* and *nrepl-server*
-   nrepl-hide-special-buffers t
-   cider-overlays-use-font-lock t
-   nrepl-prompt-to-kill-server-buffer-on-quit nil
-   ;; cider-default-cljs-repl 'shadow
-   )
 
   ;; (add-hook 'cider-repl-mode-hook #'cider-company-enable-fuzzy-completion)
   ;; (add-hook 'cider-mode-hook #'cider-company-enable-fuzzy-completion)
@@ -678,12 +631,18 @@
    ("C-c t r" . cider-test-show-report)
    ("C-c t f" . cider-test-rerun-failed-tests)))
 
+(use-package cider-eval-sexp-fu
+  ;; Provides tiny improvements to CIDER expression evaluation - e.g. the expression
+  ;; you've just evaluated would briefly flash.
+  :after (cider))
 
 (use-package clj-refactor
   ;; Provides refactoring support for Clojure projects. Prefer the `melpa` version as
   ;; there hasn't been a stable release since 2018.
+  :defer t
   :pin melpa
   :init
+  (add-hook 'clojure-mode-hook #'clj-refactor-mode)
   ;; (setq cljr-inject-dependencies-at-jack-in nil)
   (setq cljr-favor-prefix-notation t
         cljr-project-clean-prompt nil
@@ -701,6 +660,48 @@
           ("ds" . "net.danielcompton.defn-spec-alpha")))
   :diminish clj-refactor-mode
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+
+(use-package clojure-mode
+  ;; Provides font-lock, indentation, navigation and refactoring for Clojure(Script).
+  :defer t
+  :pin melpa
+  :mode (("\\.clj\\'" . clojure-mode)
+         ("\\.edn\\'" . clojure-mode))
+  :diminish (subword-mode)
+  :config
+  ;; (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
+  (add-hook 'clojure-mode-hook #'paren-face-mode)
+  (add-hook 'clojure-mode-hook #'yas-minor-mode)
+  (add-hook 'clojure-mode-hook #'flycheck-mode)
+  (add-hook 'clojure-mode-hook #'lispy-mode)
+  (add-hook 'clojure-mode-hook #'subword-mode)
+  (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
+  (define-clojure-indent
+    (defroutes 'defun)
+    (GET 2)
+    (POST 2)
+    (PATCH 2)
+    (PUT 2)
+    (DELETE 2)
+    (HEAD 2)
+    (ANY 2)
+    (context 2)
+    (defapi 'defun)
+    (swaggered 'defun)
+    (swagger-docs 2)))
+
+
+(use-package flycheck-joker
+  ;; Integrates joker with Emacs via flycheck.
+  :after (flycheck clojure-mode))
+
+(use-package flycheck-clj-kondo
+  ;; Integrates clj-kondo with Emacs via flycheck.
+  :after (flycheck clojure-mode)
+  :config (dolist (checkers '((clj-kondo-clj . clojure-joker)
+                              (clj-kondo-cljs . clojurescript-joker)
+                              (clj-kondo-cljc . clojure-joker)))
+            (flycheck-add-next-checker (car checkers) (cons 'error (cdr checkers)))))
 
 
 (use-package web-mode
