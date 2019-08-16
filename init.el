@@ -485,7 +485,7 @@
 ;; Programming Modes ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq-default fill-column 89)
+(setq-default fill-column 99)
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
@@ -583,7 +583,7 @@
         cider-font-lock-max-length 10000
         cider-repl-use-pretty-printing t
         cider-font-lock-dynamically '(macro core deprecated function var)
-        hide *nrepl-connection* and *nrepl-server*
+        ;; hide *nrepl-connection* and *nrepl-server*
         nrepl-hide-special-buffers t
         cider-overlays-use-font-lock t
         nrepl-prompt-to-kill-server-buffer-on-quit nil)
@@ -646,6 +646,7 @@
   ;; (setq cljr-inject-dependencies-at-jack-in nil)
   (setq cljr-favor-prefix-notation t
         cljr-project-clean-prompt nil
+        cljr-auto-clean-ns nil
         cljr-magic-require-namespaces
         '(("io" . "clojure.java.io")
           ("set" . "clojure.set")
@@ -657,7 +658,8 @@
           ("casex" . "camel-snake-kebab.extras")
           ("case" . "camel-snake-kebab.core")
           ("mount" . "mount.core")
-          ("ds" . "net.danielcompton.defn-spec-alpha")))
+          ("ds" . "net.danielcompton.defn-spec-alpha")
+          ("ig" . "integrant.core")))
   :diminish clj-refactor-mode
   :config (cljr-add-keybindings-with-prefix "C-c C-m"))
 
@@ -823,11 +825,8 @@
   (setq-default olivetti-body-width 90))
 
 
-
 (setq-default display-line-numbers-type t
-              ;; display-line-numbers-current-absolute t
-              display-line-numbers-width 2
-              display-line-numbers-widen t)
+              display-line-numbers-width 3)
 
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
