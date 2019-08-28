@@ -10,14 +10,16 @@
 
 ;;; Code:
 
-(setq-default warning-minimum-level :emergency)
+;; (setq-default warning-minimum-level :emergency)
+
+;; BUGFIX: remove this after 26.3+
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (package-initialize)
 (setq package-enable-at-startup nil)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org/packages/")))
-
 ;; some wizard online concocted this
 (when (>= emacs-major-version 25)
   (eval-after-load 'bytecomp
@@ -146,8 +148,7 @@
   ;; -- Counsel will install Ivy and Swiper as dependencies --
   ;; Ivy - A generic completion frontend.
   ;; Swiper - isearch with an overview, and more.
-  :init
-  (setq ivy-height 25)
+  :init (setq ivy-height 25)
   :config
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
@@ -158,10 +159,15 @@
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   (global-set-key (kbd "C-s") 'swiper)
+  (global-set-key (kbd "M-y") 'counsel-yank-pop)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "<f6>") 'ivy-resume)
   (key-chord-define-global "fb" 'ivy-switch-buffer)
+
+  ;; if this is t it will yank the most recent kill, instead of the second most
+  ;; (setq counsel-yank-pop-preselect-last t)
+
   (ivy-mode 1))
 
 ;; Matching engine
@@ -350,76 +356,76 @@
 ;;;;;;;;;;;;;;;;;;
 
 
-(use-package ob-ipython
-  :after (org))
+;; (use-package ob-ipython
+;;   :after (org))
 
-(use-package htmlize
-  :after (org))
+;; (use-package htmlize
+;;   :after (org))
 
-(use-package org
-  :pin gnu
-  :mode ("\\.org\\'" . org-mode)
-  :init
-  (setq org-directory "~/Dropbox/org")
-  (add-hook 'org-mode-hook #'visual-line-mode)
-  (add-hook 'org-mode-hook #'org-indent-mode)
-  (add-hook 'org-mode-hook #'auto-fill-mode)
+;; (use-package org
+;;   :pin gnu
+;;   :mode ("\\.org\\'" . org-mode)
+;;   :init
+;;   ;; (setq org-directory "~/Dropbox/org")
+;;   (add-hook 'org-mode-hook #'visual-line-mode)
+;;   (add-hook 'org-mode-hook #'org-indent-mode)
+;;   (add-hook 'org-mode-hook #'auto-fill-mode)
 
-  :bind (("<f8>" . org-capture))
-  :config
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (clojure . t)
-     (sh . t)
-     (python . t)))
+;;   :bind (("<f8>" . org-capture))
+;;   :config
+;;   (org-babel-do-load-languages
+;;    'org-babel-load-languages
+;;    '((emacs-lisp . t)
+;;      (clojure . t)
+;;      (sh . t)
+;;      (python . t)))
 
-  ;; the following jekyll-boostrap integration depends on ~/dev/ccann.github.io
-  ;; and ~/blog existing, see below.
-  (setq org-hide-emphasis-markers nil)
+;;   ;; the following jekyll-boostrap integration depends on ~/dev/ccann.github.io
+;;   ;; and ~/blog existing, see below.
+;;   (setq org-hide-emphasis-markers nil)
 
-  (setq org-publish-project-alist
-        '(("org-ccann"
-           :base-directory "~/blog" ;; Path to your org files.
-           :base-extension "org"
-           :publishing-directory "~/dev/ccann.github.io/_posts" ;; Path to your Jekyll project.
-           :recursive t
-           :publishing-function org-html-publish-to-html
-           :headline-levels 4
-           :html-extension "html"
-           :body-only t)
-          ("org-static-ccann"
-           :base-directory "~/blog/images"
-           :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|php"
-           :publishing-directory "~/dev/ccann.github.io/assets"
-           :recursive t
-           :publishing-function org-publish-attachment)
-          ("blog" :components ("org-ccann" "org-static-ccann"))))
+;;   (setq org-publish-project-alist
+;;         '(("org-ccann"
+;;            :base-directory "~/blog" ;; Path to your org files.
+;;            :base-extension "org"
+;;            :publishing-directory "~/dev/ccann.github.io/_posts" ;; Path to your Jekyll project.
+;;            :recursive t
+;;            :publishing-function org-html-publish-to-html
+;;            :headline-levels 4
+;;            :html-extension "html"
+;;            :body-only t)
+;;           ("org-static-ccann"
+;;            :base-directory "~/blog/images"
+;;            :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf\\|php"
+;;            :publishing-directory "~/dev/ccann.github.io/assets"
+;;            :recursive t
+;;            :publishing-function org-publish-attachment)
+;;           ("blog" :components ("org-ccann" "org-static-ccann"))))
 
-  (setq org-default-notes-file (concat org-directory "/notes.org")
-        org-src-fontify-natively t      ; fontify source blocks
-        org-html-doctype "html5"
-        org-html-html5-fancy t
-        org-html-postamble nil
-        org-hide-leading-stars t
-        org-tags-column 85
-        org-latex-to-pdf-process (list "latexmk -f -pdf")
-        org-fontify-done-headline nil)
+;;   (setq org-default-notes-file (concat org-directory "/notes.org")
+;;         org-src-fontify-natively t      ; fontify source blocks
+;;         org-html-doctype "html5"
+;;         org-html-html5-fancy t
+;;         org-html-postamble nil
+;;         org-hide-leading-stars t
+;;         org-tags-column 85
+;;         org-latex-to-pdf-process (list "latexmk -f -pdf")
+;;         org-fontify-done-headline nil)
 
-  (setq org-capture-templates
-        '(("l" "Logbook" item
-           (file+olp+datetree "~/org/logbook.org")
-           "")
-          ("t" "TODO" entry
-           (file+headline "~/org/todo.org" "Tasks")
-           "* TODO %?\n  %i\n  %a")))
+;;   (setq org-capture-templates
+;;         '(("l" "Logbook" item
+;;            (file+olp+datetree "~/org/logbook.org")
+;;            "")
+;;           ("t" "TODO" entry
+;;            (file+headline "~/org/todo.org" "Tasks")
+;;            "* TODO %?\n  %i\n  %a")))
 
-  ;; Make Org-mode use evince in linux to open PDFs
-  (if (not ccann/is-osx)
-      (add-hook 'org-mode-hook
-                (lambda ()
-                  (delete '("\\.pdf\\'" . default) org-file-apps)
-                  (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s"))))))
+;;   ;; Make Org-mode use evince in linux to open PDFs
+;;   (if (not ccann/is-osx)
+;;       (add-hook 'org-mode-hook
+;;                 (lambda ()
+;;                   (delete '("\\.pdf\\'" . default) org-file-apps)
+;;                   (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s"))))))
 
 
 (use-package pov-mode
@@ -454,24 +460,24 @@
 (add-to-list 'auto-mode-alist '("\\.cql\\'" . sql-mode))
 
 (use-package auctex
- :mode ("\\.tex\\'" . latex-mode)
- :commands (latex-mode LaTeX-mode plain-tex-mode)
- :config
- (if ccann/is-osx
-     (setq TeX-view-program-selection '((output-pdf "Preview")))
-   (setq TeX-view-program-selection '((output-pdf "Evince"))))
- :init
- (add-hook 'LaTeX-mode-hook #'flyspell-mode)
- (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
- (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
- (add-hook 'LaTeX-mode-hook #'auctex-latexmk-setup)
- (setq TeX-auto-save t
-       TeX-parse-self t
-       TeX-save-query nil
-       TeX-PDF-mode t
-       TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
-                                "Evince" "evince --page-index=%(outpage) %o")))
- (setq-default TeX-master nil))
+  :mode ("\\.tex\\'" . latex-mode)
+  :commands (latex-mode LaTeX-mode plain-tex-mode)
+  :config
+  (if ccann/is-osx
+      (setq TeX-view-program-selection '((output-pdf "Preview")))
+    (setq TeX-view-program-selection '((output-pdf "Evince"))))
+  :init
+  (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+  (add-hook 'LaTeX-mode-hook #'auto-fill-mode)
+  (add-hook 'LaTeX-mode-hook #'auctex-latexmk-setup)
+  (setq TeX-auto-save t
+        TeX-parse-self t
+        TeX-save-query nil
+        TeX-PDF-mode t
+        TeX-view-program-list '(("Preview" "open /Applications/Preview.app %o"
+                                 "Evince" "evince --page-index=%(outpage) %o")))
+  (setq-default TeX-master nil))
 
 (use-package auctex-latexmk
   :init (setq auctex-latexmk-inherit-TeX-PDF-mode t)
@@ -479,7 +485,7 @@
 
 (use-package reftex
   :commands turn-on-reftex
- :init (setq reftex-plug-into-AUCTeX t))
+  :init (setq reftex-plug-into-AUCTeX t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; Programming Modes ;;
@@ -755,10 +761,15 @@
 
 (use-package handlebars-mode)
 
+(use-package golden-ratio
+  :config
+  (golden-ratio-mode 1))
+
 (use-package projectile
   :pin melpa-stable
   :init
   (setq projectile-enable-caching t)
+  (setq projectile-completion-system 'ivy)
   :diminish projectile-mode
   :config
   ;; change the shell to sh from bash because I use fish
@@ -881,14 +892,6 @@
   :after (visual-regexp))
 
 (setq scroll-error-top-bottom t)
-
-(use-package browse-kill-ring
-  :init
-  (setq browse-kill-ring-highlight-current-entry t
-        browse-kill-ring-highlight-inserted-item 'pulse
-        browse-kill-ring-separator ""
-        browse-kill-ring-show-preview nil)
-  :bind ("M-y" . browse-kill-ring))
 
 (use-package google-this
   :bind ("C-x g" . google-this))
