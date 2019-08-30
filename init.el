@@ -761,9 +761,19 @@
 
 (use-package handlebars-mode)
 
-(use-package golden-ratio
+(use-package zoom
+  ;; alternative to golden-ratio
+  ;; https://github.com/cyrus-and/zoom#faq
+  :init
+  (defun size-callback ()
+    ;; zoomed buffer  will take 120 columns and 75% of the frame height
+    ;; if the frame width is larger than 1280 pixels
+    (cond ((> (frame-pixel-width) 1280) '(120 . 0.75))
+          ;; otherwise 50-50
+          (t '(0.5 . 0.5))))
   :config
-  (golden-ratio-mode 1))
+  (setq zoom-size 'size-callback)
+  (zoom-mode 1))
 
 (use-package projectile
   :pin melpa-stable
