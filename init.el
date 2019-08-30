@@ -154,6 +154,7 @@
   (setq ivy-re-builders-alist
         '((swiper . ivy--regex-plus)
           (ivy-switch-buffer . ivy--regex-fuzzy)
+          (counsel-projectile-find-file . ivy--regex-fuzzy)
           (counsel-M-x . ivy--regex-fuzzy)
           (t . ivy--regex-plus)))
   (setq ivy-use-virtual-buffers t)
@@ -785,7 +786,12 @@
   ;; change the shell to sh from bash because I use fish
   (setq shell-file-name "/bin/sh")
   (define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map)
-  (projectile-global-mode 1))
+  (counsel-projectile-mode))
+
+(use-package counsel-projectile
+  ;; Ivy UI for Projectile
+  ;; https://github.com/ericdanan/counsel-projectile
+  :after (projectile))
 
 (use-package ripgrep)
 
