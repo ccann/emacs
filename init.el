@@ -577,7 +577,7 @@
   ;; CIDER extends Emacs with support for interactive programming in Clojure. The
   ;; features are centered around cider-mode, a minor-mode that complements clojure-mode.
   :defer t
-  :pin melpa
+  :pin melpa-stable
   :init
   (add-hook 'clojure-mode-hook 'cider-mode)
   (setq cider-repl-display-help-banner nil
@@ -952,15 +952,15 @@
 (use-package kaolin-themes)
 
 (defvar curr-theme nil)
-(defvar my-themes '(kaolin-dark         ; excellent
+(defvar my-themes '(kaolin-temple       ; nasty
+                    kaolin-dark         ; excellent
                     kaolin-mono-dark
                     kaolin-aurora       ; good
                     kaolin-eclipse      ; great
                     kaolin-ocean        ; okay
                     kaolin-galaxy       ; okay
                     kaolin-valley-dark  ; excellent
-                    darktooth
-                    kaolin-temple       ; nasty
+                    ;; darktooth
                     flatui
                     kaolin-light
                     kaolin-valley-light
