@@ -699,18 +699,9 @@
     (swaggered 'defun)
     (swagger-docs 2)))
 
-
-(use-package flycheck-joker
-  ;; Integrates joker with Emacs via flycheck.
-  :after (flycheck clojure-mode))
-
 (use-package flycheck-clj-kondo
   ;; Integrates clj-kondo with Emacs via flycheck.
-  :after (flycheck clojure-mode)
-  :config (dolist (checkers '((clj-kondo-clj . clojure-joker)
-                              (clj-kondo-cljs . clojurescript-joker)
-                              (clj-kondo-cljc . clojure-joker)))
-            (flycheck-add-next-checker (car checkers) (cons 'error (cdr checkers)))))
+  :after (flycheck clojure-mode))
 
 
 (use-package web-mode
