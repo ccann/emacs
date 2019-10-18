@@ -125,7 +125,8 @@
   (key-chord-define-global "jv" 'avy-goto-char-2)
   (key-chord-define-global "jw" 'ace-window)
   (key-chord-define-global "jc" 'save-buffer)
-  (key-chord-define-global "jf" 'projectile-find-file)
+  ;; (key-chord-define-global "jf" 'projectile-find-file)
+  (key-chord-define-global "jf" 'counsel-projectile)
   (key-chord-define-global "jp" 'projectile-switch-project)
   (key-chord-define-global "cv" 'recenter)
   ;; (key-chord-define-global "mk" 'multiple-cursors-hydra/body)
@@ -155,6 +156,7 @@
         '((swiper . ivy--regex-plus)
           (ivy-switch-buffer . ivy--regex-fuzzy)
           (counsel-projectile-find-file . ivy--regex-fuzzy)
+          (counsel-projectile . ivy--regex-fuzzy)
           (counsel-M-x . ivy--regex-fuzzy)
           (t . ivy--regex-plus)))
   (setq ivy-use-virtual-buffers t)
@@ -591,7 +593,7 @@
         cider-repl-use-pretty-printing t
         cider-font-lock-dynamically '(macro core deprecated function var)
         ;; hide *nrepl-connection* and *nrepl-server*
-        nrepl-hide-special-buffers t
+        ;; nrepl-hide-special-buffers t
         cider-overlays-use-font-lock t
         nrepl-prompt-to-kill-server-buffer-on-quit nil)
   ;; (setq cider-default-cljs-repl 'shadow)
@@ -650,10 +652,11 @@
   :pin melpa
   :init
   (add-hook 'clojure-mode-hook #'clj-refactor-mode)
+  ;; don't use clj-refactor's outdated refactor-nrepl dependency
   ;; (setq cljr-inject-dependencies-at-jack-in nil)
-  (setq cljr-favor-prefix-notation t
+  (setq cljr-favor-prefix-notation nil
         cljr-project-clean-prompt nil
-        cljr-auto-clean-ns nil
+        cljr-auto-clean-ns t
         cljr-magic-require-namespaces
         '(("io" . "clojure.java.io")
           ("set" . "clojure.set")
@@ -665,10 +668,14 @@
           ("casex" . "camel-snake-kebab.extras")
           ("case" . "camel-snake-kebab.core")
           ("mount" . "mount.core")
-          ("ds" . "net.danielcompton.defn-spec-alpha")
+          ("dfs" . "net.danielcompton.defn-spec-alpha")
           ("ig" . "integrant.core")))
   :diminish clj-refactor-mode
-  :config (cljr-add-keybindings-with-prefix "C-c C-m"))
+  :config
+  (cljr-add-keybindings-with-prefix "C-c C-m")
+  ;; inject the refactor-nrepl middleware manually
+  ;; (add-to-list 'cider-jack-in-nrepl-middlewares "refactor-nrepl.middleware/wrap-refactor")
+  )
 
 (use-package clojure-mode
   ;; Provides font-lock, indentation, navigation and refactoring for Clojure(Script).
@@ -707,7 +714,7 @@
 (use-package web-mode
   :mode ("\\.html?\\'" . web-mode)
   :init
-  (setq css-indent-offset 2)
+  (setq css-indent-offset 4)
   (setq web-mode-code-indent-offset 2)
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 4)
@@ -961,6 +968,20 @@
 ;;                         '(vertical-border ((t (:foreground "#504945")))))
 
 (ccann/cycle-theme)
-(load (expand-file-name "modeline.el" user-emacs-directory))
+
+(use-package doom-modeline
+  :hook (after-init . doom-modeline-init)
+  :config
+  ;; see settings for persp and lsp
+  (setq doom-modeline-buffer-file-name-style 'truncate-with-project
+        ;; maximum displayed length of the branch name of version control.
+        doom-modeline-vcs-max-length 12
+        ;; lag issue? don’t compact font caches during GC.
+        ;; inhibit-compacting-font-caches t
+        ;; this could cause performance issues
+        auto-revert-check-vc-info t
+        doom-modeline-minor-modes nil))
+
+;; (load (expand-file-name "modeline.el" user-emacs-directory))
 
 ;; init.el ends here
