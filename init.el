@@ -113,7 +113,6 @@
 (global-set-key (kbd "C-x C-3") 'split-window-right)
 (global-set-key (kbd "C-x C-0") 'delete-window)
 
-
 (use-package ace-window
   :init (global-set-key (kbd "M-p") 'ace-window))
 
@@ -172,6 +171,30 @@
   ;; (setq counsel-yank-pop-preselect-last t)
 
   (ivy-mode 1))
+
+(use-package prescient
+  :defer t)
+
+(use-package ivy-prescient
+  :defer t
+  :after (counsel prescient)
+  :config
+  (ivy-prescient-mode 1)
+  (prescient-persist-mode 1))
+
+(use-package ivy-posframe
+  ;; pop a child frame to show ivy completion
+  :after (counsel)
+  :config
+  (setq ivy-posframe-display-functions-alist
+        ;; use minibuffer default for swiper because frame will occlude buffer
+        '((swiper          . nil)
+          (complete-symbol . ivy-posframe-display-at-point)
+          (t               . ivy-posframe-display-at-frame-center)))
+  (setq ivy-posframe-parameters
+        '((left-fringe . 5)
+          (right-fringe . 5)))
+  (ivy-posframe-mode 1))
 
 ;; Matching engine
 (use-package flx)
