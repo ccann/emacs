@@ -910,16 +910,17 @@
 (use-package google-this
   :bind ("C-x g" . google-this))
 
+(use-package treemacs
+  :bind (("<f2>" . treemacs))
+  :defer t
+  :ensure t
+  :config (setq treemacs-project-follow-cleanup t))
 
-(use-package neotree
-  :bind (("<f2>" . neotree-toggle))
-  :init
-  (setq neo-theme 'icons
-        neo-smart-open t
-        neo-window-width 45
-        ;; projectile-switch-project-action 'neotree-projectile-action
-        ))
+(use-package treemacs-projectile
+  :after (treemacs projectile))
 
+(use-package treemacs-magit
+  :after (treemacs magit))
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -935,34 +936,48 @@
 ;; run M-x all-the-icons-install-fonts once
 
 (use-package flatui-theme :defer t)
-(use-package gruvbox-theme :defer t)
-(use-package zenburn-theme :defer t)
-(use-package badger-theme :defer t)
-(use-package gotham-theme :defer t)
-(use-package darktooth-theme :defer t)
-(use-package material-theme :defer t)
-(use-package metalheart-theme :defer t)
-(use-package apropospriate-theme :defer t)
-(use-package ample-theme :defer t)
-(use-package challenger-deep-theme :defer t)
-(use-package spacemacs-theme :defer t)
-(use-package panda-theme :defer t)
+;; (use-package gruvbox-theme :defer t)
+;; (use-package zenburn-theme :defer t)
+;; (use-package badger-theme :defer t)
+;; (use-package gotham-theme :defer t)
+;; (use-package darktooth-theme :defer t)
+;; (use-package material-theme :defer t)
+;; (use-package metalheart-theme :defer t)
+;; (use-package apropospriate-theme :defer t)
+;; (use-package ample-theme :defer t)
+;; (use-package challenger-deep-theme :defer t)
+;; (use-package spacemacs-theme :defer t)
+;; (use-package panda-theme :defer t)
 (use-package kaolin-themes)
+(use-package doom-themes
+  :config
+  (doom-themes-treemacs-config)
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+
 
 (defvar curr-theme nil)
-(defvar my-themes '(kaolin-temple       ; nasty
-                    kaolin-dark         ; excellent
-                    kaolin-mono-dark
-                    kaolin-aurora       ; good
-                    kaolin-eclipse      ; great
-                    kaolin-ocean        ; okay
-                    kaolin-galaxy       ; okay
-                    kaolin-valley-dark  ; excellent
-                    ;; darktooth
-                    flatui
-                    kaolin-light
-                    kaolin-valley-light
-                    kaolin-breeze))
+(defvar my-themes
+  '(
+    ;; dark themes
+    doom-spacegrey
+    kaolin-temple
+    kaolin-dark
+    ;; kaolin-mono-dark
+    kaolin-aurora
+    kaolin-eclipse
+    kaolin-ocean
+    kaolin-galaxy
+    kaolin-valley-dark
+    doom-one
+    ;; doom-vibrant
+    ;; darktooth
+
+    ;; Light Themes
+    flatui
+    kaolin-light
+    kaolin-valley-light
+    kaolin-breeze))
 
 ;; (custom-theme-set-faces 'darktooth
 ;;                         '(vertical-border ((t (:foreground "#504945")))))
