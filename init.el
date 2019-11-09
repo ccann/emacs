@@ -463,7 +463,8 @@
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init
-  (setq markdown-command "/usr/local/bin/marked")
+  (setq markdown-open-command "marked")
+  (setq markdown-command "marked")
   (setq markdown-css-dir "~/.emacs.d/markdown-css/")
   (setq markdown-css-theme "clearness"))
 
@@ -610,6 +611,7 @@
         cider-repl-use-clojure-font-lock t
         cider-save-file-on-load nil
         cider-prompt-for-symbol nil
+        ;; cider-redirect-server-output-to-repl nil
         cider-stacktrace-fill-column 90
         cider-auto-select-error-buffer t
         cider-font-lock-max-length 10000
@@ -662,6 +664,14 @@
    ("C-c t p" . cider-test-run-project-tests)
    ("C-c t r" . cider-test-show-report)
    ("C-c t f" . cider-test-rerun-failed-tests)))
+
+(load (expand-file-name "eftest-runner.el" user-emacs-directory))
+(require 'eftest-runner)
+(define-key clojure-mode-map (kbd "C-c k t") 'eftest-runner-run-test-at-point)
+(define-key clojure-mode-map (kbd "C-c k r") 'eftest-runner-run-tests)
+(define-key clojure-mode-map (kbd "C-c k a") 'eftest-runner-run-all-tests)
+(define-key clojure-mode-map (kbd "C-c k w") 'eftest-runner-show-warnings)
+(define-key clojure-mode-map (kbd "C-c k h") 'eftest-runner-hide-windows)
 
 (use-package cider-eval-sexp-fu
   ;; Provides tiny improvements to CIDER expression evaluation - e.g. the expression
@@ -784,6 +794,7 @@
 (use-package handlebars-mode)
 
 (use-package zoom
+  :disabled t
   ;; alternative to golden-ratio
   ;; https://github.com/cyrus-and/zoom#faq
   :init
@@ -800,6 +811,7 @@
 (use-package projectile
   :pin melpa-stable
   :init
+  (setq projectile-ignored-projects '("/Users/cody/dev/thanks"))
   (setq projectile-enable-caching t)
   (setq projectile-completion-system 'ivy)
   :diminish projectile-mode
@@ -951,6 +963,10 @@
 
 (add-hook 'before-save-hook 'whitespace-cleanup)
 
+(use-package direnv
+ :config
+ (direnv-mode))
+
 
 ;;;;;;;;;;;;
 ;; themes ;;
@@ -1017,7 +1033,7 @@
         ;; lag issue? don’t compact font caches during GC.
         ;; inhibit-compacting-font-caches t
         ;; this could cause performance issues
-        auto-revert-check-vc-info t
+        ;; auto-revert-check-vc-info t
         doom-modeline-minor-modes nil))
 
 ;; (load (expand-file-name "modeline.el" user-emacs-directory))
