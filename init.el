@@ -692,13 +692,13 @@
    ("C-c t r" . cider-test-show-report)
    ("C-c t f" . cider-test-rerun-failed-tests)))
 
-(load (expand-file-name "eftest-runner.el" user-emacs-directory))
-(require 'eftest-runner)
-(define-key clojure-mode-map (kbd "C-c k t") 'eftest-runner-run-test-at-point)
-(define-key clojure-mode-map (kbd "C-c k r") 'eftest-runner-run-tests)
-(define-key clojure-mode-map (kbd "C-c k a") 'eftest-runner-run-all-tests)
-(define-key clojure-mode-map (kbd "C-c k w") 'eftest-runner-show-warnings)
-(define-key clojure-mode-map (kbd "C-c k h") 'eftest-runner-hide-windows)
+;; (load (expand-file-name "eftest-runner.el" user-emacs-directory))
+;; (require 'eftest-runner)
+;; (define-key clojure-mode-map (kbd "C-c k t") 'eftest-runner-run-test-at-point)
+;; (define-key clojure-mode-map (kbd "C-c k r") 'eftest-runner-run-tests)
+;; (define-key clojure-mode-map (kbd "C-c k a") 'eftest-runner-run-all-tests)
+;; (define-key clojure-mode-map (kbd "C-c k w") 'eftest-runner-show-warnings)
+;; (define-key clojure-mode-map (kbd "C-c k h") 'eftest-runner-hide-windows)
 
 (use-package cider-eval-sexp-fu
   ;; Provides tiny improvements to CIDER expression evaluation - e.g. the expression
