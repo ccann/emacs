@@ -148,7 +148,10 @@
   ;; -- Counsel will install Ivy and Swiper as dependencies --
   ;; Ivy - A generic completion frontend.
   ;; Swiper - isearch with an overview, and more.
-  :init (setq ivy-height 25)
+  :init
+  (setq ivy-height 25)
+  (setq counsel-projectile-grep-initial-input '(ivy-thing-at-point))
+  (setq counsel-projectile-rg-initial-input '(ivy-thing-at-point))
   :config
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
@@ -192,7 +195,7 @@
           (complete-symbol . ivy-posframe-display-at-point)
           (t               . ivy-posframe-display-at-frame-center)))
   (setq ivy-posframe-parameters
-        '((left-fringe . 5)
+        '((left-fringe . 10)
           (right-fringe . 5)))
   (ivy-posframe-mode 1))
 
@@ -202,6 +205,25 @@
 (use-package ivy-hydra
   ;; Additional keybindings for Ivy.
   :defer t)
+
+(use-package all-the-icons-ivy-rich
+  ;; Better experience with icons
+  ;; Enable it before`ivy-rich-mode' for better performance
+  :if (and (display-graphic-p)
+           (require 'all-the-icons nil t))
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  ;; More friendly display transformer for Ivy
+  :hook (;; Must load after `counsel-projectile'
+         (counsel-projectile-mode . ivy-rich-mode)
+         (ivy-rich-mode . (lambda ()
+                            "Use abbreviate in `ivy-rich-mode'."
+                            (setq ivy-virtual-abbreviate
+                                  (or (and ivy-rich-mode 'abbreviate) 'name)))))
+  :init
+  ;; For better performance
+  (setq ivy-rich-parse-remote-buffer nil))
 
 (use-package ido-vertical-mode
   ;; Makes ido-mode display vertically
@@ -388,6 +410,7 @@
 ;; (use-package htmlize
 ;;   :after (org))
 
+;; cool bullet: ⁖
 ;; (use-package org
 ;;   :pin gnu
 ;;   :mode ("\\.org\\'" . org-mode)
@@ -518,7 +541,7 @@
 ;; Programming Modes ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq-default fill-column 99)
+(setq-default fill-column 83)
 (show-paren-mode 1)
 (global-hl-line-mode 1)
 
@@ -526,20 +549,24 @@
 
 (use-package lispy
   :defer t
-  :init
-  (setq lispy-compat '(edebug cider))
-  (define-advice git-timemachine-mode (:after (&optional arg))
-    (if (bound-and-true-p git-timemachine-mode)
-        (lispy-mode -1)
-      (lispy-mode 1)))
+ :init
+ (setq lispy-compat '(edebug cider))
+ (define-advice git-timemachine-mode (:after (&optional arg))
+   (if (bound-and-true-p git-timemachine-mode)
+       (lispy-mode -1)
+     (lispy-mode 1)))
 
-  (defun update-lispy ()
-    (if (bound-and-true-p lispy-mode)
-        (lispy-mode -1)
-      (lispy-mode 1)))
+ (defun update-lispy ()
+   (if (bound-and-true-p lispy-mode)
+      (lispy-mode -1)
+     (lispy-mode 1)))
 
-  (add-hook 'god-mode-enabled-hook 'update-lispy)
-  (add-hook 'god-mode-disabled-hook 'update-lispy))
+ (add-hook 'god-mode-enabled-hook 'update-lispy)
+ (add-hook 'god-mode-disabled-hook 'update-lispy))
+
+;; (setq auth-sources
+;;       (quote (macos-keychain-internet macos-keychain-generic)))
+
 
 (use-package robe)
 
@@ -717,6 +744,8 @@
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
+  :init (setq clojure-docstring-fill-column 80
+              clojure-docstring-fill-prefix-width 2)
   :config
   ;; (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
   (add-hook 'clojure-mode-hook #'paren-face-mode)
@@ -945,17 +974,26 @@
 (use-package google-this
   :bind ("C-x g" . google-this))
 
-(use-package treemacs
-  :bind (("<f2>" . treemacs))
-  :defer t
-  :ensure t
-  :config (setq treemacs-project-follow-cleanup t))
+(use-package neotree
+  :bind (("<f2>" . neotree-toggle))
+  :init
+  (setq neo-theme 'icons
+        neo-smart-open t
+        neo-window-width 45
+        ;; projectile-switch-project-action 'neotree-projectile-action
+        ))
 
-(use-package treemacs-projectile
-  :after (treemacs projectile))
+;; (use-package treemacs
+;;   :bind (("<f2>" . treemacs))
+;;   :defer t
+;;   :ensure t
+;;   :config (setq treemacs-project-follow-cleanup t))
 
-(use-package treemacs-magit
-  :after (treemacs magit))
+;; (use-package treemacs-projectile
+;;   :after (treemacs projectile))
+
+;; (use-package treemacs-magit
+;;   :after (treemacs magit))
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -988,6 +1026,7 @@
 ;; (use-package spacemacs-theme :defer t)
 ;; (use-package panda-theme :defer t)
 (use-package kaolin-themes)
+(use-package chocolate-theme)
 (use-package doom-themes
   :config
   (doom-themes-treemacs-config)
@@ -999,7 +1038,10 @@
 (defvar my-themes
   '(
     ;; dark themes
+    doom-wilmersdorf
     doom-spacegrey
+    doom-laserwave
+    doom-city-lights
     kaolin-temple
     kaolin-dark
     ;; kaolin-mono-dark
@@ -1009,9 +1051,10 @@
     kaolin-galaxy
     kaolin-valley-dark
     doom-one
+    chocolate
+
     ;; doom-vibrant
     ;; darktooth
-
     ;; Light Themes
     flatui
     kaolin-light

@@ -28,3 +28,4 @@ init.el~
 semanticdb/*
 /recentf
 /transient
+/.envrc

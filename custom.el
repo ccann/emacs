@@ -7,7 +7,7 @@
    ["#ecf0f1" "#e74c3c" "#2ecc71" "#f1c40f" "#2492db" "#9b59b6" "#1abc9c" "#2c3e50"])
  '(custom-safe-themes
    (quote
-    ("11e0bc5e71825b88527e973b80a84483a2cfa1568592230a32aedac2a32426c1" "cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" default)))
+    ("cb96a06ed8f47b07c014e8637bd0fd0e6c555364171504680ac41930cfe5e11e" "b3697d12fb7c087e1337432be92026b5fd218e7e43277918c0fce680d573a90c" "11e0bc5e71825b88527e973b80a84483a2cfa1568592230a32aedac2a32426c1" "cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" default)))
  '(fci-rule-color "#f1c40f")
  '(hl-paren-background-colors (quote ("#2492db" "#95a5a6" nil)))
  '(hl-paren-colors (quote ("#ecf0f1" "#ecf0f1" "#c0392b")))
@@ -17,10 +17,11 @@
  '(objed-cursor-color "#BF616A")
  '(package-selected-packages
    (quote
-    (direnv counsel-dash dash-at-point grip-mode rainbow-mode ivy-prescient prescient ivy-posframe treemacs-magit treemacs-projectile treemacs doom-themes doom-modeline counsel-projectile zoom popup-kill-ring golden-ratio auctex-latexmk auctex zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp-steroids use-package terraform-mode spacemacs-theme robe rainbow-delimiters python-mode projectile-ripgrep powerline pov-mode paren-face panda-theme omnisharp olivetti ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils lispy key-chord kaolin-themes js2-refactor jedi ivy-hydra ido-vertical-mode htmlize highlight-symbol highlight-numbers handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flymake-shellcheck flycheck-joker flycheck-clj-kondo flx flatui-theme fill-column-indicator eyebrowse exec-path-from-shell elpy dockerfile-mode diminish darktooth-theme company-tern company-anaconda clojure-mode cider-eval-sexp-fu challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme all-the-icons adoc-mode)))
+    (zzz-to-char all-the-icons-ivy-rich magit-circleci chocolate-theme lispy direnv counsel-dash dash-at-point grip-mode rainbow-mode ivy-prescient prescient ivy-posframe treemacs-magit treemacs-projectile treemacs doom-themes doom-modeline counsel-projectile zoom popup-kill-ring golden-ratio auctex-latexmk auctex zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp-steroids use-package terraform-mode spacemacs-theme robe rainbow-delimiters python-mode projectile-ripgrep powerline pov-mode paren-face panda-theme omnisharp olivetti ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord kaolin-themes js2-refactor jedi ivy-hydra ido-vertical-mode htmlize highlight-symbol highlight-numbers handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flymake-shellcheck flycheck-joker flycheck-clj-kondo flx flatui-theme fill-column-indicator eyebrowse exec-path-from-shell elpy dockerfile-mode diminish darktooth-theme company-tern company-anaconda clojure-mode cider-eval-sexp-fu challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme all-the-icons adoc-mode)))
  '(safe-local-variable-values
    (quote
-    ((cider-repl-init-code "cerber.oauth2.standalone.system/go")
+    ((cljr-libspec-whitelist "^thanks.spec" "^integrant.repl$" "^day8.re-frame.http-fx$" "^tick.locale.*$" "^thanks.frontend.*$" "^spell-spec.expound$" "^duct.core.resource*" "^goog.string.format")
+     (cider-repl-init-code "cerber.oauth2.standalone.system/go")
      (cider-repl-init-code "mount/start")
      (cider-repl-init-code . "mount/start")
      (cider-ns-refresh-after-fn . "mount/start")
