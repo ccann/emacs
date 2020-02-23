@@ -38,7 +38,9 @@
 (require 'bind-key)
 (use-package diminish)
 
-(defconst ccann/is-osx (eq system-type 'darwin))
+(defconst sys/mac-cocoa-p
+  (featurep 'cocoa)
+  "Are we running with Cocoa on a Mac system?")
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
 (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
@@ -54,6 +56,15 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 (load (expand-file-name "functions.el" user-emacs-directory))
+
+;; WORKAROUND: fix blank screen issue on macOS.
+(defun fix-fullscreen-cocoa ()
+  "Address blank screen issue with child-frame in fullscreen."
+  (and sys/mac-cocoa-p
+       (setq ns-use-native-fullscreen nil)))
+
+(when (display-graphic-p)
+  (add-hook 'window-setup-hook #'fix-fullscreen-cocoa))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Modifiers and Keybindings ;;
@@ -234,7 +245,7 @@
   :defer 1
   :init (setq exec-path-from-shell-check-startup-files nil)
   :config
-  (when ccann/is-osx
+  (when sys/mac-cocoa-p
     (exec-path-from-shell-initialize)
     (exec-path-from-shell-copy-envs (ccann/get-envs "~/.profile"))
     (exec-path-from-shell-copy-env "PYTHONPATH")))
@@ -246,7 +257,7 @@
   (setq magit-display-buffer-function  #'magit-display-buffer-fullframe-status-v1)
   :bind (("<f10>" . magit-status))
   :config
-  (when ccann/is-osx
+  (when sys/mac-cocoa-p
     (setq magit-emacsclient-executable "/usr/local/bin/emacsclient")))
 
 (use-package rainbow-delimiters)
@@ -470,7 +481,7 @@
 ;;            "* TODO %?\n  %i\n  %a")))
 
 ;;   ;; Make Org-mode use evince in linux to open PDFs
-;;   (if (not ccann/is-osx)
+;;   (if (not sys/mac-cocoa-p)
 ;;       (add-hook 'org-mode-hook
 ;;                 (lambda ()
 ;;                   (delete '("\\.pdf\\'" . default) org-file-apps)
@@ -513,7 +524,7 @@
   :mode ("\\.tex\\'" . latex-mode)
   :commands (latex-mode LaTeX-mode plain-tex-mode)
   :config
-  (if ccann/is-osx
+  (if ccann/mac-cocoa-p
       (setq TeX-view-program-selection '((output-pdf "Preview")))
     (setq TeX-view-program-selection '((output-pdf "Evince"))))
   :init
@@ -602,7 +613,7 @@
                        elpy-module-eldoc
                        elpy-module-sane-defaults
                        elpy-module-pyvenv))
-  (when ccann/is-osx
+  (when sys/mac-cocoa-p
     (setq elpy-rpc-python-command "/usr/local/bin/python3")))
 
 (use-package jedi
@@ -883,7 +894,7 @@
 (setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
 (setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
 (setq inhibit-startup-screen t) ; turn off splash screen
-(if ccann/is-osx
+(if sys/mac-cocoa-p
     (progn
       (set-face-attribute 'default nil
                           ;; :weight 'normal

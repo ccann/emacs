@@ -20,7 +20,8 @@
     (zzz-to-char all-the-icons-ivy-rich magit-circleci chocolate-theme lispy direnv counsel-dash dash-at-point grip-mode rainbow-mode ivy-prescient prescient ivy-posframe treemacs-magit treemacs-projectile treemacs doom-themes doom-modeline counsel-projectile zoom popup-kill-ring golden-ratio auctex-latexmk auctex zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp-steroids use-package terraform-mode spacemacs-theme robe rainbow-delimiters python-mode projectile-ripgrep powerline pov-mode paren-face panda-theme omnisharp olivetti ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord kaolin-themes js2-refactor jedi ivy-hydra ido-vertical-mode htmlize highlight-symbol highlight-numbers handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flymake-shellcheck flycheck-joker flycheck-clj-kondo flx flatui-theme fill-column-indicator eyebrowse exec-path-from-shell elpy dockerfile-mode diminish darktooth-theme company-tern company-anaconda clojure-mode cider-eval-sexp-fu challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme all-the-icons adoc-mode)))
  '(safe-local-variable-values
    (quote
-    ((cljr-libspec-whitelist "^thanks.spec" "^integrant.repl$" "^day8.re-frame.http-fx$" "^tick.locale.*$" "^thanks.frontend.*$" "^spell-spec.expound$" "^duct.core.resource*" "^goog.string.format")
+    ((cider-preferred-build-tool . clojure-cli)
+     (cljr-libspec-whitelist "^thanks.spec" "^integrant.repl$" "^day8.re-frame.http-fx$" "^tick.locale.*$" "^thanks.frontend.*$" "^spell-spec.expound$" "^duct.core.resource*" "^goog.string.format")
      (cider-repl-init-code "cerber.oauth2.standalone.system/go")
      (cider-repl-init-code "mount/start")
      (cider-repl-init-code . "mount/start")
