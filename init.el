@@ -13,58 +13,46 @@
 ;; (setq-default warning-minimum-level :emergency)
 
 ;; BUGFIX: remove this after 26.3+
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
-(package-initialize)
-(setq package-enable-at-startup nil)
-(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")))
-;; some wizard online concocted this
-(when (>= emacs-major-version 25)
-  (eval-after-load 'bytecomp
-    '(add-to-list 'byte-compile-not-obsolete-funcs
-                  'preceding-sexp)))
-
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(eval-when-compile
-  (require 'use-package)
-  (setq use-package-verbose t)
-  (setq use-package-always-ensure t))
-(require 'bind-key)
-(use-package diminish)
-
-(defconst sys/mac-cocoa-p
-  (featurep 'cocoa)
-  "Are we running with Cocoa on a Mac system?")
-
-(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
-(add-hook 'emacs-lisp-mode-hook #'lispy-mode)
-(add-hook 'emacs-lisp-mode-hook #'paren-face-mode)
-(diminish 'auto-revert-mode)
-
-
-;; libs
-(use-package list-utils)
-(use-package hydra)
-;; (use-package popwin :config (popwin-mode 1))
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
-(load (expand-file-name "functions.el" user-emacs-directory))
 
-;; WORKAROUND: fix blank screen issue on macOS.
-(defun fix-fullscreen-cocoa ()
-  "Address blank screen issue with child-frame in fullscreen."
-  (and sys/mac-cocoa-p
-       (setq ns-use-native-fullscreen nil)))
+;; Load path
+;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
+(defun update-load-path (&rest _)
+  "Update `load-path'."
+  (push (expand-file-name "site-lisp" user-emacs-directory) load-path)
+  (push (expand-file-name "lisp" user-emacs-directory) load-path))
 
-(when (display-graphic-p)
-  (add-hook 'window-setup-hook #'fix-fullscreen-cocoa))
+(defun add-subdirs-to-load-path (&rest _)
+  "Add subdirectories to `load-path'."
+  (let ((default-directory
+          (expand-file-name "site-lisp" user-emacs-directory)))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(advice-add #'package-initialize :after #'update-load-path)
+(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
+
+(update-load-path)
+
+(require 'init-funcs)
+(require 'init-package)
+(require 'init-basic)
+(require 'init-java)
+
+(use-package list-utils)
+(use-package hydra)
+;; (use-package popwin :config (popwin-mode 1))
+(diminish 'auto-revert-mode)
+
+;; Elisp
+(add-hook 'emacs-lisp-mode-hook #'lispy-mode)
+(add-hook 'emacs-lisp-mode-hook #'paren-face-mode)
+
+(setq gc-cons-threshold 100000000)
+(use-package gnu-elpa-keyring-update)
+(setq package-check-signature nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Modifiers and Keybindings ;;
@@ -90,39 +78,18 @@
   (add-to-list 'god-exempt-major-modes 'browse-kill-ring-mode)
   (add-to-list 'god-exempt-major-modes 'cider-test-report-mode))
 
-;; https://gist.github.com/railwaycat/3498096
-(setq mac-option-modifier 'meta)
-(setq mac-command-modifier 'hyper)
-(global-set-key [(hyper a)] 'mark-whole-buffer)
-(global-set-key [(hyper v)] 'yank)
-(global-set-key [(hyper c)] 'kill-ring-save)
-(global-set-key [(hyper s)] 'save-buffer)
-(global-set-key [(hyper l)] 'goto-line)
-(global-set-key [(hyper w)] (lambda () (interactive) (delete-window)))
-(global-set-key [(hyper z)] 'undo)
-
-;; (global-set-key (kbd "C-x d") 'dired-jump)
-(global-set-key (kbd "C-x d") 'projectile-dired)
-(global-set-key (kbd "C-x C-k") 'kill-region)
-(global-set-key (kbd "C-x k") 'kill-buffer)
-(global-set-key (kbd "C-o") 'other-window)
-
-(global-set-key (kbd "C-l") 'goto-line)
-(global-set-key (kbd "C-<backspace>") (lambda () (interactive) (kill-line 0)))
-(global-set-key (kbd "C-c I") 'find-user-init-file)
-(global-set-key (kbd "C-c N") 'find-notes-file)
-(global-set-key (kbd "C-;") 'comment-line)
-(global-set-key [(hyper q)] 'save-buffers-kill-emacs)
+;; (bind-key* "C-x d" 'dired-jump)
+(bind-key* "C-x d" 'projectile-dired)
 
 ;; function key bindings
-(global-set-key (kbd "<f9>") 'ccann/cycle-theme)
-(global-set-key (kbd "<f12>") 'ibuffer)
+(bind-key* "<f9>" 'ccann/cycle-theme)
 
 ;; god-mode helpers
-(global-set-key (kbd "C-x C-1") 'delete-other-windows)
-(global-set-key (kbd "C-x C-2") 'split-window-below)
-(global-set-key (kbd "C-x C-3") 'split-window-right)
-(global-set-key (kbd "C-x C-0") 'delete-window)
+(bind-key* "C-x C-1 " 'delete-other-windows)
+(bind-key* "C-x C-2" 'split-window-below)
+(bind-key* "C-x C-3" 'split-window-right)
+(bind-key* "<f10>" 'magit-status)
+(bind-key* "C-x C-0" 'delete-window)
 
 (use-package ace-window
   :init (global-set-key (kbd "M-p") 'ace-window))
@@ -154,6 +121,22 @@
 ; Packages ;;
 ;;;;;;;;;;;;;
 
+(use-package dashboard
+  :ensure t
+  :init
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  (setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+  (setq dashboard-startup-banner 1)
+  (setq dashboard-center-content t)
+  (setq dashboard-items '((projects . 8) (recents  . 10)))
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-navigator t)
+  (setq dashboard-set-init-info t)
+  (setq dashboard-set-footer nil)
+  :config
+  (dashboard-setup-startup-hook))
+
 (use-package counsel
   ;; Counsel - a collection of Ivy-enhanced versions of common Emacs commands.
   ;; -- Counsel will install Ivy and Swiper as dependencies --
@@ -167,18 +150,18 @@
   (setq ivy-initial-inputs-alist nil)
   (setq ivy-re-builders-alist
         '((swiper . ivy--regex-plus)
-          (ivy-switch-buffer . ivy--regex-fuzzy)
-          (counsel-projectile-find-file . ivy--regex-fuzzy)
-          (counsel-projectile . ivy--regex-fuzzy)
+          (ivy-switch-buffer . ivy--regex-ignore-order)
+          (counsel-projectile-find-file . ivy--regex-ignore-order)
+          (counsel-projectile . ivy--regex-ignore-order)
           (counsel-M-x . ivy--regex-fuzzy)
           (t . ivy--regex-plus)))
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
-  (global-set-key (kbd "C-s") 'swiper)
-  (global-set-key (kbd "M-y") 'counsel-yank-pop)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "<f6>") 'ivy-resume)
+  (bind-key* "C-s" 'swiper)
+  (bind-key* "M-y" 'counsel-yank-pop)
+  (bind-key* "C-x C-f" 'counsel-find-file)
+  (bind-key* "M-x" 'counsel-M-x)
+  (bind-key* "<f6>" 'ivy-resume)
   (key-chord-define-global "fb" 'ivy-switch-buffer)
 
   ;; if this is t it will yank the most recent kill, instead of the second most
@@ -240,16 +223,6 @@
   ;; Makes ido-mode display vertically
   :config (ido-vertical-mode 1))
 
-
-(use-package exec-path-from-shell
-  :defer 1
-  :init (setq exec-path-from-shell-check-startup-files nil)
-  :config
-  (when sys/mac-cocoa-p
-    (exec-path-from-shell-initialize)
-    (exec-path-from-shell-copy-envs (ccann/get-envs "~/.profile"))
-    (exec-path-from-shell-copy-env "PYTHONPATH")))
-
 (use-package magit
   :diminish magit-auto-revert-mode
   :init
@@ -269,7 +242,7 @@
 (use-package company
   :defer 1
   :init
-  (setq company-idle-delay 0.4)
+  (setq company-idle-delay 0.1)
   (setq company-minimum-prefix-length 2)
   (setq company-tooltip-limit 10)
   (setq company-tooltip-align-annotations t)
@@ -280,10 +253,15 @@
   :diminish company-mode
   :config
   (add-to-list 'company-backends 'company-anaconda)
+  (setq company-global-modes
+        '(emacs-lisp-mode
+          clojure-mode
+          clojurescript-mode
+          clojurec-mode
+          python-mode
+          web-mode
+          java-mode))
   (global-company-mode))
-
-
-(save-place-mode 1)
 
 (use-package smart-mode-line
   :disabled t
@@ -335,7 +313,6 @@
   (if co (setcdr co '(left-continuation right-continuation))))
 
 (use-package flycheck
-  :diminish flycheck-mode
   :init
   ;; Custom fringe indicator (circle)
   (when (fboundp 'define-fringe-bitmap)
@@ -374,6 +351,12 @@
     :fringe-face 'flycheck-fringe-info)
 
   :config
+  (setq flycheck-display-errors-delay 0.25)
+  (global-flycheck-mode)
+  (setq flycheck-emacs-lisp-load-path 'inherit)
+  (setq flycheck-buffer-switch-check-intermediate-buffers t)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled idle-buffer-switch))
+
 
   ;; (set-face-attribute 'flycheck-error nil
   ;;                     :foreground (face-attribute 'error :foreground)
@@ -388,7 +371,20 @@
   ;;                     :background (face-attribute 'info :background)
   ;;                     :underline 'unspecified)
   )
+;; (use-package flycheck-popup-tip
+;;   :commands flycheck-popup-tip-show-popup flycheck-popup-tip-delete-popup
+;;   :config
+;;   (setq flycheck-popup-tip-error-prefix "✕ "))
 
+(use-package flycheck-posframe
+  :ensure t
+  :after flycheck
+  :config
+  (setq flycheck-posframe-warning-prefix "⚠ "
+        flycheck-posframe-info-prefix "··· "
+        flycheck-posframe-error-prefix "✕ ")
+  (flycheck-posframe-configure-pretty-defaults)
+  (add-hook 'flycheck-mode-hook #'flycheck-posframe-mode))
 
 (use-package fill-column-indicator
   :init
@@ -396,7 +392,6 @@
         fci-rule-use-dashes t
         fci-dash-pattern 0.75
         fci-rule-width 1))
-
 
 (use-package highlight-symbol
   :init
@@ -511,7 +506,7 @@
 
 (use-package terraform-mode
   :init
-  (add-hook 'terraform-mode-hook 'highlight-symbol-mode)
+  (add-hook 'terraform-mode-hook #'highlight-symbol-mode)
   :bind (("C-c j" . ccann/insert-terraform-interpolation)
          ("C-c k" . ccann/insert-terraform-interpolation-nested)
          ("C-c a" . ccann/align-terraform-region)))
@@ -560,20 +555,25 @@
 
 (use-package lispy
   :defer t
- :init
- (setq lispy-compat '(edebug cider))
- (define-advice git-timemachine-mode (:after (&optional arg))
-   (if (bound-and-true-p git-timemachine-mode)
-       (lispy-mode -1)
-     (lispy-mode 1)))
+  :init
+  (setq lispy-compat '(edebug cider))
+  (define-advice git-timemachine-mode (:after (&optional arg))
+    (if (bound-and-true-p git-timemachine-mode)
+        (lispy-mode -1)
+      (lispy-mode 1)))
 
- (defun update-lispy ()
-   (if (bound-and-true-p lispy-mode)
-      (lispy-mode -1)
-     (lispy-mode 1)))
+  (defun update-lispy ()
+    (if (or (eq major-mode 'emacs-lisp-mode)
+            (eq major-mode 'clojure-mode)
+            (eq major-mode 'clojurescript-mode)
+            (eq major-mode 'clojurec-mode))
+        (if (bound-and-true-p lispy-mode)
+            (lispy-mode -1)
+          (lispy-mode 1))
+      (lispy-mode -1)))
 
- (add-hook 'god-mode-enabled-hook 'update-lispy)
- (add-hook 'god-mode-disabled-hook 'update-lispy))
+  (add-hook 'god-mode-enabled-hook #'update-lispy)
+  (add-hook 'god-mode-disabled-hook #'update-lispy))
 
 ;; (setq auth-sources
 ;;       (quote (macos-keychain-internet macos-keychain-generic)))
@@ -584,8 +584,8 @@
 (use-package ruby-mode
   :mode ("\\.rb\\'" . ruby-mode)
   :init
-  (add-hook 'ruby-mode-hook 'robe-mode)
-  (add-hook 'ruby-mode-hook 'highlight-symbol-mode))
+  (add-hook 'ruby-mode-hook #'robe-mode)
+  (add-hook 'ruby-mode-hook #'highlight-symbol-mode))
 
 (use-package python-mode
   :mode ("\\.py\\'" . python-mode)
@@ -597,7 +597,6 @@
   (add-hook 'python-mode-hook #'subword-mode)
   ;; (add-hook 'python-mode-hook #'rainbow-delimiters-mode)
 
-  (add-hook 'python-mode-hook #'flycheck-mode)
   (add-hook 'python-mode-hook #'eldoc-mode)
 
   (setq-default python-indent-guess-indent-offset nil
@@ -637,27 +636,48 @@
 ;; Clojure ;;
 ;;;;;;;;;;;;;
 
+(defun +clojure--cider-dump-nrepl-server-log-h ()
+  "Copy contents of *nrepl-server* to beginning of *cider-repl*."
+  (when (buffer-live-p nrepl-server-buffer)
+    (save-excursion
+      (goto-char (point-min))
+      (insert
+       (with-current-buffer nrepl-server-buffer
+         (buffer-string))))))
+
 (use-package cider
   ;; CIDER extends Emacs with support for interactive programming in Clojure. The
   ;; features are centered around cider-mode, a minor-mode that complements clojure-mode.
   :defer t
   :pin melpa-stable
   :init
-  (add-hook 'clojure-mode-hook 'cider-mode)
+  (add-hook 'clojure-mode-hook #'cider-mode)
   (setq cider-repl-display-help-banner nil
         cider-repl-display-in-current-window t
-        cider-repl-use-clojure-font-lock t
         cider-save-file-on-load nil
         cider-prompt-for-symbol nil
         ;; cider-redirect-server-output-to-repl nil
+        cider-repl-history-display-duplicates nil
+        cider-repl-history-display-style 'one-line
+        cider-repl-history-file "~/.emacs.d/cider-repl-history"
+        cider-repl-history-highlight-current-entry t
+        cider-repl-history-quit-action 'delete-and-restore
+        cider-repl-history-highlight-inserted-item t
+        cider-repl-history-size 1000
+        cider-repl-result-prefix ";; => "
+        cider-repl-print-length 100
+        cider-repl-use-clojure-font-lock t
+        cider-repl-wrap-history nil
+        cider-repl-use-pretty-printing t
+        cider-stacktrace-default-filters '(tooling dup)
         cider-stacktrace-fill-column 90
         cider-auto-select-error-buffer t
         cider-font-lock-max-length 10000
-        cider-repl-use-pretty-printing t
         cider-font-lock-dynamically '(macro core deprecated function var)
         ;; hide *nrepl-connection* and *nrepl-server*
-        ;; nrepl-hide-special-buffers t
+        nrepl-hide-special-buffers nil
         cider-overlays-use-font-lock t
+        cider-repl-pop-to-buffer-on-connect 'display-only
         nrepl-prompt-to-kill-server-buffer-on-quit nil)
   ;; (setq cider-default-cljs-repl 'shadow)
   :config
@@ -666,6 +686,8 @@
   (add-hook 'cider-repl-mode-hook #'lispy-mode)
   (add-hook 'cider-repl-mode-hook #'subword-mode)
   (add-hook 'cider-repl-mode-hook (lambda () (hi-lock-mode -1)))
+
+  (add-hook 'cider-connected-hook #'+clojure--cider-dump-nrepl-server-log-h)
 
   ;; (add-hook 'cider-repl-mode-hook #'cider-company-enable-fuzzy-completion)
   ;; (add-hook 'cider-mode-hook #'cider-company-enable-fuzzy-completion)
@@ -701,7 +723,8 @@
    ("C-c t n" . cider-test-run-ns-tests)
    ("C-c t p" . cider-test-run-project-tests)
    ("C-c t r" . cider-test-show-report)
-   ("C-c t f" . cider-test-rerun-failed-tests)))
+   ("C-c t f" . cider-test-rerun-failed-tests)
+   ("C-c e" . jet/json->edn)))
 
 ;; (load (expand-file-name "eftest-runner.el" user-emacs-directory))
 ;; (require 'eftest-runner)
@@ -755,13 +778,16 @@
   :mode (("\\.clj\\'" . clojure-mode)
          ("\\.edn\\'" . clojure-mode))
   :diminish (subword-mode)
-  :init (setq clojure-docstring-fill-column 80
-              clojure-docstring-fill-prefix-width 2)
+  :init (setq clojure-docstring-fill-column 80)
   :config
+  (setq projectile-project-root-files
+        (append projectile-project-root-files
+                '("project.clj"
+                  "built.boot"
+                  "deps.edn")))
   ;; (set-face-attribute 'clojure-keyword-face nil :weight 'normal)
   (add-hook 'clojure-mode-hook #'paren-face-mode)
   (add-hook 'clojure-mode-hook #'yas-minor-mode)
-  (add-hook 'clojure-mode-hook #'flycheck-mode)
   (add-hook 'clojure-mode-hook #'lispy-mode)
   (add-hook 'clojure-mode-hook #'subword-mode)
   (add-hook 'clojure-mode-hook #'highlight-symbol-mode)
@@ -789,7 +815,7 @@
   :init
   (setq css-indent-offset 4)
   (setq web-mode-code-indent-offset 2)
-  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-markup-indent-offset 4)
   (setq web-mode-css-indent-offset 4)
   (setq web-mode-code-indent-offset 4))
 
@@ -808,7 +834,6 @@
             (lambda ()
               (tern-mode)
               (company-mode)))
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
   :config
   (setq js2-basic-offset 2))
 
@@ -823,13 +848,14 @@
   :config
   (define-key js-mode-map (kbd "M-.") nil))
 
-(use-package company-tern
-  :after (js2-mode)
-  :config
-  (add-to-list 'company-backends 'company-tern)
-  ;; Disable completion keybindings, as we use xref-js2 instead
-  (define-key tern-mode-keymap (kbd "M-.") nil)
-  (define-key tern-mode-keymap (kbd "M-,") nil))
+;; This has disappeared from MELPA
+;; (use-package company-tern
+;;   :after (js2-mode)
+;;   :config
+;;   (add-to-list 'company-backends 'company-tern)
+;;   ;; Disable completion keybindings, as we use xref-js2 instead
+;;   (define-key tern-mode-keymap (kbd "M-.") nil)
+;;   (define-key tern-mode-keymap (kbd "M-,") nil))
 
 (use-package handlebars-mode)
 
@@ -848,10 +874,16 @@
   (setq zoom-size 'size-callback)
   (zoom-mode 1))
 
+(use-package counsel-projectile
+  ;; Ivy UI for Projectile
+  ;; https://github.com/ericdanan/counsel-projectile
+  )
+
 (use-package projectile
   :pin melpa-stable
   :init
-  (setq projectile-ignored-projects '("/Users/cody/dev/thanks"))
+  (setq projectile-ignored-projects '("~/dev/thanks"
+                                      "~/flipboard/repos/clj-services"))
   (setq projectile-enable-caching t)
   (setq projectile-completion-system 'ivy)
   :diminish projectile-mode
@@ -860,11 +892,6 @@
   (setq shell-file-name "/bin/sh")
   (define-key projectile-mode-map (kbd "C-c p") #'projectile-command-map)
   (counsel-projectile-mode))
-
-(use-package counsel-projectile
-  ;; Ivy UI for Projectile
-  ;; https://github.com/ericdanan/counsel-projectile
-  :after (projectile))
 
 (use-package ripgrep)
 
@@ -875,11 +902,6 @@
   :config (eyebrowse-mode))
 
 (add-to-list 'auto-mode-alist '("\\.sh\\'" . sh-mode))
-(use-package flymake-shellcheck
-  :commands flymake-shellcheck-load
-  :init
-  (add-hook 'sh-mode-hook #'flymake-mode)
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; Display Settings ;;
@@ -887,19 +909,19 @@
 (setq frame-title-format "%b")
 (setq-default tab-width 2)
 (setq frame-resize-pixelwise t)
-(column-number-mode 1)
+
 (blink-cursor-mode 1)
 (setq blink-cursor-blinks 0)
 (set-fringe-mode '(10 . 5))
-(setq visible-bell nil) ; if visible-bell nil, ring-bell-function is alarm
-(setq ring-bell-function `(lambda () )) ; empty alarm function. voila.
+
+
 (setq inhibit-startup-screen t) ; turn off splash screen
 (if sys/mac-cocoa-p
     (progn
       (set-face-attribute 'default nil
                           ;; :weight 'normal
                           ;; :font "Monaco-13"
-                          :font "Office Code Pro-13")
+                          :font "Office Code Pro-16")
       (menu-bar-mode 1))
   (progn
     (menu-bar-mode 1)
@@ -923,10 +945,6 @@
   :defer t
   :init
   (setq-default olivetti-body-width 90))
-
-
-(setq-default display-line-numbers-type t
-              display-line-numbers-width 3)
 
 (add-hook 'text-mode-hook #'display-line-numbers-mode)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
@@ -957,7 +975,7 @@
 ; Misc ;;
 ;;;;;;;;;
 (setq confirm-kill-emacs 'y-or-n-p)
-(fset 'yes-or-no-p 'y-or-n-p)
+
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 (global-auto-revert-mode t) ; automatically reload changed buffers
 (setq create-lockfiles nil)
@@ -988,6 +1006,7 @@
 (use-package neotree
   :bind (("<f2>" . neotree-toggle))
   :init
+  (bind-key* "<f2>" 'neotree-toggle)
   (setq neo-theme 'icons
         neo-smart-open t
         neo-window-width 45
@@ -1010,7 +1029,7 @@
 (put 'upcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
 
-(add-hook 'before-save-hook 'whitespace-cleanup)
+
 
 (use-package direnv
  :config
@@ -1084,8 +1103,6 @@
   (setq doom-modeline-buffer-file-name-style 'truncate-with-project
         ;; maximum displayed length of the branch name of version control.
         doom-modeline-vcs-max-length 12
-        ;; lag issue? don’t compact font caches during GC.
-        ;; inhibit-compacting-font-caches t
         ;; this could cause performance issues
         ;; auto-revert-check-vc-info t
         doom-modeline-minor-modes nil))

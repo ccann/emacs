@@ -6,21 +6,28 @@
  '(ansi-color-names-vector
    ["#ecf0f1" "#e74c3c" "#2ecc71" "#f1c40f" "#2492db" "#9b59b6" "#1abc9c" "#2c3e50"])
  '(custom-safe-themes
-   (quote
-    ("cb96a06ed8f47b07c014e8637bd0fd0e6c555364171504680ac41930cfe5e11e" "b3697d12fb7c087e1337432be92026b5fd218e7e43277918c0fce680d573a90c" "11e0bc5e71825b88527e973b80a84483a2cfa1568592230a32aedac2a32426c1" "cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" default)))
+   '("cb96a06ed8f47b07c014e8637bd0fd0e6c555364171504680ac41930cfe5e11e" "b3697d12fb7c087e1337432be92026b5fd218e7e43277918c0fce680d573a90c" "11e0bc5e71825b88527e973b80a84483a2cfa1568592230a32aedac2a32426c1" "cdb4ffdecc682978da78700a461cdc77456c3a6df1c1803ae2dd55c59fa703e3" default))
  '(fci-rule-color "#f1c40f")
- '(hl-paren-background-colors (quote ("#2492db" "#95a5a6" nil)))
- '(hl-paren-colors (quote ("#ecf0f1" "#ecf0f1" "#c0392b")))
+ '(hl-paren-background-colors '("#2492db" "#95a5a6" nil))
+ '(hl-paren-colors '("#ecf0f1" "#ecf0f1" "#c0392b"))
  '(jdee-db-active-breakpoint-face-colors (cons "#1B2229" "#D08770"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#1B2229" "#A3BE8C"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#1B2229" "#4f5b66"))
  '(objed-cursor-color "#BF616A")
  '(package-selected-packages
-   (quote
-    (zzz-to-char all-the-icons-ivy-rich magit-circleci chocolate-theme lispy direnv counsel-dash dash-at-point grip-mode rainbow-mode ivy-prescient prescient ivy-posframe treemacs-magit treemacs-projectile treemacs doom-themes doom-modeline counsel-projectile zoom popup-kill-ring golden-ratio auctex-latexmk auctex zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp-steroids use-package terraform-mode spacemacs-theme robe rainbow-delimiters python-mode projectile-ripgrep powerline pov-mode paren-face panda-theme omnisharp olivetti ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord kaolin-themes js2-refactor jedi ivy-hydra ido-vertical-mode htmlize highlight-symbol highlight-numbers handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flymake-shellcheck flycheck-joker flycheck-clj-kondo flx flatui-theme fill-column-indicator eyebrowse exec-path-from-shell elpy dockerfile-mode diminish darktooth-theme company-tern company-anaconda clojure-mode cider-eval-sexp-fu challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme all-the-icons adoc-mode)))
+   '(jenkinsfile-mode flycheck-popup-tip flycheck-posframe flycheck-pos-tip lsp-ivy lsp-mode projectile clj-refactor cider paradox simple zzz-to-char all-the-icons-ivy-rich magit-circleci chocolate-theme lispy direnv counsel-dash dash-at-point grip-mode rainbow-mode ivy-prescient prescient ivy-posframe treemacs-magit treemacs-projectile treemacs doom-themes doom-modeline counsel-projectile zoom popup-kill-ring golden-ratio auctex-latexmk auctex zenburn-theme yaml-mode xref-js2 which-key web-mode visual-regexp-steroids use-package terraform-mode spacemacs-theme robe rainbow-delimiters python-mode projectile-ripgrep powerline pov-mode paren-face panda-theme omnisharp olivetti ob-ipython nyan-mode neotree metalheart-theme material-theme markdown-mode magit lua-mode list-utils key-chord kaolin-themes js2-refactor jedi ivy-hydra ido-vertical-mode htmlize highlight-symbol highlight-numbers handlebars-mode gruvbox-theme gotham-theme google-this god-mode git-timemachine flymake-shellcheck flycheck-joker flycheck-clj-kondo flx flatui-theme fill-column-indicator eyebrowse exec-path-from-shell elpy dockerfile-mode diminish darktooth-theme company-tern company-anaconda clojure-mode cider-eval-sexp-fu challenger-deep-theme browse-kill-ring badger-theme apropospriate-theme ample-theme all-the-icons adoc-mode))
  '(safe-local-variable-values
-   (quote
-    ((cider-preferred-build-tool . clojure-cli)
+   '((cider-ns-refresh-after-fn . "user/restart")
+     (cider-ns-refresh-after-fn . "user/start")
+     (cljr-libspec-whitelist "^firedraft.events.*$")
+     (cider-repl-init-code "(do (start) (start-fw))")
+     (cider-ns-refresh-after-fn . "dev/start")
+     (cider-ns-refresh-before-fn . "user/stop")
+     (cljr-libspec-whitelist "^thanks.spec" "thanks.oauth.provider.spec" "^integrant.repl$" "^day8.re-frame.http-fx$" "^tick.locale.*$" "^thanks.frontend.*$" "^spell-spec.expound$" "^duct.core.resource*" "^goog.string.format")
+     (cider-cljs-lein-repl . "(do (user/go) (user/cljs-repl))")
+     (cider-refresh-after-fn . "reloaded.repl/resume")
+     (cider-refresh-before-fn . "reloaded.repl/suspend")
+     (cider-preferred-build-tool . clojure-cli)
      (cljr-libspec-whitelist "^thanks.spec" "^integrant.repl$" "^day8.re-frame.http-fx$" "^tick.locale.*$" "^thanks.frontend.*$" "^spell-spec.expound$" "^duct.core.resource*" "^goog.string.format")
      (cider-repl-init-code "cerber.oauth2.standalone.system/go")
      (cider-repl-init-code "mount/start")
@@ -53,15 +60,14 @@
      (cider-ns-refresh-after-fn . "dev/resume")
      (cider-ns-refresh-before-fn . "dev/suspend")
      (cider-ns-refresh-after-fn . "mount.core/start")
-     (cider-ns-refresh-before-fn . "mount.core/stop"))))
+     (cider-ns-refresh-before-fn . "mount.core/stop")))
  '(sml/active-background-color "#34495e")
  '(sml/active-foreground-color "#ecf0f1")
  '(sml/inactive-background-color "#dfe4ea")
  '(sml/inactive-foreground-color "#34495e")
  '(vc-annotate-background "#ecf0f1")
  '(vc-annotate-color-map
-   (quote
-    ((30 . "#e74c3c")
+   '((30 . "#e74c3c")
      (60 . "#c0392b")
      (90 . "#e67e22")
      (120 . "#d35400")
@@ -72,7 +78,7 @@
      (270 . "#1abc9c")
      (300 . "#16a085")
      (330 . "#2492db")
-     (360 . "#0a74b9"))))
+     (360 . "#0a74b9")))
  '(vc-annotate-very-old-color "#0a74b9"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

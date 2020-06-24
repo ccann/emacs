@@ -1,11 +1,11 @@
-;;; functions.el --- miscellaneous function definitions
+;;; init-funcs.el --- miscellaneous function definitions
 
 ;;; Commentary:
 ;;; author: ccann
 
 ;;; Code:
 
-;;pulled these from someone... don't remember who!
+;; pulled these from someone... don't remember who!
 (defun unfill-paragraph ()
   (interactive)
   (let ((fill-column 90002000))
@@ -95,14 +95,6 @@
     ))
 
 
-(defun ccann/get-envs (filename)
-  (let* ((cmd (concat ". " filename "; env"))
-         (env-str (shell-command-to-string cmd))
-         (env-lines (split-string env-str "\n"))
-         (envs (mapcar (lambda (s) (replace-regexp-in-string "=.*$" "" s)) env-lines)))
-    (delete "" envs)))
-
-
 (defun ccann/align-whitespace (start end)
   "Align columns by whitespace"
   (interactive "r")
@@ -123,5 +115,17 @@
   (interactive)
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)="))
 
+(defun jet/json->edn ()
+  (interactive)
+  (shell-command-on-region
+   (region-beginning)
+   (region-end)
+   "jet --pretty --edn-reader-opts '{:default tagged-literal}'"
+   (current-buffer)
+   t
+   "*jet error buffer*"
+   t))
 
-;;; functions.el ends here
+(provide 'init-funcs)
+
+;;; init-funcs.el ends here
